@@ -264,8 +264,28 @@ const DropZoneChild = ({
           );
         }
 
+        const marginTop =
+          nodeProps?.marginTop != null
+            ? typeof nodeProps.marginTop === "number"
+              ? `${nodeProps.marginTop}px`
+              : nodeProps.marginTop
+            : undefined;
+        const marginBottom =
+          nodeProps?.marginBottom != null
+            ? typeof nodeProps.marginBottom === "number"
+              ? `${nodeProps.marginBottom}px`
+              : nodeProps.marginBottom
+            : undefined;
+
         return (
-          <div ref={dragRef}>
+          <div
+            ref={dragRef}
+            style={
+              marginTop != null || marginBottom != null
+                ? { marginTop, marginBottom }
+                : undefined
+            }
+          >
             {isInserting ? (
               <InsertPreview
                 label={label}

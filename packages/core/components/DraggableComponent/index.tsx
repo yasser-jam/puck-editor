@@ -14,8 +14,18 @@ import {
 import styles from "./styles.module.css";
 import "./styles.css";
 import getClassNameFactory from "../../lib/get-class-name-factory";
-import { ArrowDown, ArrowUp, Copy, CornerLeftUp, Trash } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Copy,
+  CornerLeftUp,
+  PanelBottom,
+  PanelTop,
+  Trash,
+} from "lucide-react";
 import { useAppStore, useAppStoreApi } from "../../store";
+import { getSelectorForId } from "../../lib/get-selector-for-id";
+import { rootDroppableId } from "../../lib/root-droppable-id";
 import { Loader } from "../Loader";
 import { ActionBar } from "../ActionBar";
 
@@ -450,6 +460,53 @@ export const DraggableComponent = ({
     });
   }, [index, zoneCompound, canMoveDown]);
 
+  const MARGIN_STEP = 16;
+  const appStoreApi = useAppStoreApi();
+  const onAddMarginTop = useCallback(async () => {
+    const { state, resolveComponentData, dispatch } = appStoreApi.getState();
+    const node = state.indexes.nodes[id]?.data;
+    if (!node) return;
+    const current = Number((node.props as { marginTop?: number })?.marginTop) || 0;
+    const newProps = { ...node.props, marginTop: current + MARGIN_STEP };
+    const resolved = await resolveComponentData(
+      { ...node, props: newProps },
+      "replace"
+    );
+    const selector = getSelectorForId(state, id) ?? {
+      index,
+      zone: zoneCompound,
+    };
+    dispatch({
+      type: "replace",
+      destinationIndex: selector.index,
+      destinationZone: selector.zone || rootDroppableId,
+      data: resolved.node,
+    });
+  }, [id, index, zoneCompound, appStoreApi]);
+
+  const onAddMarginBottom = useCallback(async () => {
+    const { state, resolveComponentData, dispatch } = appStoreApi.getState();
+    const node = state.indexes.nodes[id]?.data;
+    if (!node) return;
+    const current =
+      Number((node.props as { marginBottom?: number })?.marginBottom) || 0;
+    const newProps = { ...node.props, marginBottom: current + MARGIN_STEP };
+    const resolved = await resolveComponentData(
+      { ...node, props: newProps },
+      "replace"
+    );
+    const selector = getSelectorForId(state, id) ?? {
+      index,
+      zone: zoneCompound,
+    };
+    dispatch({
+      type: "replace",
+      destinationIndex: selector.index,
+      destinationZone: selector.zone || rootDroppableId,
+      data: resolved.node,
+    });
+  }, [id, index, zoneCompound, appStoreApi]);
+
   const [hover, setHover] = useState(false);
 
   const indicativeHover = useContextStore(
@@ -712,6 +769,18 @@ export const DraggableComponent = ({
                       <ArrowDown size={16} />
                     </ActionBar.Action>
                   )}
+                  <ActionBar.Action
+                    onClick={onAddMarginTop}
+                    label="Add space above"
+                  >
+                    <PanelTop size={16} />
+                  </ActionBar.Action>
+                  <ActionBar.Action
+                    onClick={onAddMarginBottom}
+                    label="Add space below"
+                  >
+                    <PanelBottom size={16} />
+                  </ActionBar.Action>
                   {permissions.duplicate && (
                     <ActionBar.Action onClick={onDuplicate} label="Duplicate">
                       <Copy size={16} />
