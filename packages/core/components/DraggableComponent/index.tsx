@@ -14,7 +14,7 @@ import {
 import styles from "./styles.module.css";
 import "./styles.css";
 import getClassNameFactory from "../../lib/get-class-name-factory";
-import { Copy, CornerLeftUp, Trash } from "lucide-react";
+import { ArrowDown, ArrowUp, Copy, CornerLeftUp, Trash } from "lucide-react";
 import { useAppStore, useAppStoreApi } from "../../store";
 import { Loader } from "../Loader";
 import { ActionBar } from "../ActionBar";
@@ -166,6 +166,13 @@ export const DraggableComponent = ({
       return s.permissions.getPermissions({ item });
     })
   );
+
+  const zoneContentCount =
+    useAppStore(
+      (s) => s.state.indexes.zones[zoneCompound]?.contentIds?.length ?? 0
+    );
+  const canMoveUp = index > 0 && permissions.drag;
+  const canMoveDown = index < zoneContentCount - 1 && permissions.drag;
 
   const zoneStore = useContext(ZoneStoreContext);
 
@@ -423,6 +430,26 @@ export const DraggableComponent = ({
     });
   }, [index, zoneCompound]);
 
+  const onMoveUp = useCallback(() => {
+    if (!canMoveUp) return;
+    dispatch({
+      type: "reorder",
+      sourceIndex: index,
+      destinationIndex: index - 1,
+      destinationZone: zoneCompound,
+    });
+  }, [index, zoneCompound, canMoveUp]);
+
+  const onMoveDown = useCallback(() => {
+    if (!canMoveDown) return;
+    dispatch({
+      type: "reorder",
+      sourceIndex: index,
+      destinationIndex: index + 1,
+      destinationZone: zoneCompound,
+    });
+  }, [index, zoneCompound, canMoveDown]);
+
   const [hover, setHover] = useState(false);
 
   const indicativeHover = useContextStore(
@@ -612,7 +639,9 @@ export const DraggableComponent = ({
     s.currentRichText?.inlineComponentId === id ? s.currentRichText : null
   );
 
-  const hasNormalActions = permissions.duplicate || permissions.delete;
+  const hasMoveActions = canMoveUp || canMoveDown;
+  const hasNormalActions =
+    hasMoveActions || permissions.duplicate || permissions.delete;
 
   return (
     <DropZoneProvider value={nextContextValue}>
@@ -667,6 +696,22 @@ export const DraggableComponent = ({
                     </>
                   )}
 
+                  {canMoveUp && (
+                    <ActionBar.Action
+                      onClick={onMoveUp}
+                      label="Move up"
+                    >
+                      <ArrowUp size={16} />
+                    </ActionBar.Action>
+                  )}
+                  {canMoveDown && (
+                    <ActionBar.Action
+                      onClick={onMoveDown}
+                      label="Move down"
+                    >
+                      <ArrowDown size={16} />
+                    </ActionBar.Action>
+                  )}
                   {permissions.duplicate && (
                     <ActionBar.Action onClick={onDuplicate} label="Duplicate">
                       <Copy size={16} />
