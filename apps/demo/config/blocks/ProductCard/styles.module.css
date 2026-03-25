@@ -1,0 +1,200 @@
+/* ---- Card container ---- */
+.ProductCard {
+  height: 100%;
+  font-family: var(--puck-font-family, sans-serif);
+}
+
+.ProductCard-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: rgba(140, 152, 164, 0.2) 0px 4px 12px;
+  transition: box-shadow 0.2s ease;
+}
+
+.ProductCard-inner:hover {
+  box-shadow: rgba(140, 152, 164, 0.4) 0px 8px 20px;
+}
+
+/* ---- Image area ---- */
+.ProductCard-imageWrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.ProductCard-imageWrapper--square {
+  aspect-ratio: 1 / 1;
+}
+
+.ProductCard-imageWrapper--landscape {
+  aspect-ratio: 4 / 3;
+}
+
+.ProductCard-imageWrapper--portrait {
+  aspect-ratio: 3 / 4;
+}
+
+.ProductCard-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ProductCard-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--puck-color-grey-10, #f0f0f0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--puck-color-grey-06, #aaa);
+  font-size: 14px;
+}
+
+/* ---- Badges ---- */
+.ProductCard-badges {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ProductCard-badge {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  line-height: 1.4;
+}
+
+.ProductCard-badge--discount {
+  background: #ef4444;
+  color: #fff;
+}
+
+.ProductCard-badge--outOfStock {
+  background: var(--puck-color-grey-07, #888);
+  color: #fff;
+}
+
+.ProductCard-badge--inStock {
+  background: #22c55e;
+  color: #fff;
+}
+
+/* ---- Body ---- */
+.ProductCard-body {
+  padding: var(--pc-spacing, 20px);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8px;
+}
+
+.ProductCard--spacing-compact .ProductCard-body {
+  padding: 12px;
+  gap: 6px;
+}
+
+.ProductCard--spacing-relaxed .ProductCard-body {
+  padding: 28px;
+  gap: 12px;
+}
+
+/* ---- Categories ---- */
+.ProductCard-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.ProductCard-category {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--puck-color-azure-06, #3b82f6);
+}
+
+.ProductCard-category:not(:last-child)::after {
+  content: "·";
+  margin-left: 4px;
+  color: var(--puck-color-grey-07, #999);
+}
+
+/* ---- Title ---- */
+.ProductCard-title {
+  color: var(--puck-color-grey-02, #1a1a1a);
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* Typography size variants */
+.ProductCard--titleSize-s  .ProductCard-title { font-size: 14px; font-weight: 600; }
+.ProductCard--titleSize-m  .ProductCard-title { font-size: 18px; font-weight: 600; }
+.ProductCard--titleSize-l  .ProductCard-title { font-size: 22px; font-weight: 700; }
+.ProductCard--titleSize-xl .ProductCard-title { font-size: 28px; font-weight: 700; }
+
+/* ---- Description ---- */
+.ProductCard-description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--puck-color-grey-05, #666);
+  font-weight: 300;
+  margin: 0;
+  flex: 1;
+}
+
+/* ---- Price row ---- */
+.ProductCard-priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+.ProductCard-price {
+  color: var(--puck-color-grey-02, #111);
+  font-weight: 700;
+}
+
+.ProductCard--priceSize-s  .ProductCard-price { font-size: 16px; }
+.ProductCard--priceSize-m  .ProductCard-price { font-size: 20px; }
+.ProductCard--priceSize-l  .ProductCard-price { font-size: 24px; }
+
+.ProductCard-originalPrice {
+  font-size: 14px;
+  color: var(--puck-color-grey-06, #aaa);
+  text-decoration: line-through;
+  font-weight: 400;
+}
+
+.ProductCard-discountLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ef4444;
+}
+
+/* ---- Empty state ---- */
+.ProductCard-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background: var(--puck-color-grey-11, #f8f8f8);
+  border: 2px dashed var(--puck-color-grey-09, #ddd);
+  border-radius: 10px;
+  color: var(--puck-color-grey-06, #aaa);
+  font-size: 14px;
+  text-align: center;
+}
