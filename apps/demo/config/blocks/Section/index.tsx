@@ -1,0 +1,137 @@
+import React from "react";
+import { ComponentConfig, Slot } from "@/core/types";
+import { getClassNameFactory } from "@/core/lib";
+import { spacingOptions } from "../../options";
+import styles from "./styles.module.css";
+
+const getClassName = getClassNameFactory("Section", styles);
+
+// ─── Preset colours ────────────────────────────────────────────────────────
+export const backgroundOptions = [
+  { label: "White", value: "#ffffff" },
+  { label: "Off-white", value: "#f8f9fa" },
+  { label: "Light grey", value: "#f0f2f5" },
+  { label: "Neutral grey", value: "#e5e7eb" },
+  { label: "Soft blue", value: "#eff6ff" },
+  { label: "Soft green", value: "#f0fdf4" },
+  { label: "Soft yellow", value: "#fefce8" },
+  { label: "Dark navy", value: "#0f172a" },
+  { label: "Dark grey", value: "#1f2937" },
+  { label: "Black", value: "#000000" },
+  { label: "Transparent", value: "transparent" },
+];
+
+const maxWidthOptions = [
+  { label: "Full width", value: "100%" },
+  { label: "Wide (1536px)", value: "1536px" },
+  { label: "Standard (1280px)", value: "1280px" },
+  { label: "Medium (1024px)", value: "1024px" },
+  { label: "Narrow (768px)", value: "768px" },
+];
+
+// ─── Types ─────────────────────────────────────────────────────────────────
+
+export type SectionProps = {
+  paddingTop: string;
+  paddingBottom: string;
+  paddingHorizontal: string;
+  backgroundColor: string;
+  /** Controls inherited text/heading colour inside dark sections */
+  theme: "dark" | "light";
+  maxWidth: string;
+  content: Slot;
+};
+
+// ─── Component config ──────────────────────────────────────────────────────
+
+export const Section: ComponentConfig<SectionProps> = {
+  label: "Section",
+
+  fields: {
+    // ── Spacing ──────────────────────────────────────────────────────────
+    paddingTop: {
+      type: "select",
+      label: "Padding Top",
+      options: [{ label: "0px", value: "0px" }, ...spacingOptions],
+    },
+    paddingBottom: {
+      type: "select",
+      label: "Padding Bottom",
+      options: [{ label: "0px", value: "0px" }, ...spacingOptions],
+    },
+    paddingHorizontal: {
+      type: "select",
+      label: "Padding Horizontal",
+      options: [{ label: "0px", value: "0px" }, ...spacingOptions],
+    },
+
+    // ── Appearance ───────────────────────────────────────────────────────
+    backgroundColor: {
+      type: "select",
+      label: "Background Colour",
+      options: backgroundOptions,
+    },
+    theme: {
+      type: "radio",
+      label: "Text Colour",
+      options: [
+        { label: "Dark", value: "dark" },
+        { label: "Light (white)", value: "light" },
+      ],
+    },
+
+    // ── Container ────────────────────────────────────────────────────────
+    maxWidth: {
+      type: "select",
+      label: "Max Width",
+      options: maxWidthOptions,
+    },
+
+    // ── Content slot ─────────────────────────────────────────────────────
+    content: {
+      type: "slot",
+      disallow: ["Section"], // no nested sections
+    },
+  },
+
+  defaultProps: {
+    paddingTop: "80px",
+    paddingBottom: "80px",
+    paddingHorizontal: "24px",
+    backgroundColor: "#ffffff",
+    theme: "dark",
+    maxWidth: "1280px",
+    content: [],
+  },
+
+  render: ({
+    paddingTop,
+    paddingBottom,
+    paddingHorizontal,
+    backgroundColor,
+    theme,
+    maxWidth,
+    content: Content,
+  }) => (
+    <section
+      className={getClassName()}
+      style={{
+        paddingTop,
+        paddingBottom,
+        backgroundColor,
+        color: theme === "light" ? "#ffffff" : "inherit",
+      }}
+    >
+      <div
+        className={getClassName("inner")}
+        style={{
+          maxWidth,
+          paddingLeft: paddingHorizontal,
+          paddingRight: paddingHorizontal,
+        }}
+      >
+        <Content />
+      </div>
+    </section>
+  ),
+};

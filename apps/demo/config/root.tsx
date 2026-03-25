@@ -19,7 +19,11 @@ export const Root: RootConfig<{
         style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
       >
         <Header editMode={isEditing} />
-        <DropZone zone="default-zone" style={{ flexGrow: 1 }} />
+        <DropZone
+          zone="default-zone"
+          allow={["Section"]}
+          style={{ flexGrow: 1 }}
+        />
 
         <Footer>
           <Footer.List title="Section">

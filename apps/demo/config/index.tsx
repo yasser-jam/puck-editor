@@ -11,6 +11,7 @@ import { Text } from "./blocks/Text";
 import { Space } from "./blocks/Space";
 import { RichText } from "./blocks/RichText";
 import { ProductCard } from "./blocks/ProductCard";
+import { Section } from "./blocks/Section";
 
 import Root from "./root";
 import { UserConfig } from "./types";
@@ -20,6 +21,10 @@ import { initialData } from "./initial-data";
 export const conf: UserConfig = {
   root: Root,
   categories: {
+    sections: {
+      title: "Sections",
+      components: ["Section"],
+    },
     layout: {
       components: ["Grid", "Flex", "Space"],
     },
@@ -40,6 +45,7 @@ export const conf: UserConfig = {
     },
   },
   components: {
+    Section,
     Button,
     Card,
     Grid,
