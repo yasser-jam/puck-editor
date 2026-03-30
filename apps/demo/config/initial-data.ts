@@ -443,4 +443,146 @@ export const initialData: Record<string, UserData> = {
     content: [],
     root: { props: { title: "About Us", bodyFont: "system", fontOption1: "system", fontOption2: "system" } },
   },
+
+  // ── Cart page ─────────────────────────────────────────────────────────────
+  "/cart": {
+    root: {
+      props: {
+        title: "Cart",
+        bodyFont: "system",
+        fontOption1: "system",
+        fontOption2: "system",
+      },
+    },
+    zones: {},
+    content: [
+      {
+        type: "Section",
+        props: {
+          id: "Section-cart-header",
+          paddingTop: "64px",
+          paddingBottom: "64px",
+          paddingHorizontal: "48px",
+          backgroundColor: "#ffffff",
+          theme: "light",
+          maxWidth: "900px",
+          content: [
+            {
+              type: "Heading",
+              props: {
+                id: "Heading-cart-title",
+                align: "left",
+                level: "1",
+                text: "Your Cart",
+                size: "xxl",
+                layout: { padding: "0px" },
+              },
+            },
+            {
+              type: "Space",
+              props: {
+                id: "Space-cart-1",
+                size: "12px",
+                direction: "vertical",
+              },
+            },
+            {
+              type: "Text",
+              props: {
+                id: "Text-cart-sub",
+                align: "left",
+                text: "Review the items in your cart before checkout.",
+                size: "m",
+                color: "muted",
+                layout: { padding: "0px" },
+              },
+            },
+          ],
+        },
+      },
+    ],
+  },
+
+  // ── Product details page (example slug) ───────────────────────────────────
+  "/products/example-product": {
+    root: {
+      props: {
+        title: "Product Details",
+        bodyFont: "system",
+        fontOption1: "system",
+        fontOption2: "system",
+      },
+    },
+    zones: {},
+    content: [
+      {
+        type: "Section",
+        props: {
+          id: "Section-product-detail",
+          paddingTop: "64px",
+          paddingBottom: "64px",
+          paddingHorizontal: "48px",
+          backgroundColor: "#ffffff",
+          theme: "light",
+          maxWidth: "1200px",
+          content: [
+            {
+              type: "ProductCard",
+              props: {
+                id: "ProductCard-detail",
+                product: {
+                  id: "prod-001",
+                  title: "Classic White Sneakers",
+                  image:
+                    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&auto=format&fit=crop&q=80",
+                  description:
+                    "Clean, minimalist leather sneakers built for everyday comfort. Featuring a cushioned insole and durable rubber outsole.",
+                  price: 89.99,
+                  inStock: true,
+                  categories: ["Footwear", "Men", "Casual"],
+                  collections: ["Summer 2025", "Essentials"],
+                  discount: 10,
+                },
+                variant: "horizontal",
+                colorScheme: "light",
+                fontFamily: "body",
+                fontWeight: "400",
+                lineHeight: "normal",
+                imageMode: "img",
+                imageHeight: "340px",
+                imageBorderRadius: "md",
+                imageObjectFit: "cover",
+                imageBackgroundSize: "cover",
+                imageBackgroundPosition: "center",
+                imageBackgroundAttachment: "scroll",
+                spacing: "relaxed",
+                showDescription: true,
+                showCategories: true,
+                showBadge: true,
+                showStockBadge: true,
+                advanced: {
+                  backgroundColor: "",
+                  textColor: "",
+                  accentColor: "",
+                  priceColor: "",
+                  borderColor: "",
+                  titleFontSize: "",
+                  titleFontWeight: "",
+                  descriptionFontSize: "",
+                  descriptionLineClamp: 3,
+                  priceFontSize: "",
+                  borderRadius: "",
+                  cardPadding: "",
+                  contentGap: "",
+                  imageWidth: "",
+                  borderWidth: "",
+                  boxShadow: "",
+                },
+              },
+            },
+          ],
+        },
+      },
+    ],
+  },
 };
