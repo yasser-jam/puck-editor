@@ -11,7 +11,10 @@ import { TemplateProps } from "./blocks/Template";
 import { TextProps } from "./blocks/Text";
 import { SpaceProps } from "./blocks/Space";
 import { ProductCardProps } from "./blocks/ProductCard";
+import { ProductImageProps } from "./blocks/ProductImage";
+import { ProductInfoProps } from "./blocks/ProductInfo";
 import { SectionProps } from "./blocks/Section";
+import { GroupProps } from "./blocks/Group";
 
 import { RootProps } from "./root";
 import { RichTextProps } from "./blocks/RichText";
@@ -20,6 +23,7 @@ export type { RootProps } from "./root";
 
 export type Components = {
   Section: SectionProps;
+  Group: GroupProps;
   Button: ButtonProps;
   Card: CardProps;
   Grid: GridProps;
@@ -33,12 +37,14 @@ export type Components = {
   Space: SpaceProps;
   RichText: RichTextProps;
   ProductCard: ProductCardProps;
+  ProductImage: ProductImageProps;
+  ProductInfo: ProductInfoProps;
 };
 
 export type UserConfig = Config<{
   components: Components;
   root: RootProps;
-  categories: ["sections", "layout", "typography", "interactive", "products"];
+  categories: ["sections", "layout", "typography", "interactive", "products", "other"];
   fields: {
     userField: {
       type: "userField";

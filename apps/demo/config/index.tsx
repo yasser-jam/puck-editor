@@ -11,7 +11,10 @@ import { Text } from "./blocks/Text";
 import { Space } from "./blocks/Space";
 import { RichText } from "./blocks/RichText";
 import { ProductCard } from "./blocks/ProductCard";
+import { ProductImage } from "./blocks/ProductImage";
+import { ProductInfo } from "./blocks/ProductInfo";
 import { Section } from "./blocks/Section";
+import { Group } from "./blocks/Group";
 
 import Root from "./root";
 import { UserConfig } from "./types";
@@ -26,7 +29,7 @@ export const conf: UserConfig = {
       components: ["Section"],
     },
     layout: {
-      components: ["Grid", "Flex", "Space"],
+      components: ["Group", "Grid", "Flex", "Space"],
     },
     typography: {
       components: ["Heading", "Text", "RichText"],
@@ -37,7 +40,7 @@ export const conf: UserConfig = {
     },
     products: {
       title: "Products",
-      components: ["ProductCard"],
+      components: ["ProductCard", "ProductImage", "ProductInfo"],
     },
     other: {
       title: "Other",
@@ -46,6 +49,7 @@ export const conf: UserConfig = {
   },
   components: {
     Section,
+    Group,
     Button,
     Card,
     Grid,
@@ -59,6 +63,8 @@ export const conf: UserConfig = {
     Space,
     RichText,
     ProductCard,
+    ProductImage,
+    ProductInfo,
   },
 };
 

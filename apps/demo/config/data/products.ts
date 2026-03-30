@@ -117,3 +117,61 @@ export const productOptions = products.map((p) => ({
   label: p.title,
   value: p.id,
 }));
+
+// ─── Shared helpers ─────────────────────────────────────────────────────────
+
+export function formatPrice(price: number): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+  }).format(price);
+}
+
+export function discountedPrice(price: number, discount: number): number {
+  return price * (1 - discount / 100);
+}
+
+// ─── Shared external field ───────────────────────────────────────────────────
+// Import this in any block that needs a product picker.
+
+export const productExternalField = {
+  type: "external" as const,
+  label: "Product",
+  placeholder: "Search or select a product…",
+  showSearch: true,
+  fetchList: async ({
+    query,
+  }: {
+    query: string;
+    filters: Record<string, any>;
+  }) => {
+    await new Promise((res) => setTimeout(res, 120));
+    const q = query.toLowerCase();
+    return products
+      .filter(
+        (p) =>
+          !q ||
+          p.title.toLowerCase().includes(q) ||
+          p.categories.some((c) => c.toLowerCase().includes(q)) ||
+          p.collections.some((c) => c.toLowerCase().includes(q))
+      )
+      .map((p) => ({
+        id: p.id,
+        title: p.title,
+        price: `$${p.price.toFixed(2)}`,
+        inStock: p.inStock ? "Yes" : "No",
+        categories: p.categories.join(", "),
+      }));
+  },
+  mapRow: (item: any) => ({
+    title: item.title,
+    price: item.price,
+    inStock: item.inStock,
+    categories: item.categories,
+  }),
+  // Match by id (stable) instead of title
+  mapProp: (row: any): Product | null =>
+    products.find((p) => p.id === row.id || p.title === row.title) ?? null,
+  getItemSummary: (item: Product | null) => item?.title ?? "Product",
+};
