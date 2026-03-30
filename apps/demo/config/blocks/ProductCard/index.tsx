@@ -5,6 +5,7 @@ import { getClassNameFactory } from "@/core/lib";
 import { WithLayout, withLayout } from "../../components/Layout";
 import { products, type Product } from "../../data/products";
 import { AdvancedModal, AdvancedStyleProps, DEFAULT_ADVANCED } from "./AdvancedModal";
+import { COMPONENT_FONT_OPTIONS, COMPONENT_FONT_CSS } from "../../theme";
 import styles from "./styles.module.css";
 
 const getClassName = getClassNameFactory("ProductCard", styles);
@@ -17,7 +18,7 @@ export type ProductCardProps = WithLayout<{
   colorScheme: "light" | "dark" | "transparent";
 
   // ── Typography ──
-  fontFamily: "system" | "serif" | "mono";
+  fontFamily: "body" | "option1" | "option2";
   fontWeight: "300" | "400" | "500" | "600" | "700";
   lineHeight: "tight" | "normal" | "relaxed";
 
@@ -50,11 +51,9 @@ export type { AdvancedStyleProps };
 
 // ─── Lookup maps ─────────────────────────────────────────────────────────────
 
-const FONT_FAMILY_MAP: Record<string, string> = {
-  system: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-  serif: "Georgia, 'Times New Roman', Times, serif",
-  mono: "'Courier New', Courier, 'Lucida Console', monospace",
-};
+// Font family: reference CSS custom properties set by the theme so that
+// changes in the Settings panel update all cards on the page instantly.
+const FONT_FAMILY_MAP: Record<string, string> = COMPONENT_FONT_CSS;
 
 const LINE_HEIGHT_MAP: Record<string, string> = {
   tight: "1.2",
@@ -338,11 +337,7 @@ const ProductCardInner: ComponentConfig<ProductCardProps> = {
     fontFamily: {
       type: "select",
       label: "Font Family",
-      options: [
-        { label: "System (Default)", value: "system" },
-        { label: "Serif", value: "serif" },
-        { label: "Monospace", value: "mono" },
-      ],
+      options: COMPONENT_FONT_OPTIONS,
     },
     fontWeight: {
       type: "radio",
@@ -496,7 +491,7 @@ const ProductCardInner: ComponentConfig<ProductCardProps> = {
     product: products[0] ?? null,
     variant: "vertical",
     colorScheme: "light",
-    fontFamily: "system",
+    fontFamily: "body",
     fontWeight: "400",
     lineHeight: "normal",
     imageMode: "img",

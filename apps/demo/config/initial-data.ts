@@ -2,7 +2,7 @@ import { UserData } from "./types";
 
 export const initialData: Record<string, UserData> = {
   "/": {
-    root: { props: { title: "Puck Example" } },
+    root: { props: { title: "Puck Example", bodyFont: "system", fontOption1: "system", fontOption2: "system" } },
     zones: {},
     content: [
       // ── Section 1: Hero ──────────────────────────────────────────────────
@@ -436,11 +436,11 @@ export const initialData: Record<string, UserData> = {
 
   "/pricing": {
     content: [],
-    root: { props: { title: "Pricing" } },
+    root: { props: { title: "Pricing", bodyFont: "system", fontOption1: "system", fontOption2: "system" } },
   },
 
   "/about": {
     content: [],
-    root: { props: { title: "About Us" } },
+    root: { props: { title: "About Us", bodyFont: "system", fontOption1: "system", fontOption2: "system" } },
   },
 };

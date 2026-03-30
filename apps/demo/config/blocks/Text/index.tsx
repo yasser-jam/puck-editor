@@ -4,6 +4,7 @@ import { ALargeSmall, AlignLeft } from "lucide-react";
 import { ComponentConfig } from "@/core/types";
 import { Section } from "../../components/Section";
 import { WithLayout, withLayout } from "../../components/Layout";
+import { COMPONENT_FONT_OPTIONS, COMPONENT_FONT_CSS } from "../../theme";
 
 export type TextProps = WithLayout<{
   align: "left" | "center" | "right";
@@ -12,6 +13,7 @@ export type TextProps = WithLayout<{
   size?: "s" | "m";
   color: "default" | "muted";
   maxWidth?: string;
+  fontFamily?: "body" | "option1" | "option2";
 }>;
 
 const TextInner: ComponentConfig<TextProps> = {
@@ -44,6 +46,11 @@ const TextInner: ComponentConfig<TextProps> = {
         { label: "Muted", value: "muted" },
       ],
     },
+    fontFamily: {
+      type: "select",
+      label: "Font Family",
+      options: COMPONENT_FONT_OPTIONS,
+    },
     maxWidth: { type: "text" },
   },
   defaultProps: {
@@ -51,8 +58,10 @@ const TextInner: ComponentConfig<TextProps> = {
     text: "Text",
     size: "m",
     color: "default",
+    fontFamily: "body",
   },
-  render: ({ align, color, text, size, maxWidth }) => {
+  render: ({ align, color, text, size, maxWidth, fontFamily }) => {
+    const fontCss = COMPONENT_FONT_CSS[fontFamily ?? "body"] ?? COMPONENT_FONT_CSS.body;
     return (
       <Section maxWidth={maxWidth}>
         <span
@@ -65,6 +74,7 @@ const TextInner: ComponentConfig<TextProps> = {
             fontSize: size === "m" ? "20px" : "16px",
             fontWeight: 300,
             maxWidth,
+            fontFamily: fontCss,
             justifyContent:
               align === "center"
                 ? "center"

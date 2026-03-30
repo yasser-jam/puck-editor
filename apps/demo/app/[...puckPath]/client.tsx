@@ -6,6 +6,8 @@ import config from "../../config";
 import { useDemoData } from "../../lib/use-demo-data";
 import { useEffect, useState } from "react";
 import { Type } from "lucide-react";
+import { settingsPlugin } from "../../config/plugins/settings";
+import { ThemeInjector } from "../../config/plugins/settings/ThemeInjector";
 
 export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
   const metadata = {
@@ -37,7 +39,7 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
           onPublish={async (data) => {
             localStorage.setItem(key, JSON.stringify(data));
           }}
-          plugins={[headingAnalyzer]}
+          plugins={[headingAnalyzer, settingsPlugin]}
           headerPath={path}
           iframe={{
             enabled: params.get("disableIframe") === "true" ? false : true,
@@ -47,6 +49,10 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
           }}
           _experimentalFullScreenCanvas={false}
           overrides={{
+            // Inject theme CSS custom properties + Google Fonts into the preview iframe
+            iframe: ({ children, document }) => (
+              <ThemeInjector document={document}>{children}</ThemeInjector>
+            ),
             fieldTypes: {
               // Example of user field provided via overrides
               userField: ({ readOnly, field, name, value, onChange }) => (

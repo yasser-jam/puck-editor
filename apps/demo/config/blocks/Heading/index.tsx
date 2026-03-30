@@ -5,12 +5,14 @@ import { Heading as _Heading } from "@/core/components/Heading";
 import type { HeadingProps as _HeadingProps } from "@/core/components/Heading";
 import { Section } from "../../components/Section";
 import { WithLayout, withLayout } from "../../components/Layout";
+import { COMPONENT_FONT_OPTIONS, COMPONENT_FONT_CSS } from "../../theme";
 
 export type HeadingProps = WithLayout<{
   align: "left" | "center" | "right";
   text?: string;
   level?: _HeadingProps["rank"];
   size: _HeadingProps["size"];
+  fontFamily?: "body" | "option1" | "option2";
 }>;
 
 const sizeOptions = [
@@ -55,20 +57,34 @@ const HeadingInternal: ComponentConfig<HeadingProps> = {
         { label: "Right", value: "right" },
       ],
     },
+    fontFamily: {
+      type: "select",
+      label: "Font Family",
+      options: COMPONENT_FONT_OPTIONS,
+    },
   },
   defaultProps: {
     align: "left",
     text: "Heading",
     size: "m",
+    fontFamily: "body",
     layout: {
       padding: "8px",
     },
   },
-  render: ({ align, text, size, level }) => {
+  render: ({ align, text, size, level, fontFamily }) => {
+    const fontCss = COMPONENT_FONT_CSS[fontFamily ?? "body"] ?? COMPONENT_FONT_CSS.body;
     return (
       <Section>
         <_Heading size={size} rank={level as any}>
-          <span style={{ display: "block", textAlign: align, width: "100%" }}>
+          <span
+            style={{
+              display: "block",
+              textAlign: align,
+              width: "100%",
+              fontFamily: fontCss,
+            }}
+          >
             {text}
           </span>
         </_Heading>
