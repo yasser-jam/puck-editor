@@ -1,11 +1,39 @@
 import { UserData } from "./types";
+import { products } from "./data/products";
+
+/** Shared ProductCard advanced styling defaults (empty = use theme / scheme) */
+const PC_ADV = {
+  backgroundColor: "",
+  textColor: "",
+  accentColor: "",
+  priceColor: "",
+  borderColor: "",
+  titleFontSize: "",
+  titleFontWeight: "",
+  descriptionFontSize: "",
+  descriptionLineClamp: 3,
+  priceFontSize: "",
+  borderRadius: "",
+  cardPadding: "",
+  contentGap: "",
+  imageWidth: "",
+  borderWidth: "",
+  boxShadow: "",
+};
 
 export const initialData: Record<string, UserData> = {
   "/": {
-    root: { props: { title: "Puck Example", bodyFont: "system", fontOption1: "system", fontOption2: "system" } },
+    root: {
+      props: {
+        title: "Meridian Co.",
+        bodyFont: "system",
+        fontOption1: "system",
+        fontOption2: "system",
+      },
+    },
     zones: {},
     content: [
-      // ── Section 1: Hero ──────────────────────────────────────────────────
+      // ── Hero: store name + primary CTA ───────────────────────────────────
       {
         type: "Section",
         props: {
@@ -20,27 +48,28 @@ export const initialData: Record<string, UserData> = {
             {
               type: "Hero",
               props: {
-                id: "Hero-1687283596554",
-                title: "This page was built with Puck",
+                id: "Hero-store",
+                title: "Meridian Co.",
                 description:
-                  "<p>Puck is the self-hosted visual editor for React. Bring your own components and make site changes instantly, without a deploy.</p>",
+                  "<p>Thoughtfully curated apparel, tech, and home goods — free shipping on orders over $50.</p>",
                 buttons: [
                   {
-                    label: "Visit GitHub",
-                    href: "https://github.com/puckeditor/puck",
+                    label: "Shop the collection",
+                    href: "/products/example-product",
+                    variant: "primary",
                   },
                   {
-                    label: "Edit this page",
-                    href: "/edit",
+                    label: "View cart",
+                    href: "/cart",
                     variant: "secondary",
                   },
                 ],
                 image: {
-                  url: "https://images.unsplash.com/photo-1687204209659-3bded6aecd79?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2670&q=80",
+                  url: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600&auto=format&fit=crop&q=80",
                   mode: "inline",
                   content: [],
                 },
-                padding: "128px",
+                padding: "120px",
                 align: "left",
               },
               readOnly: { title: false, description: false },
@@ -49,11 +78,170 @@ export const initialData: Record<string, UserData> = {
         },
       },
 
-      // ── Section 2: Features ──────────────────────────────────────────────
+      // ── Featured products grid ───────────────────────────────────────────
       {
         type: "Section",
         props: {
-          id: "Section-features",
+          id: "Section-products",
+          paddingTop: "96px",
+          paddingBottom: "96px",
+          paddingHorizontal: "24px",
+          backgroundColor: "#f8f9fa",
+          theme: "dark",
+          maxWidth: "1280px",
+          content: [
+            {
+              type: "Heading",
+              props: {
+                id: "Heading-featured",
+                align: "center",
+                level: "2",
+                text: "Featured products",
+                fontFamily: "option1",
+                layout: { padding: "0px" },
+                size: "xxl",
+              },
+            },
+            {
+              type: "Space",
+              props: {
+                id: "Space-products-sub",
+                size: "12px",
+                direction: "vertical",
+              },
+            },
+            {
+              type: "Text",
+              props: {
+                id: "Text-products-sub",
+                align: "center",
+                text: "Hand-picked bestsellers from this week.",
+                layout: { padding: "0px" },
+                size: "m",
+                color: "muted",
+                fontFamily: "body",
+              },
+            },
+            {
+              type: "Space",
+              props: {
+                id: "Space-products-grid",
+                size: "40px",
+                direction: "vertical",
+              },
+            },
+            {
+              type: "Grid",
+              props: {
+                id: "Grid-products",
+                gap: 24,
+                numColumns: 3,
+                items: [
+                  {
+                    type: "ProductCard",
+                    props: {
+                      id: "ProductCard-home-1",
+                      product: products[0],
+                      variant: "vertical",
+                      colorScheme: "light",
+                      fontFamily: "body",
+                      fontWeight: "400",
+                      lineHeight: "normal",
+                      imageMode: "img",
+                      imageHeight: "240px",
+                      imageBorderRadius: "md",
+                      imageObjectFit: "cover",
+                      imageBackgroundSize: "cover",
+                      imageBackgroundPosition: "center",
+                      imageBackgroundAttachment: "scroll",
+                      spacing: "compact",
+                      showDescription: true,
+                      showCategories: true,
+                      showBadge: true,
+                      showStockBadge: true,
+                      layout: {
+                        grow: true,
+                        spanCol: 1,
+                        spanRow: 1,
+                        padding: "0px",
+                      },
+                      advanced: { ...PC_ADV },
+                    },
+                  },
+                  {
+                    type: "ProductCard",
+                    props: {
+                      id: "ProductCard-home-2",
+                      product: products[1],
+                      variant: "vertical",
+                      colorScheme: "light",
+                      fontFamily: "body",
+                      fontWeight: "400",
+                      lineHeight: "normal",
+                      imageMode: "img",
+                      imageHeight: "240px",
+                      imageBorderRadius: "md",
+                      imageObjectFit: "cover",
+                      imageBackgroundSize: "cover",
+                      imageBackgroundPosition: "center",
+                      imageBackgroundAttachment: "scroll",
+                      spacing: "compact",
+                      showDescription: true,
+                      showCategories: true,
+                      showBadge: true,
+                      showStockBadge: true,
+                      layout: {
+                        grow: true,
+                        spanCol: 1,
+                        spanRow: 1,
+                        padding: "0px",
+                      },
+                      advanced: { ...PC_ADV },
+                    },
+                  },
+                  {
+                    type: "ProductCard",
+                    props: {
+                      id: "ProductCard-home-3",
+                      product: products[2],
+                      variant: "vertical",
+                      colorScheme: "light",
+                      fontFamily: "body",
+                      fontWeight: "400",
+                      lineHeight: "normal",
+                      imageMode: "img",
+                      imageHeight: "240px",
+                      imageBorderRadius: "md",
+                      imageObjectFit: "cover",
+                      imageBackgroundSize: "cover",
+                      imageBackgroundPosition: "center",
+                      imageBackgroundAttachment: "scroll",
+                      spacing: "compact",
+                      showDescription: true,
+                      showCategories: true,
+                      showBadge: true,
+                      showStockBadge: true,
+                      layout: {
+                        grow: true,
+                        spanCol: 1,
+                        spanRow: 1,
+                        padding: "0px",
+                      },
+                      advanced: { ...PC_ADV },
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+
+      // ── About: image left, copy right ────────────────────────────────────
+      {
+        type: "Section",
+        props: {
+          id: "Section-about",
           paddingTop: "96px",
           paddingBottom: "96px",
           paddingHorizontal: "24px",
@@ -62,371 +250,119 @@ export const initialData: Record<string, UserData> = {
           maxWidth: "1280px",
           content: [
             {
-              type: "Heading",
+              type: "Group",
               props: {
-                id: "Heading-1687297593514",
-                align: "center",
-                level: "2",
-                text: "Drag-and-drop your own React components",
-                layout: { padding: "0px" },
-                size: "xxl",
-              },
-            },
-            {
-              type: "Space",
-              props: {
-                id: "Space-features-sub",
-                size: "16px",
-                direction: "vertical",
-              },
-            },
-            {
-              type: "Text",
-              props: {
-                id: "Text-1687297621556",
-                align: "center",
-                text: "Configure Puck with your own components to make changes for your marketing pages without a developer.",
-                layout: { padding: "0px" },
-                size: "m",
-                color: "muted",
-              },
-            },
-            {
-              type: "Space",
-              props: {
-                id: "Space-features-grid",
-                size: "48px",
-                direction: "vertical",
-              },
-            },
-            {
-              type: "Grid",
-              props: {
-                id: "Grid-c4cd99ae-8c5e-4cdb-87d2-35a639f5163e",
-                gap: 24,
-                numColumns: 3,
-                items: [
-                  {
-                    type: "Card",
-                    props: {
-                      id: "Card-66ab42c9-d1da-4c44-9dba-5d7d72f2178d",
-                      title: "Built for content teams",
-                      description:
-                        "Puck enables content teams to make changes to their content without a developer or breaking the UI.",
-                      icon: "pen-tool",
-                      mode: "flat",
-                      layout: {
-                        grow: true,
-                        spanCol: 1,
-                        spanRow: 1,
-                        padding: "0px",
-                      },
-                    },
-                  },
-                  {
-                    type: "Card",
-                    props: {
-                      id: "Card-0012a293-8ef3-4e7c-9d7c-7da0a03d97ae",
-                      title: "Easy to integrate",
-                      description:
-                        "Front-end developers can easily integrate their own components using a familiar React API.",
-                      icon: "git-merge",
-                      mode: "flat",
-                      layout: {
-                        grow: true,
-                        spanCol: 1,
-                        spanRow: 1,
-                        padding: "0px",
-                      },
-                    },
-                  },
-                  {
-                    type: "Card",
-                    props: {
-                      id: "Card-09efb3f3-f58d-4e07-a481-7238d7e57ad6",
-                      title: "No vendor lock-in",
-                      description:
-                        "Completely open-source, Puck is designed to be integrated into your existing React application.",
-                      icon: "github",
-                      mode: "flat",
-                      layout: {
-                        grow: true,
-                        spanCol: 1,
-                        spanRow: 1,
-                        padding: "0px",
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-          ],
-        },
-      },
-
-      // ── Section 3: Stats ─────────────────────────────────────────────────
-      {
-        type: "Section",
-        props: {
-          id: "Section-stats",
-          paddingTop: "96px",
-          paddingBottom: "96px",
-          paddingHorizontal: "24px",
-          backgroundColor: "#f0f2f5",
-          theme: "dark",
-          maxWidth: "1280px",
-          content: [
-            {
-              type: "Heading",
-              props: {
-                id: "Heading-1687296574110",
-                align: "center",
-                level: "2",
-                text: "The numbers",
-                layout: { padding: "0px" },
-                size: "xxl",
-              },
-            },
-            {
-              type: "Space",
-              props: {
-                id: "Space-stats-sub",
-                size: "16px",
-                direction: "vertical",
-              },
-            },
-            {
-              type: "Text",
-              props: {
-                id: "Text-1687284565722",
-                align: "center",
-                text: 'This page demonstrates Puck configured with a custom component library. This component is called "Stats", and contains some made-up numbers. You can configure any page by adding "/edit" onto the URL.',
-                layout: { padding: "0px" },
-                size: "m",
-                color: "muted",
-                maxWidth: "916px",
-              },
-            },
-            {
-              type: "Space",
-              props: {
-                id: "Space-stats-grid",
-                size: "48px",
-                direction: "vertical",
-              },
-            },
-            {
-              type: "Stats",
-              props: {
-                id: "Stats-1687297239724",
-                items: [
-                  { title: "Users reached", description: "20M+" },
-                  { title: "Cost savings", description: "$1.5M" },
-                  { title: "Another stat", description: "5M kg" },
-                  { title: "Final fake stat", description: "15K" },
-                ],
-              },
-            },
-          ],
-        },
-      },
-
-      // ── Section 4: Extending Puck ────────────────────────────────────────
-      {
-        type: "Section",
-        props: {
-          id: "Section-extending",
-          paddingTop: "96px",
-          paddingBottom: "96px",
-          paddingHorizontal: "24px",
-          backgroundColor: "#ffffff",
-          theme: "dark",
-          maxWidth: "1280px",
-          content: [
-            {
-              type: "Heading",
-              props: {
-                id: "Heading-1687296184321",
-                align: "center",
-                level: "2",
-                text: "Extending Puck",
-                layout: { padding: "0px" },
-                size: "xxl",
-              },
-            },
-            {
-              type: "Space",
-              props: {
-                id: "Space-ext-sub",
-                size: "16px",
-                direction: "vertical",
-              },
-            },
-            {
-              type: "Text",
-              props: {
-                id: "Text-1687296579834",
-                align: "center",
-                text: "Puck can also be extended with plugins and headless CMS content fields, transforming Puck into the perfect tool for your Content Ops.",
-                layout: { padding: "0px" },
-                size: "m",
-                color: "muted",
-                maxWidth: "916px",
-              },
-            },
-            {
-              type: "Space",
-              props: {
-                id: "Space-ext-grid",
-                size: "48px",
-                direction: "vertical",
-              },
-            },
-            {
-              type: "Grid",
-              props: {
-                id: "Grid-2da28e88-7b7b-4152-9da0-9f93f41213b6",
-                gap: 24,
-                numColumns: 3,
-                items: [
-                  {
-                    type: "Card",
-                    props: {
-                      id: "Card-b0e8407d-9fbb-4e76-aa32-d32f655c11d3",
-                      title: "plugin-heading-analyzer",
-                      description:
-                        "Analyze the document structure and identify WCAG 2.1 issues with your heading hierarchy.",
-                      icon: "align-left",
-                      mode: "card",
-                      layout: {
-                        grow: false,
-                        spanCol: 1,
-                        spanRow: 1,
-                        padding: "0px",
-                      },
-                    },
-                  },
-                  {
-                    type: "Card",
-                    props: {
-                      id: "Card-f8ebd568-3a30-4099-a068-22cabae4691b",
-                      title: "External data",
-                      description:
-                        "Connect your components with an existing data source, like Strapi.js.",
-                      icon: "feather",
-                      mode: "card",
-                      layout: {
-                        grow: false,
-                        spanCol: 1,
-                        spanRow: 1,
-                        padding: "0px",
-                      },
-                    },
-                  },
-                  {
-                    type: "Card",
-                    props: {
-                      id: "Card-9c3b0acc-ee42-4a4a-8cc7-1b22d98493f1",
-                      title: "Custom plugins",
-                      description:
-                        "Create your own plugin to extend Puck for your use case using React.",
-                      icon: "plug",
-                      mode: "card",
-                      layout: {
-                        grow: false,
-                        spanCol: 1,
-                        spanRow: 1,
-                        padding: "0px",
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-          ],
-        },
-      },
-
-      // ── Section 5: Get started (CTA) ─────────────────────────────────────
-      {
-        type: "Section",
-        props: {
-          id: "Section-cta",
-          paddingTop: "96px",
-          paddingBottom: "96px",
-          paddingHorizontal: "24px",
-          backgroundColor: "#0f172a",
-          theme: "light",
-          maxWidth: "1280px",
-          content: [
-            {
-              type: "Heading",
-              props: {
-                id: "Heading-1687299303766",
-                align: "center",
-                level: "2",
-                text: "Get started",
-                layout: { padding: "0px" },
-                size: "xxl",
-              },
-            },
-            {
-              type: "Space",
-              props: {
-                id: "Space-cta-sub",
-                size: "16px",
-                direction: "vertical",
-              },
-            },
-            {
-              type: "Text",
-              props: {
-                id: "Text-1687299305686",
-                align: "center",
-                text: "Browse the Puck GitHub to get started, or try editing this page",
-                layout: { padding: "0px" },
-                size: "m",
-                color: "muted",
-              },
-            },
-            {
-              type: "Space",
-              props: {
-                id: "Space-cta-btns",
-                size: "32px",
-                direction: "vertical",
-              },
-            },
-            {
-              type: "Flex",
-              props: {
-                id: "Flex-7d63d5ff-bd42-4354-b05d-681b16436fd6",
-                justifyContent: "center",
+                id: "Group-about-row",
                 direction: "row",
-                gap: 16,
+                gap: 48,
+                alignItems: "center",
+                justifyContent: "flex-start",
                 wrap: "wrap",
-                layout: { spanCol: 1, spanRow: 1, padding: "0px" },
-                items: [
+                layout: { padding: "0px" },
+                content: [
                   {
-                    type: "Button",
+                    type: "ProductImage",
                     props: {
-                      id: "Button-bd41007c-6627-414d-839a-e261d470d8f9",
-                      label: "Visit GitHub",
-                      href: "https://github.com/puckeditor/puck",
-                      variant: "primary",
+                      id: "ProductImage-about",
+                      product: products[3],
+                      aspectRatio: "landscape",
+                      width: "400px",
+                      borderRadius: "lg",
+                      showBadges: false,
+                      layout: {
+                        grow: false,
+                        spanCol: 1,
+                        spanRow: 1,
+                        padding: "0px",
+                      },
                     },
                   },
                   {
-                    type: "Button",
+                    type: "Group",
                     props: {
-                      id: "Button-6a5fa26c-8a2d-4b08-a756-c46079877127",
-                      label: "Edit this page",
-                      href: "/edit",
-                      variant: "secondary",
+                      id: "Group-about-copy",
+                      direction: "column",
+                      gap: 16,
+                      alignItems: "flex-start",
+                      justifyContent: "center",
+                      wrap: "nowrap",
+                      layout: {
+                        grow: true,
+                        spanCol: 1,
+                        spanRow: 1,
+                        padding: "0px",
+                      },
+                      content: [
+                        {
+                          type: "Heading",
+                          props: {
+                            id: "Heading-about",
+                            align: "left",
+                            level: "2",
+                            text: "Crafted for everyday life",
+                            fontFamily: "option1",
+                            layout: { padding: "0px" },
+                            size: "xl",
+                          },
+                        },
+                        {
+                          type: "Text",
+                          props: {
+                            id: "Text-about",
+                            align: "left",
+                            text: "Meridian Co. started in a small studio with one goal: bring you products that look good, work hard, and respect the planet. We partner with independent makers and audit every item for quality and ethics.",
+                            layout: { padding: "0px" },
+                            size: "m",
+                            color: "default",
+                            fontFamily: "body",
+                          },
+                        },
+                      ],
                     },
                   },
                 ],
               },
+            },
+          ],
+        },
+      },
+
+      // ── CTA: centered title + button, fixed background image ─────────────
+      {
+        type: "Section",
+        props: {
+          id: "Section-cta-hero",
+          paddingTop: "0px",
+          paddingBottom: "0px",
+          paddingHorizontal: "0px",
+          backgroundColor: "transparent",
+          theme: "dark",
+          maxWidth: "100%",
+          content: [
+            {
+              type: "Hero",
+              props: {
+                id: "Hero-cta",
+                title: "New arrivals every week",
+                description:
+                  "<p>Sign up for restock alerts and get 15% off your first order when you spend $75 or more.</p>",
+                buttons: [
+                  {
+                    label: "Start shopping",
+                    href: "/products/example-product",
+                    variant: "primary",
+                  },
+                ],
+                align: "center",
+                image: {
+                  url: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=2000&auto=format&fit=crop&q=80",
+                  mode: "background",
+                  backgroundAttachment: "fixed",
+                  content: [],
+                },
+                padding: "120px",
+              },
+              readOnly: { title: false, description: false },
             },
           ],
         },

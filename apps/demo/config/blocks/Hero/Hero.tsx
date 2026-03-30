@@ -18,6 +18,8 @@ export type HeroProps = {
     content?: Slot;
     mode?: "inline" | "background" | "custom";
     url?: string;
+    /** When mode is background — parallax-style fixed attachment */
+    backgroundAttachment?: "scroll" | "fixed" | "local";
   };
   buttons: {
     label: string;
@@ -50,6 +52,9 @@ export const Hero: PuckComponent<HeroProps> = ({
             className={getClassName("image")}
             style={{
               backgroundImage: `url("${image?.url}")`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundAttachment: image?.backgroundAttachment ?? "scroll",
             }}
           ></div>
 

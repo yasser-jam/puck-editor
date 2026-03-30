@@ -168,6 +168,15 @@ export const Hero: ComponentConfig<{
             { label: "custom", value: "custom" },
           ],
         },
+        backgroundAttachment: {
+          type: "radio",
+          label: "Background attachment",
+          options: [
+            { label: "Scroll", value: "scroll" },
+            { label: "Fixed", value: "fixed" },
+            { label: "Local", value: "local" },
+          ],
+        },
       },
     },
     padding: { type: "userField", option: true },
