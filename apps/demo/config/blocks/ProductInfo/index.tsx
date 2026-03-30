@@ -216,10 +216,7 @@ const ProductInfoInner: ComponentConfig<ProductInfoProps> = {
         {/* Stock badge */}
         {showStockBadge && (
           <span
-            className={getClassName("stockBadge", {
-              "stockBadge--inStock": product.inStock,
-              "stockBadge--outOfStock": !product.inStock,
-            })}
+            className={`${getClassName("stockBadge")} ${getClassName(product.inStock ? "stockBadge--inStock" : "stockBadge--outOfStock")}`}
           >
             {product.inStock ? "In Stock" : "Out of Stock"}
           </span>

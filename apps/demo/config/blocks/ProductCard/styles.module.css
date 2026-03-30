@@ -1,34 +1,103 @@
-/* ---- Card container ---- */
+/* ═══════════════════════════════════════════════════════════════════════════
+   ProductCard — styles
+   Design tokens are CSS custom properties that can be overridden by:
+     1. Color scheme classes  (e.g. --scheme-dark)
+     2. Advanced inline styles set per-instance
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Base token defaults (light scheme baseline) ─────────────────────────── */
 .ProductCard {
-  height: 100%;
-  font-family: var(--puck-font-family, sans-serif);
+  --pc-bg: #ffffff;
+  --pc-text: #1a1a1a;
+  --pc-text-muted: #6b7280;
+  --pc-accent: #3b82f6;
+  --pc-price: #111111;
+  --pc-badge-bg: #1a1a1a;
+  --pc-badge-text: #ffffff;
+  --pc-discount-bg: #ef4444;
+  --pc-instock-bg: #22c55e;
+  --pc-outstock-bg: #9ca3af;
+  --pc-radius: 12px;
+  --pc-padding: 18px;
+  --pc-gap: 10px;
+  --pc-title-size: 17px;
+  --pc-title-weight: 600;
+  --pc-desc-size: 13px;
+  --pc-price-size: 18px;
+  --pc-border-width: 0px;
+  --pc-border-color: transparent;
+  --pc-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+  --pc-image-width: 260px;
+
+  display: block;
+  width: 100%;
 }
 
+/* ── Inner wrapper (visual card surface) ─────────────────────────────────── */
 .ProductCard-inner {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #fff;
-  border-radius: 10px;
+  background: var(--pc-bg);
+  color: var(--pc-text);
+  border-radius: var(--pc-radius);
   overflow: hidden;
-  box-shadow: rgba(140, 152, 164, 0.2) 0px 4px 12px;
-  transition: box-shadow 0.2s ease;
+  box-shadow: var(--pc-shadow);
+  border: var(--pc-border-width) solid var(--pc-border-color);
 }
 
-.ProductCard-inner:hover {
-  box-shadow: rgba(140, 152, 164, 0.4) 0px 8px 20px;
+/* ════════════════════════════════════════════════════════════════════════════
+   COLOR SCHEMES
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.ProductCard--scheme-dark {
+  --pc-bg: #1a1a2e;
+  --pc-text: #f0f0f0;
+  --pc-text-muted: #9ca3af;
+  --pc-accent: #60a5fa;
+  --pc-price: #ffffff;
+  --pc-badge-bg: rgba(255, 255, 255, 0.18);
+  --pc-badge-text: #ffffff;
+  --pc-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
-/* ---- Image area ---- */
+.ProductCard--scheme-transparent {
+  --pc-bg: transparent;
+  --pc-shadow: none;
+  --pc-border-width: 1px;
+  --pc-border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   SPACING VARIANTS  (set on root so all children inherit)
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.ProductCard--spacing-compact {
+  --pc-padding: 10px;
+  --pc-gap: 6px;
+}
+
+.ProductCard--spacing-relaxed {
+  --pc-padding: 26px;
+  --pc-gap: 14px;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   IMAGE AREA
+   ════════════════════════════════════════════════════════════════════════════ */
+
 .ProductCard-imageWrapper {
   position: relative;
-  width: 100%;
   overflow: hidden;
   flex-shrink: 0;
+  background: var(--puck-color-grey-11, #f3f4f6);
+  /* default: landscape aspect ratio */
+  aspect-ratio: 4 / 3;
+  width: 100%;
 }
 
 .ProductCard-imageWrapper--square {
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1;
 }
 
 .ProductCard-imageWrapper--landscape {
@@ -44,73 +113,76 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.3s ease;
+}
+
+.ProductCard-inner:hover .ProductCard-image {
+  transform: scale(1.03);
 }
 
 .ProductCard-placeholder {
   width: 100%;
   height: 100%;
-  background: var(--puck-color-grey-10, #f0f0f0);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--puck-color-grey-06, #aaa);
-  font-size: 14px;
+  color: var(--puck-color-grey-07, #9ca3af);
+  font-size: 12px;
+  min-height: 160px;
 }
 
-/* ---- Badges ---- */
+/* ── Badges (absolute overlay on image) ────────────────────────────────────*/
 .ProductCard-badges {
   position: absolute;
   top: 10px;
   left: 10px;
   display: flex;
-  gap: 6px;
   flex-wrap: wrap;
+  gap: 4px;
+  z-index: 1;
 }
 
 .ProductCard-badge {
+  display: inline-flex;
+  align-items: center;
   padding: 3px 8px;
   border-radius: 4px;
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.03em;
   line-height: 1.4;
+  background: var(--pc-badge-bg);
+  color: var(--pc-badge-text);
+  letter-spacing: 0.02em;
 }
 
 .ProductCard-badge--discount {
-  background: #ef4444;
-  color: #fff;
-}
-
-.ProductCard-badge--outOfStock {
-  background: var(--puck-color-grey-07, #888);
-  color: #fff;
+  background: var(--pc-discount-bg);
+  color: #ffffff;
 }
 
 .ProductCard-badge--inStock {
-  background: #22c55e;
-  color: #fff;
+  background: var(--pc-instock-bg);
+  color: #ffffff;
 }
 
-/* ---- Body ---- */
+.ProductCard-badge--outOfStock {
+  background: var(--pc-outstock-bg);
+  color: #ffffff;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   BODY
+   ════════════════════════════════════════════════════════════════════════════ */
+
 .ProductCard-body {
-  padding: var(--pc-spacing, 20px);
   display: flex;
   flex-direction: column;
+  gap: var(--pc-gap);
+  padding: var(--pc-padding);
   flex: 1;
-  gap: 8px;
 }
 
-.ProductCard--spacing-compact .ProductCard-body {
-  padding: 12px;
-  gap: 6px;
-}
-
-.ProductCard--spacing-relaxed .ProductCard-body {
-  padding: 28px;
-  gap: 12px;
-}
-
-/* ---- Categories ---- */
+/* ── Categories row ──────────────────────────────────────────────────────── */
 .ProductCard-categories {
   display: flex;
   flex-wrap: wrap;
@@ -118,83 +190,178 @@
 }
 
 .ProductCard-category {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.05em;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: var(--puck-color-azure-06, #3b82f6);
+  color: var(--pc-accent);
 }
 
-.ProductCard-category:not(:last-child)::after {
+.ProductCard-category + .ProductCard-category::before {
   content: "·";
-  margin-left: 4px;
-  color: var(--puck-color-grey-07, #999);
+  margin-right: 4px;
+  opacity: 0.5;
 }
 
-/* ---- Title ---- */
+/* ── Title ─────────────────────────────────────────────────────────────────*/
 .ProductCard-title {
-  color: var(--puck-color-grey-02, #1a1a1a);
+  margin: 0;
+  font-size: var(--pc-title-size);
+  font-weight: var(--pc-title-weight);
+  color: var(--pc-text);
   line-height: 1.3;
-  margin: 0;
 }
 
-/* Typography size variants */
-.ProductCard--titleSize-s  .ProductCard-title { font-size: 14px; font-weight: 600; }
-.ProductCard--titleSize-m  .ProductCard-title { font-size: 18px; font-weight: 600; }
-.ProductCard--titleSize-l  .ProductCard-title { font-size: 22px; font-weight: 700; }
-.ProductCard--titleSize-xl .ProductCard-title { font-size: 28px; font-weight: 700; }
-
-/* ---- Description ---- */
+/* ── Description ───────────────────────────────────────────────────────────*/
 .ProductCard-description {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--puck-color-grey-05, #666);
-  font-weight: 300;
   margin: 0;
-  flex: 1;
+  font-size: var(--pc-desc-size);
+  color: var(--pc-text-muted);
+  line-height: 1.55;
 }
 
-/* ---- Price row ---- */
+/* ── Price row ─────────────────────────────────────────────────────────────*/
 .ProductCard-priceRow {
   display: flex;
   align-items: baseline;
-  gap: 8px;
-  margin-top: auto;
   flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
 }
 
 .ProductCard-price {
-  color: var(--puck-color-grey-02, #111);
+  font-size: var(--pc-price-size);
   font-weight: 700;
+  color: var(--pc-price);
+  line-height: 1;
 }
 
-.ProductCard--priceSize-s  .ProductCard-price { font-size: 16px; }
-.ProductCard--priceSize-m  .ProductCard-price { font-size: 20px; }
-.ProductCard--priceSize-l  .ProductCard-price { font-size: 24px; }
-
 .ProductCard-originalPrice {
-  font-size: 14px;
-  color: var(--puck-color-grey-06, #aaa);
+  font-size: calc(var(--pc-price-size) * 0.78);
+  color: var(--pc-text-muted);
   text-decoration: line-through;
-  font-weight: 400;
 }
 
 .ProductCard-discountLabel {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  color: #ef4444;
+  color: var(--pc-discount-bg);
+  background: rgba(239, 68, 68, 0.1);
+  padding: 1px 6px;
+  border-radius: 4px;
 }
 
-/* ---- Empty state ---- */
+/* ════════════════════════════════════════════════════════════════════════════
+   LAYOUT: HORIZONTAL
+   Image left at fixed width; body grows right.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.ProductCard--layout-horizontal .ProductCard-inner {
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.ProductCard--layout-horizontal .ProductCard-imageWrapper,
+.ProductCard--layout-horizontal .ProductCard-imageWrapper--square,
+.ProductCard--layout-horizontal .ProductCard-imageWrapper--landscape,
+.ProductCard--layout-horizontal .ProductCard-imageWrapper--portrait {
+  width: var(--pc-image-width);
+  aspect-ratio: unset; /* fill height instead */
+  flex-shrink: 0;
+  min-height: 180px;
+}
+
+.ProductCard--layout-horizontal .ProductCard-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ProductCard--layout-horizontal .ProductCard-body {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   LAYOUT: COMPACT
+   Square image, minimal content — just title + price. Tight spacing.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.ProductCard--layout-compact {
+  --pc-padding: 12px;
+  --pc-gap: 6px;
+  --pc-title-size: 14px;
+  --pc-price-size: 15px;
+}
+
+.ProductCard--layout-compact .ProductCard-imageWrapper,
+.ProductCard--layout-compact .ProductCard-imageWrapper--landscape,
+.ProductCard--layout-compact .ProductCard-imageWrapper--portrait {
+  aspect-ratio: 1; /* always square in compact */
+}
+
+.ProductCard--layout-compact .ProductCard-inner:hover .ProductCard-image {
+  transform: none; /* no zoom in compact */
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   LAYOUT: FEATURED
+   Tall portrait image; body content overlaid at the bottom with a gradient.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.ProductCard--layout-featured .ProductCard-inner {
+  position: relative;
+  min-height: 380px;
+}
+
+.ProductCard--layout-featured .ProductCard-imageWrapper,
+.ProductCard--layout-featured .ProductCard-imageWrapper--square,
+.ProductCard--layout-featured .ProductCard-imageWrapper--landscape,
+.ProductCard--layout-featured .ProductCard-imageWrapper--portrait {
+  aspect-ratio: 2 / 3;
+  width: 100%;
+  position: static; /* allow inner to size by aspect */
+}
+
+.ProductCard--layout-featured .ProductCard-body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--pc-padding);
+  gap: var(--pc-gap);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.88) 0%,
+    rgba(0, 0, 0, 0.5) 55%,
+    transparent 100%
+  );
+  color: #ffffff;
+  /* override scheme text color for featured overlay */
+  --pc-text: #ffffff;
+  --pc-text-muted: rgba(255, 255, 255, 0.75);
+  --pc-price: #ffffff;
+  --pc-accent: rgba(255, 255, 255, 0.85);
+}
+
+.ProductCard--layout-featured .ProductCard-title {
+  font-size: calc(var(--pc-title-size) * 1.25);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   EMPTY STATE
+   ════════════════════════════════════════════════════════════════════════════ */
+
 .ProductCard-empty {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 24px;
-  background: var(--puck-color-grey-11, #f8f8f8);
-  border: 2px dashed var(--puck-color-grey-09, #ddd);
-  border-radius: 10px;
-  color: var(--puck-color-grey-06, #aaa);
-  font-size: 14px;
+  min-height: 120px;
+  padding: 24px;
+  border: 2px dashed var(--puck-color-grey-09, #d1d5db);
+  border-radius: var(--puck-space-4, 8px);
+  color: var(--puck-color-grey-06, #9ca3af);
+  font-size: 13px;
   text-align: center;
 }

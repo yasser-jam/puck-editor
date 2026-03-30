@@ -110,15 +110,12 @@ const ProductImageInner: ComponentConfig<ProductImageProps> = {
         {showBadges && (
           <div className={getClassName("badges")}>
             {hasDiscount && (
-              <span className={getClassName("badge", { "--discount": true })}>
+              <span className={`${getClassName("badge")} ${getClassName("badge--discount")}`}>
                 -{product.discount}%
               </span>
             )}
             <span
-              className={getClassName("badge", {
-                "--inStock": product.inStock,
-                "--outOfStock": !product.inStock,
-              })}
+              className={`${getClassName("badge")} ${getClassName(product.inStock ? "badge--inStock" : "badge--outOfStock")}`}
             >
               {product.inStock ? "In Stock" : "Out of Stock"}
             </span>

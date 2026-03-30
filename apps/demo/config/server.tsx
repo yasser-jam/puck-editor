@@ -10,6 +10,11 @@ import { Template } from "./blocks/Template/server";
 import { Text } from "./blocks/Text";
 import { Space } from "./blocks/Space";
 import { RichText } from "./blocks/RichText";
+import { ProductCard } from "./blocks/ProductCard";
+import { ProductImage } from "./blocks/ProductImage";
+import { ProductInfo } from "./blocks/ProductInfo";
+import { Section } from "./blocks/Section";
+import { Group } from "./blocks/Group";
 import Root from "./root";
 import { UserConfig } from "./types";
 
@@ -17,15 +22,28 @@ import { UserConfig } from "./types";
 const conf: UserConfig = {
   root: Root,
   categories: {
+    presets: {
+      title: "Presets",
+      defaultExpanded: true,
+      components: ["ProductCard"],
+    },
+    sections: {
+      title: "Sections",
+      components: ["Section"],
+    },
     layout: {
-      components: ["Grid", "Flex", "Space"],
+      components: ["Group", "Grid", "Flex", "Space"],
     },
     typography: {
-      components: ["Heading", "Text"],
+      components: ["Heading", "Text", "RichText"],
     },
     interactive: {
       title: "Actions",
       components: ["Button"],
+    },
+    products: {
+      title: "Product Blocks",
+      components: ["ProductImage", "ProductInfo"],
     },
     other: {
       title: "Other",
@@ -33,6 +51,8 @@ const conf: UserConfig = {
     },
   },
   components: {
+    Section,
+    Group,
     Button,
     Card,
     Grid,
@@ -45,6 +65,9 @@ const conf: UserConfig = {
     Text,
     Space,
     RichText,
+    ProductCard,
+    ProductImage,
+    ProductInfo,
   },
 };
 

@@ -1,36 +1,33 @@
 /* eslint-disable @next/next/no-img-element */
-import React from "react";
+import React, { CSSProperties } from "react";
 import { ComponentConfig } from "@/core/types";
 import { getClassNameFactory } from "@/core/lib";
 import { WithLayout, withLayout } from "../../components/Layout";
 import { products, type Product } from "../../data/products";
+import { AdvancedModal, AdvancedStyleProps, DEFAULT_ADVANCED } from "./AdvancedModal";
 import styles from "./styles.module.css";
 
 const getClassName = getClassNameFactory("ProductCard", styles);
 
-// ─── Typing ────────────────────────────────────────────────────────────────
+// ─── Types ──────────────────────────────────────────────────────────────────
 
 export type ProductCardProps = WithLayout<{
-  /** The selected product data (populated by the external field). */
-  product?: Product | null;
-
-  // ── Typography ──
-  titleSize: "s" | "m" | "l" | "xl";
-  priceSize: "s" | "m" | "l";
-
-  // ── Spacing ──
-  spacing: "compact" | "normal" | "relaxed";
-
-  // ── Image ──
+  product: Product | null;
+  variant: "vertical" | "horizontal" | "compact" | "featured";
+  colorScheme: "light" | "dark" | "transparent";
   imageAspectRatio: "square" | "landscape" | "portrait";
-
-  // ── Display toggles ──
+  spacing: "compact" | "normal" | "relaxed";
   showDescription: boolean;
   showCategories: boolean;
+  showBadge: boolean;
   showStockBadge: boolean;
+  advanced: AdvancedStyleProps;
 }>;
 
-// ─── Helpers ───────────────────────────────────────────────────────────────
+// Re-export AdvancedStyleProps for types.ts
+export type { AdvancedStyleProps };
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function formatPrice(price: number): string {
   return new Intl.NumberFormat("en-US", {
@@ -44,45 +41,99 @@ function discountedPrice(price: number, discount: number): number {
   return price * (1 - discount / 100);
 }
 
-// ─── Render ────────────────────────────────────────────────────────────────
+// ─── Render ──────────────────────────────────────────────────────────────────
 
 function ProductCardRender({
   product,
-  titleSize,
-  priceSize,
-  spacing,
+  variant,
+  colorScheme,
   imageAspectRatio,
+  spacing,
   showDescription,
   showCategories,
+  showBadge,
   showStockBadge,
+  advanced,
 }: ProductCardProps) {
   if (!product) {
     return (
       <div className={getClassName("empty")}>
-        No product selected. Choose one from the Fields panel.
+        No product selected — choose one from the Fields panel.
       </div>
     );
   }
 
-  const hasDiscount = typeof product.discount === "number" && product.discount > 0;
+  const hasDiscount =
+    typeof product.discount === "number" && product.discount > 0;
   const finalPrice = hasDiscount
     ? discountedPrice(product.price, product.discount!)
     : product.price;
 
+  // Build inline CSS custom-property overrides from advanced settings.
+  // Only set a property when the user has provided a non-empty value so the
+  // scheme-class fallbacks remain in effect for unset fields.
+  const cssVars: CSSProperties = {
+    ...(advanced.backgroundColor && { "--pc-bg": advanced.backgroundColor }),
+    ...(advanced.textColor && { "--pc-text": advanced.textColor }),
+    ...(advanced.accentColor && { "--pc-accent": advanced.accentColor }),
+    ...(advanced.priceColor && { "--pc-price": advanced.priceColor }),
+    ...(advanced.borderColor && { "--pc-border-color": advanced.borderColor }),
+    ...(advanced.titleFontSize && { "--pc-title-size": advanced.titleFontSize }),
+    ...(advanced.titleFontWeight && {
+      "--pc-title-weight": advanced.titleFontWeight,
+    }),
+    ...(advanced.descriptionFontSize && {
+      "--pc-desc-size": advanced.descriptionFontSize,
+    }),
+    ...(advanced.priceFontSize && { "--pc-price-size": advanced.priceFontSize }),
+    ...(advanced.borderRadius && { "--pc-radius": advanced.borderRadius }),
+    ...(advanced.cardPadding && { "--pc-padding": advanced.cardPadding }),
+    ...(advanced.contentGap && { "--pc-gap": advanced.contentGap }),
+    ...(advanced.imageWidth && { "--pc-image-width": advanced.imageWidth }),
+    ...(advanced.borderWidth && { "--pc-border-width": advanced.borderWidth }),
+    ...(advanced.boxShadow && { "--pc-shadow": advanced.boxShadow }),
+  } as CSSProperties;
+
+  // Description line-clamp style applied directly on the <p> element.
+  const descClamp = advanced.descriptionLineClamp;
+  const descStyle: CSSProperties =
+    descClamp > 0
+      ? {
+          overflow: "hidden",
+          display: "-webkit-box",
+          WebkitLineClamp: descClamp,
+          WebkitBoxOrient: "vertical" as const,
+        }
+      : {};
+
+  // Compact layout always uses a square image; featured locks to portrait.
+  // Otherwise respect the user's imageAspectRatio selection.
+  const effectiveRatio =
+    variant === "compact"
+      ? "square"
+      : variant === "featured"
+      ? "portrait"
+      : imageAspectRatio;
+
+  const hideDescription = variant === "compact" || !showDescription;
+
   return (
     <div
-      className={getClassName({
-        [`titleSize-${titleSize}`]: true,
-        [`priceSize-${priceSize}`]: true,
-        [`spacing-${spacing}`]: spacing !== "normal",
-      })}
+      className={[
+        getClassName({ [`scheme-${colorScheme}`]: true }),
+        getClassName({ [`layout-${variant}`]: true }),
+        spacing !== "normal" ? getClassName({ [`spacing-${spacing}`]: true }) : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      style={cssVars}
     >
       <div className={getClassName("inner")}>
-        {/* ─ Image ─ */}
+        {/* ─── Image area ─── */}
         <div
-          className={getClassName("imageWrapper", {
-            [`imageWrapper--${imageAspectRatio}`]: true,
-          })}
+          className={`${getClassName("imageWrapper")} ${getClassName(
+            `imageWrapper--${effectiveRatio}`
+          )}`}
         >
           {product.image ? (
             <img
@@ -94,19 +145,22 @@ function ProductCardRender({
             <div className={getClassName("placeholder")}>No image</div>
           )}
 
-          {/* ─ Badges ─ */}
+          {/* Badges overlaid on image */}
           <div className={getClassName("badges")}>
-            {hasDiscount && (
-              <span className={getClassName("badge", { "badge--discount": true })}>
+            {showBadge && hasDiscount && (
+              <span
+                className={`${getClassName("badge")} ${getClassName(
+                  "badge--discount"
+                )}`}
+              >
                 -{product.discount}%
               </span>
             )}
             {showStockBadge && (
               <span
-                className={getClassName("badge", {
-                  "badge--inStock": product.inStock,
-                  "badge--outOfStock": !product.inStock,
-                })}
+                className={`${getClassName("badge")} ${getClassName(
+                  product.inStock ? "badge--inStock" : "badge--outOfStock"
+                )}`}
               >
                 {product.inStock ? "In Stock" : "Out of Stock"}
               </span>
@@ -114,27 +168,32 @@ function ProductCardRender({
           </div>
         </div>
 
-        {/* ─ Body ─ */}
+        {/* ─── Body ─── */}
         <div className={getClassName("body")}>
-          {showCategories && product.categories.length > 0 && (
-            <div className={getClassName("categories")}>
-              {product.categories.map((cat) => (
-                <span key={cat} className={getClassName("category")}>
-                  {cat}
-                </span>
-              ))}
-            </div>
-          )}
+          {showCategories &&
+            variant !== "compact" &&
+            product.categories.length > 0 && (
+              <div className={getClassName("categories")}>
+                {product.categories.map((cat) => (
+                  <span key={cat} className={getClassName("category")}>
+                    {cat}
+                  </span>
+                ))}
+              </div>
+            )}
 
           <h3 className={getClassName("title")}>{product.title}</h3>
 
-          {showDescription && (
-            <p className={getClassName("description")}>{product.description}</p>
+          {!hideDescription && (
+            <p className={getClassName("description")} style={descStyle}>
+              {product.description}
+            </p>
           )}
 
-          {/* ─ Price ─ */}
           <div className={getClassName("priceRow")}>
-            <span className={getClassName("price")}>{formatPrice(finalPrice)}</span>
+            <span className={getClassName("price")}>
+              {formatPrice(finalPrice)}
+            </span>
             {hasDiscount && (
               <>
                 <span className={getClassName("originalPrice")}>
@@ -152,10 +211,11 @@ function ProductCardRender({
   );
 }
 
-// ─── Component Config ──────────────────────────────────────────────────────
+// ─── Component Config ─────────────────────────────────────────────────────────
 
 const ProductCardInner: ComponentConfig<ProductCardProps> = {
   label: "Product Card",
+
   fields: {
     product: {
       type: "external",
@@ -163,8 +223,8 @@ const ProductCardInner: ComponentConfig<ProductCardProps> = {
       placeholder: "Search or select a product…",
       showSearch: true,
       fetchList: async ({ query }) => {
-        await new Promise((res) => setTimeout(res, 120)); // simulate async lookup
-        const q = query.toLowerCase();
+        await new Promise((res) => setTimeout(res, 80));
+        const q = (query ?? "").toLowerCase();
         return products
           .filter(
             (p) =>
@@ -191,35 +251,26 @@ const ProductCardInner: ComponentConfig<ProductCardProps> = {
       getItemSummary: (item) => (item as unknown as Product)?.title ?? "Product",
     },
 
-    // ── Typography ──
-    titleSize: {
-      type: "select",
-      label: "Title Size",
+    // ── Layout variant ──
+    variant: {
+      type: "radio",
+      label: "Layout",
       options: [
-        { label: "Small", value: "s" },
-        { label: "Medium", value: "m" },
-        { label: "Large", value: "l" },
-        { label: "X-Large", value: "xl" },
-      ],
-    },
-    priceSize: {
-      type: "select",
-      label: "Price Size",
-      options: [
-        { label: "Small", value: "s" },
-        { label: "Medium", value: "m" },
-        { label: "Large", value: "l" },
+        { label: "Vertical", value: "vertical" },
+        { label: "Horizontal", value: "horizontal" },
+        { label: "Compact", value: "compact" },
+        { label: "Featured", value: "featured" },
       ],
     },
 
-    // ── Spacing ──
-    spacing: {
+    // ── Color scheme ──
+    colorScheme: {
       type: "radio",
-      label: "Spacing",
+      label: "Color Scheme",
       options: [
-        { label: "Compact", value: "compact" },
-        { label: "Normal", value: "normal" },
-        { label: "Relaxed", value: "relaxed" },
+        { label: "Light", value: "light" },
+        { label: "Dark", value: "dark" },
+        { label: "Transparent", value: "transparent" },
       ],
     },
 
@@ -234,7 +285,18 @@ const ProductCardInner: ComponentConfig<ProductCardProps> = {
       ],
     },
 
-    // ── Toggles ──
+    // ── Spacing ──
+    spacing: {
+      type: "radio",
+      label: "Spacing",
+      options: [
+        { label: "Compact", value: "compact" },
+        { label: "Normal", value: "normal" },
+        { label: "Relaxed", value: "relaxed" },
+      ],
+    },
+
+    // ── Display toggles ──
     showDescription: {
       type: "radio",
       label: "Description",
@@ -251,6 +313,14 @@ const ProductCardInner: ComponentConfig<ProductCardProps> = {
         { label: "Hide", value: false },
       ],
     },
+    showBadge: {
+      type: "radio",
+      label: "Discount Badge",
+      options: [
+        { label: "Show", value: true },
+        { label: "Hide", value: false },
+      ],
+    },
     showStockBadge: {
       type: "radio",
       label: "Stock Badge",
@@ -259,17 +329,28 @@ const ProductCardInner: ComponentConfig<ProductCardProps> = {
         { label: "Hide", value: false },
       ],
     },
+
+    // ── Advanced customization (opens portal modal) ──
+    advanced: {
+      type: "custom",
+      label: "Advanced Styling",
+      render: ({ value, onChange }) => (
+        <AdvancedModal value={value} onChange={onChange} />
+      ),
+    },
   },
 
   defaultProps: {
-    product: products[0],
-    titleSize: "m",
-    priceSize: "m",
-    spacing: "normal",
+    product: products[0] ?? null,
+    variant: "vertical",
+    colorScheme: "light",
     imageAspectRatio: "landscape",
+    spacing: "normal",
     showDescription: true,
     showCategories: true,
+    showBadge: true,
     showStockBadge: true,
+    advanced: { ...DEFAULT_ADVANCED },
   },
 
   render: ProductCardRender,

@@ -44,7 +44,7 @@ export type Components = {
 export type UserConfig = Config<{
   components: Components;
   root: RootProps;
-  categories: ["sections", "layout", "typography", "interactive", "products", "other"];
+  categories: ["presets", "sections", "layout", "typography", "interactive", "products", "other"];
   fields: {
     userField: {
       type: "userField";

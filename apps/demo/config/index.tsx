@@ -24,6 +24,11 @@ import { initialData } from "./initial-data";
 export const conf: UserConfig = {
   root: Root,
   categories: {
+    presets: {
+      title: "Presets",
+      defaultExpanded: true,
+      components: ["ProductCard"],
+    },
     sections: {
       title: "Sections",
       components: ["Section"],
@@ -39,8 +44,8 @@ export const conf: UserConfig = {
       components: ["Button"],
     },
     products: {
-      title: "Products",
-      components: ["ProductCard", "ProductImage", "ProductInfo"],
+      title: "Product Blocks",
+      components: ["ProductImage", "ProductInfo"],
     },
     other: {
       title: "Other",
