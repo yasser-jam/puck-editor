@@ -15,17 +15,60 @@ export type ProductCardProps = WithLayout<{
   product: Product | null;
   variant: "vertical" | "horizontal" | "compact" | "featured";
   colorScheme: "light" | "dark" | "transparent";
-  imageAspectRatio: "square" | "landscape" | "portrait";
+
+  // ── Typography ──
+  fontFamily: "system" | "serif" | "mono";
+  fontWeight: "300" | "400" | "500" | "600" | "700";
+  lineHeight: "tight" | "normal" | "relaxed";
+
+  // ── Image ──
+  imageMode: "img" | "background";
+  imageHeight: string;                   // CSS value e.g. "260px", "40vh"
+  imageBorderRadius: "none" | "sm" | "md" | "lg" | "pill";
+  // img-mode only:
+  imageObjectFit: "cover" | "contain" | "fill" | "none";
+  // background-mode only:
+  imageBackgroundSize: "cover" | "contain" | "auto";
+  imageBackgroundPosition: string;
+  imageBackgroundAttachment: "scroll" | "fixed" | "local";
+
+  // ── Spacing ──
   spacing: "compact" | "normal" | "relaxed";
+
+  // ── Display toggles ──
   showDescription: boolean;
   showCategories: boolean;
   showBadge: boolean;
   showStockBadge: boolean;
+
+  // ── Advanced ──
   advanced: AdvancedStyleProps;
 }>;
 
-// Re-export AdvancedStyleProps for types.ts
+// Re-export for types.ts
 export type { AdvancedStyleProps };
+
+// ─── Lookup maps ─────────────────────────────────────────────────────────────
+
+const FONT_FAMILY_MAP: Record<string, string> = {
+  system: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+  serif: "Georgia, 'Times New Roman', Times, serif",
+  mono: "'Courier New', Courier, 'Lucida Console', monospace",
+};
+
+const LINE_HEIGHT_MAP: Record<string, string> = {
+  tight: "1.2",
+  normal: "1.5",
+  relaxed: "1.75",
+};
+
+const IMG_BORDER_RADIUS_MAP: Record<string, string> = {
+  none: "0px",
+  sm: "4px",
+  md: "8px",
+  lg: "16px",
+  pill: "9999px",
+};
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -47,7 +90,16 @@ function ProductCardRender({
   product,
   variant,
   colorScheme,
-  imageAspectRatio,
+  fontFamily,
+  fontWeight,
+  lineHeight,
+  imageMode,
+  imageHeight,
+  imageBorderRadius,
+  imageObjectFit,
+  imageBackgroundSize,
+  imageBackgroundPosition,
+  imageBackgroundAttachment,
   spacing,
   showDescription,
   showCategories,
@@ -69,22 +121,26 @@ function ProductCardRender({
     ? discountedPrice(product.price, product.discount!)
     : product.price;
 
-  // Build inline CSS custom-property overrides from advanced settings.
-  // Only set a property when the user has provided a non-empty value so the
-  // scheme-class fallbacks remain in effect for unset fields.
-  const cssVars: CSSProperties = {
+  // ── CSS custom property overrides ──
+  // Basic panel → CSS vars (always applied)
+  const basicVars: CSSProperties = {
+    "--pc-font-family": FONT_FAMILY_MAP[fontFamily] ?? "inherit",
+    "--pc-base-weight": fontWeight,
+    "--pc-line-height": LINE_HEIGHT_MAP[lineHeight] ?? "1.5",
+    "--pc-img-h": imageHeight || undefined,
+    "--pc-img-radius": IMG_BORDER_RADIUS_MAP[imageBorderRadius] ?? "0px",
+  } as CSSProperties;
+
+  // Advanced modal → CSS vars (only when non-empty, override scheme defaults)
+  const advancedVars: CSSProperties = {
     ...(advanced.backgroundColor && { "--pc-bg": advanced.backgroundColor }),
     ...(advanced.textColor && { "--pc-text": advanced.textColor }),
     ...(advanced.accentColor && { "--pc-accent": advanced.accentColor }),
     ...(advanced.priceColor && { "--pc-price": advanced.priceColor }),
     ...(advanced.borderColor && { "--pc-border-color": advanced.borderColor }),
     ...(advanced.titleFontSize && { "--pc-title-size": advanced.titleFontSize }),
-    ...(advanced.titleFontWeight && {
-      "--pc-title-weight": advanced.titleFontWeight,
-    }),
-    ...(advanced.descriptionFontSize && {
-      "--pc-desc-size": advanced.descriptionFontSize,
-    }),
+    ...(advanced.titleFontWeight && { "--pc-title-weight": advanced.titleFontWeight }),
+    ...(advanced.descriptionFontSize && { "--pc-desc-size": advanced.descriptionFontSize }),
     ...(advanced.priceFontSize && { "--pc-price-size": advanced.priceFontSize }),
     ...(advanced.borderRadius && { "--pc-radius": advanced.borderRadius }),
     ...(advanced.cardPadding && { "--pc-padding": advanced.cardPadding }),
@@ -94,7 +150,9 @@ function ProductCardRender({
     ...(advanced.boxShadow && { "--pc-shadow": advanced.boxShadow }),
   } as CSSProperties;
 
-  // Description line-clamp style applied directly on the <p> element.
+  const cssVars: CSSProperties = { ...basicVars, ...advancedVars };
+
+  // Description line-clamp
   const descClamp = advanced.descriptionLineClamp;
   const descStyle: CSSProperties =
     descClamp > 0
@@ -106,16 +164,32 @@ function ProductCardRender({
         }
       : {};
 
-  // Compact layout always uses a square image; featured locks to portrait.
-  // Otherwise respect the user's imageAspectRatio selection.
-  const effectiveRatio =
-    variant === "compact"
-      ? "square"
-      : variant === "featured"
-      ? "portrait"
-      : imageAspectRatio;
-
   const hideDescription = variant === "compact" || !showDescription;
+
+  // Image element — <img> or CSS background-image div
+  const imageEl = product.image ? (
+    imageMode === "background" ? (
+      <div
+        className={getClassName("imageBg")}
+        style={{
+          backgroundImage: `url(${product.image})`,
+          backgroundSize: imageBackgroundSize || "cover",
+          backgroundPosition: imageBackgroundPosition || "center",
+          backgroundAttachment: imageBackgroundAttachment || "scroll",
+        }}
+        aria-label={product.title}
+      />
+    ) : (
+      <img
+        src={product.image}
+        alt={product.title}
+        className={getClassName("image")}
+        style={{ objectFit: imageObjectFit || "cover" }}
+      />
+    )
+  ) : (
+    <div className={getClassName("placeholder")}>No image</div>
+  );
 
   return (
     <div
@@ -130,28 +204,14 @@ function ProductCardRender({
     >
       <div className={getClassName("inner")}>
         {/* ─── Image area ─── */}
-        <div
-          className={`${getClassName("imageWrapper")} ${getClassName(
-            `imageWrapper--${effectiveRatio}`
-          )}`}
-        >
-          {product.image ? (
-            <img
-              src={product.image}
-              alt={product.title}
-              className={getClassName("image")}
-            />
-          ) : (
-            <div className={getClassName("placeholder")}>No image</div>
-          )}
+        <div className={getClassName("imageWrapper")}>
+          {imageEl}
 
           {/* Badges overlaid on image */}
           <div className={getClassName("badges")}>
             {showBadge && hasDiscount && (
               <span
-                className={`${getClassName("badge")} ${getClassName(
-                  "badge--discount"
-                )}`}
+                className={`${getClassName("badge")} ${getClassName("badge--discount")}`}
               >
                 -{product.discount}%
               </span>
@@ -274,14 +334,106 @@ const ProductCardInner: ComponentConfig<ProductCardProps> = {
       ],
     },
 
-    // ── Image ──
-    imageAspectRatio: {
-      type: "radio",
-      label: "Image Ratio",
+    // ── Typography ──
+    fontFamily: {
+      type: "select",
+      label: "Font Family",
       options: [
-        { label: "Square", value: "square" },
-        { label: "4:3", value: "landscape" },
-        { label: "3:4", value: "portrait" },
+        { label: "System (Default)", value: "system" },
+        { label: "Serif", value: "serif" },
+        { label: "Monospace", value: "mono" },
+      ],
+    },
+    fontWeight: {
+      type: "radio",
+      label: "Font Weight",
+      options: [
+        { label: "300", value: "300" },
+        { label: "400", value: "400" },
+        { label: "500", value: "500" },
+        { label: "600", value: "600" },
+        { label: "700", value: "700" },
+      ],
+    },
+    lineHeight: {
+      type: "radio",
+      label: "Line Height",
+      options: [
+        { label: "Tight", value: "tight" },
+        { label: "Normal", value: "normal" },
+        { label: "Relaxed", value: "relaxed" },
+      ],
+    },
+
+    // ── Image ──
+    imageMode: {
+      type: "radio",
+      label: "Image Display",
+      options: [
+        { label: "Image", value: "img" },
+        { label: "Background", value: "background" },
+      ],
+    },
+    imageHeight: {
+      type: "text",
+      label: "Image Height (e.g. 260px, 40vh)",
+    },
+    imageBorderRadius: {
+      type: "radio",
+      label: "Image Corner Radius",
+      options: [
+        { label: "None", value: "none" },
+        { label: "S", value: "sm" },
+        { label: "M", value: "md" },
+        { label: "L", value: "lg" },
+        { label: "Pill", value: "pill" },
+      ],
+    },
+    // img-mode: object-fit
+    imageObjectFit: {
+      type: "radio",
+      label: "Object Fit",
+      options: [
+        { label: "Cover", value: "cover" },
+        { label: "Contain", value: "contain" },
+        { label: "Fill", value: "fill" },
+        { label: "None", value: "none" },
+      ],
+    },
+    // background-mode: background CSS properties
+    imageBackgroundSize: {
+      type: "radio",
+      label: "Background Size",
+      options: [
+        { label: "Cover", value: "cover" },
+        { label: "Contain", value: "contain" },
+        { label: "Auto", value: "auto" },
+      ],
+    },
+    imageBackgroundPosition: {
+      type: "select",
+      label: "Background Position",
+      options: [
+        { label: "Center", value: "center" },
+        { label: "Top", value: "top" },
+        { label: "Bottom", value: "bottom" },
+        { label: "Left", value: "left" },
+        { label: "Right", value: "right" },
+        { label: "Top Left", value: "top left" },
+        { label: "Top Right", value: "top right" },
+        { label: "Bottom Left", value: "bottom left" },
+        { label: "Bottom Right", value: "bottom right" },
+        { label: "Top Center", value: "top center" },
+        { label: "Bottom Center", value: "bottom center" },
+      ],
+    },
+    imageBackgroundAttachment: {
+      type: "radio",
+      label: "Background Attachment",
+      options: [
+        { label: "Scroll", value: "scroll" },
+        { label: "Fixed", value: "fixed" },
+        { label: "Local", value: "local" },
       ],
     },
 
@@ -344,7 +496,16 @@ const ProductCardInner: ComponentConfig<ProductCardProps> = {
     product: products[0] ?? null,
     variant: "vertical",
     colorScheme: "light",
-    imageAspectRatio: "landscape",
+    fontFamily: "system",
+    fontWeight: "400",
+    lineHeight: "normal",
+    imageMode: "img",
+    imageHeight: "",
+    imageBorderRadius: "none",
+    imageObjectFit: "cover",
+    imageBackgroundSize: "cover",
+    imageBackgroundPosition: "center",
+    imageBackgroundAttachment: "scroll",
     spacing: "normal",
     showDescription: true,
     showCategories: true,
@@ -356,4 +517,29 @@ const ProductCardInner: ComponentConfig<ProductCardProps> = {
   render: ProductCardRender,
 };
 
-export const ProductCard = withLayout(ProductCardInner);
+// ─── Wrap with layout + compose resolveFields ─────────────────────────────────
+// withLayout overwrites resolveFields, so we post-process it here to add
+// conditional field visibility based on imageMode.
+
+const WithLayoutCard = withLayout(ProductCardInner);
+
+export const ProductCard: typeof WithLayoutCard = {
+  ...WithLayoutCard,
+  resolveFields: (data, params) => {
+    // Get base fields from withLayout's resolveFields
+    const base = (WithLayoutCard as any).resolveFields!(data, params) as Record<string, unknown>;
+    const mode = (data as any).props?.imageMode as string | undefined;
+
+    if (mode === "img") {
+      // Hide background-only fields
+      const { imageBackgroundSize, imageBackgroundPosition, imageBackgroundAttachment, ...rest } = base;
+      return rest as any;
+    }
+    if (mode === "background") {
+      // Hide img-only fields
+      const { imageObjectFit, ...rest } = base;
+      return rest as any;
+    }
+    return base as any;
+  },
+};

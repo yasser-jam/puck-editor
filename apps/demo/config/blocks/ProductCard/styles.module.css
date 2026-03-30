@@ -1,12 +1,14 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    ProductCard — styles
-   Design tokens are CSS custom properties that can be overridden by:
-     1. Color scheme classes  (e.g. --scheme-dark)
-     2. Advanced inline styles set per-instance
+   Design tokens (CSS custom properties) can be overridden by:
+     1. Color scheme classes  (--scheme-dark, etc.)
+     2. Basic panel vars set per-instance  (--pc-font-family, etc.)
+     3. Advanced inline styles via the Advanced modal
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Base token defaults (light scheme baseline) ─────────────────────────── */
+/* ── Base token defaults ─────────────────────────────────────────────────── */
 .ProductCard {
+  /* Colors */
   --pc-bg: #ffffff;
   --pc-text: #1a1a1a;
   --pc-text-muted: #6b7280;
@@ -17,16 +19,26 @@
   --pc-discount-bg: #ef4444;
   --pc-instock-bg: #22c55e;
   --pc-outstock-bg: #9ca3af;
+  /* Shape */
   --pc-radius: 12px;
+  --pc-border-width: 0px;
+  --pc-border-color: transparent;
+  --pc-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+  /* Spacing */
   --pc-padding: 18px;
   --pc-gap: 10px;
+  /* Typography */
+  --pc-font-family: inherit;
+  --pc-base-weight: 400;
+  --pc-line-height: 1.5;
   --pc-title-size: 17px;
   --pc-title-weight: 600;
   --pc-desc-size: 13px;
   --pc-price-size: 18px;
-  --pc-border-width: 0px;
-  --pc-border-color: transparent;
-  --pc-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+  /* Image */
+  --pc-img-h: 250px;
+  --pc-img-radius: 0px;
+  /* Horizontal layout image width (also settable via Advanced modal) */
   --pc-image-width: 260px;
 
   display: block;
@@ -40,6 +52,8 @@
   height: 100%;
   background: var(--pc-bg);
   color: var(--pc-text);
+  font-family: var(--pc-font-family);
+  font-weight: var(--pc-base-weight);
   border-radius: var(--pc-radius);
   overflow: hidden;
   box-shadow: var(--pc-shadow);
@@ -69,7 +83,7 @@
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
-   SPACING VARIANTS  (set on root so all children inherit)
+   SPACING VARIANTS
    ════════════════════════════════════════════════════════════════════════════ */
 
 .ProductCard--spacing-compact {
@@ -91,28 +105,19 @@
   overflow: hidden;
   flex-shrink: 0;
   background: var(--puck-color-grey-11, #f3f4f6);
-  /* default: landscape aspect ratio */
-  aspect-ratio: 4 / 3;
+  /* Height is driven by --pc-img-h (set via "Image Height" field).
+     Width is 100% unless the horizontal layout overrides it. */
+  height: var(--pc-img-h, 250px);
   width: 100%;
+  border-radius: var(--pc-img-radius, 0px);
 }
 
-.ProductCard-imageWrapper--square {
-  aspect-ratio: 1;
-}
-
-.ProductCard-imageWrapper--landscape {
-  aspect-ratio: 4 / 3;
-}
-
-.ProductCard-imageWrapper--portrait {
-  aspect-ratio: 3 / 4;
-}
-
+/* ── <img> mode ─────────────────────────────────────────────────────────── */
 .ProductCard-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
+  /* object-fit is set via inline style from imageObjectFit prop */
   transition: transform 0.3s ease;
 }
 
@@ -120,6 +125,20 @@
   transform: scale(1.03);
 }
 
+/* ── background-image mode ──────────────────────────────────────────────── */
+.ProductCard-imageBg {
+  width: 100%;
+  height: 100%;
+  /* background-image, background-size, background-position, background-attachment
+     are all set via inline style from the component props */
+  transition: transform 0.3s ease;
+}
+
+.ProductCard-inner:hover .ProductCard-imageBg {
+  transform: scale(1.03);
+}
+
+/* ── No image placeholder ───────────────────────────────────────────────── */
 .ProductCard-placeholder {
   width: 100%;
   height: 100%;
@@ -128,7 +147,7 @@
   justify-content: center;
   color: var(--puck-color-grey-07, #9ca3af);
   font-size: 12px;
-  min-height: 160px;
+  min-height: 120px;
 }
 
 /* ── Badges (absolute overlay on image) ────────────────────────────────────*/
@@ -203,7 +222,7 @@
   opacity: 0.5;
 }
 
-/* ── Title ─────────────────────────────────────────────────────────────────*/
+/* ── Title ──────────────────────────────────────────────────────────────────*/
 .ProductCard-title {
   margin: 0;
   font-size: var(--pc-title-size);
@@ -212,15 +231,15 @@
   line-height: 1.3;
 }
 
-/* ── Description ───────────────────────────────────────────────────────────*/
+/* ── Description ────────────────────────────────────────────────────────────*/
 .ProductCard-description {
   margin: 0;
   font-size: var(--pc-desc-size);
   color: var(--pc-text-muted);
-  line-height: 1.55;
+  line-height: var(--pc-line-height);
 }
 
-/* ── Price row ─────────────────────────────────────────────────────────────*/
+/* ── Price row ──────────────────────────────────────────────────────────────*/
 .ProductCard-priceRow {
   display: flex;
   align-items: baseline;
@@ -261,20 +280,16 @@
   align-items: stretch;
 }
 
-.ProductCard--layout-horizontal .ProductCard-imageWrapper,
-.ProductCard--layout-horizontal .ProductCard-imageWrapper--square,
-.ProductCard--layout-horizontal .ProductCard-imageWrapper--landscape,
-.ProductCard--layout-horizontal .ProductCard-imageWrapper--portrait {
+.ProductCard--layout-horizontal .ProductCard-imageWrapper {
   width: var(--pc-image-width);
-  aspect-ratio: unset; /* fill height instead */
+  height: auto;     /* stretch to match body height */
+  min-height: 160px;
   flex-shrink: 0;
-  min-height: 180px;
 }
 
-.ProductCard--layout-horizontal .ProductCard-image {
-  width: 100%;
+.ProductCard--layout-horizontal .ProductCard-image,
+.ProductCard--layout-horizontal .ProductCard-imageBg {
   height: 100%;
-  object-fit: cover;
 }
 
 .ProductCard--layout-horizontal .ProductCard-body {
@@ -284,7 +299,7 @@
 
 /* ════════════════════════════════════════════════════════════════════════════
    LAYOUT: COMPACT
-   Square image, minimal content — just title + price. Tight spacing.
+   Tight, square-ish image with minimal body.
    ════════════════════════════════════════════════════════════════════════════ */
 
 .ProductCard--layout-compact {
@@ -292,35 +307,29 @@
   --pc-gap: 6px;
   --pc-title-size: 14px;
   --pc-price-size: 15px;
+  --pc-img-h: 200px;  /* shorter default for compact */
 }
 
-.ProductCard--layout-compact .ProductCard-imageWrapper,
-.ProductCard--layout-compact .ProductCard-imageWrapper--landscape,
-.ProductCard--layout-compact .ProductCard-imageWrapper--portrait {
-  aspect-ratio: 1; /* always square in compact */
-}
-
-.ProductCard--layout-compact .ProductCard-inner:hover .ProductCard-image {
-  transform: none; /* no zoom in compact */
+.ProductCard--layout-compact .ProductCard-inner:hover .ProductCard-image,
+.ProductCard--layout-compact .ProductCard-inner:hover .ProductCard-imageBg {
+  transform: none;
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
    LAYOUT: FEATURED
-   Tall portrait image; body content overlaid at the bottom with a gradient.
+   Tall image with body content overlaid at the bottom via gradient.
    ════════════════════════════════════════════════════════════════════════════ */
+
+.ProductCard--layout-featured {
+  --pc-img-h: 400px;  /* tall default for featured */
+}
 
 .ProductCard--layout-featured .ProductCard-inner {
   position: relative;
-  min-height: 380px;
 }
 
-.ProductCard--layout-featured .ProductCard-imageWrapper,
-.ProductCard--layout-featured .ProductCard-imageWrapper--square,
-.ProductCard--layout-featured .ProductCard-imageWrapper--landscape,
-.ProductCard--layout-featured .ProductCard-imageWrapper--portrait {
-  aspect-ratio: 2 / 3;
+.ProductCard--layout-featured .ProductCard-imageWrapper {
   width: 100%;
-  position: static; /* allow inner to size by aspect */
 }
 
 .ProductCard--layout-featured .ProductCard-body {
@@ -337,7 +346,6 @@
     transparent 100%
   );
   color: #ffffff;
-  /* override scheme text color for featured overlay */
   --pc-text: #ffffff;
   --pc-text-muted: rgba(255, 255, 255, 0.75);
   --pc-price: #ffffff;
