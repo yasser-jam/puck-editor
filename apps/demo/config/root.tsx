@@ -14,7 +14,9 @@ import {
   colorVar,
   DEFAULT_BADGE,
   DEFAULT_SHELL,
+  DEFAULT_SCALES,
   computeBadgeThemeVars,
+  computeScaleThemeVars,
   getThemeRootClassNames,
   type BadgeShape,
   type BadgeStyle,
@@ -39,6 +41,7 @@ export const Root: RootConfig<{
     ...DEFAULT_COLORS,
     ...DEFAULT_BADGE,
     ...DEFAULT_SHELL,
+    ...DEFAULT_SCALES,
   },
 
   render: (props) => {
@@ -79,6 +82,8 @@ export const Root: RootConfig<{
       colors.neutral
     );
 
+    const scaleVars = computeScaleThemeVars(p as Partial<typeof DEFAULT_SCALES>);
+
     const themeVars: Record<string, string> = {
       "--theme-body-font": bodyFontCss,
       "--theme-font-1": font1Css,
@@ -89,6 +94,7 @@ export const Root: RootConfig<{
       flexDirection: "column",
       minHeight: "100vh",
       ...badgeVars,
+      ...scaleVars,
     };
     COLOR_KEYS.forEach(({ key }) => {
       themeVars[colorVar(key)] = colors[key];

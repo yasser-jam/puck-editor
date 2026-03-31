@@ -11,6 +11,7 @@ import {
   FullThemeProps,
   colorVar,
   computeBadgeThemeVars,
+  computeScaleThemeVars,
   type BadgeShape,
   type BadgeStyle,
 } from "../../theme";
@@ -66,6 +67,11 @@ export function ThemeInjector({ children, document: iframeDoc }: ThemeInjectorPr
     .map(([k, v]) => `        ${k}: ${v};`)
     .join("\n");
 
+  const scaleVars = computeScaleThemeVars(rootProps);
+  const scaleVarLines = Object.entries(scaleVars)
+    .map(([k, v]) => `        ${k}: ${v};`)
+    .join("\n");
+
   useEffect(() => {
     const doc = iframeDoc ?? (typeof document !== "undefined" ? document : null);
     if (!doc) return;
@@ -94,6 +100,9 @@ ${colorVarLines}
 
         /* ── Badges (discount / stock) ── */
 ${badgeVarLines}
+
+        /* ── Typography / radius / button scales ── */
+${scaleVarLines}
       }
       body {
         font-family: var(--theme-body-font);
@@ -147,6 +156,7 @@ ${badgeVarLines}
     colors.dark,
     colors.text,
     colors.neutral,
+    scaleVarLines,
   ]);
 
   return <>{children}</>;

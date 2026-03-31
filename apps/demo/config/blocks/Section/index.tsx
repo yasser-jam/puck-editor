@@ -29,6 +29,11 @@ const maxWidthOptions = [
   { label: "Narrow (768px)", value: "768px" },
 ];
 
+const columnOptions = [1, 2, 3, 4, 5, 6].map((n) => ({
+  label: n === 1 ? "1 (full width)" : String(n),
+  value: String(n),
+}));
+
 // ─── Types ─────────────────────────────────────────────────────────────────
 
 export type SectionProps = {
@@ -39,6 +44,10 @@ export type SectionProps = {
   /** Controls inherited text/heading colour inside dark sections */
   theme: "dark" | "light";
   maxWidth: string;
+  /** CSS grid column count for the content slot */
+  columns?: number | string;
+  /** Gap between grid cells */
+  gridGap?: string;
   content: Slot;
 };
 
@@ -87,6 +96,17 @@ export const Section: ComponentConfig<SectionProps> = {
       options: maxWidthOptions,
     },
 
+    columns: {
+      type: "select",
+      label: "Grid columns",
+      options: columnOptions,
+    },
+    gridGap: {
+      type: "select",
+      label: "Grid gap",
+      options: [{ label: "0px", value: "0px" }, ...spacingOptions],
+    },
+
     // ── Content slot ─────────────────────────────────────────────────────
     content: {
       type: "slot",
@@ -101,6 +121,8 @@ export const Section: ComponentConfig<SectionProps> = {
     backgroundColor: "#ffffff",
     theme: "dark",
     maxWidth: "1280px",
+    columns: 1,
+    gridGap: "24px",
     content: [],
   },
 
@@ -111,27 +133,45 @@ export const Section: ComponentConfig<SectionProps> = {
     backgroundColor,
     theme,
     maxWidth,
+    columns,
+    gridGap,
     content: Content,
-  }) => (
-    <section
-      className={getClassName()}
-      style={{
-        paddingTop,
-        paddingBottom,
-        backgroundColor,
-        color: theme === "light" ? "#ffffff" : "inherit",
-      }}
-    >
-      <div
-        className={getClassName("inner")}
+  }) => {
+    const cols = Math.max(
+      1,
+      Math.min(6, Number(columns ?? 1) || 1)
+    );
+    const gap = gridGap ?? "24px";
+    return (
+      <section
+        className={getClassName()}
         style={{
-          maxWidth,
-          paddingLeft: paddingHorizontal,
-          paddingRight: paddingHorizontal,
+          paddingTop,
+          paddingBottom,
+          backgroundColor,
+          color: theme === "light" ? "#ffffff" : "inherit",
         }}
       >
-        <Content />
-      </div>
-    </section>
-  ),
+        <div
+          className={getClassName("inner")}
+          style={{
+            maxWidth,
+            paddingLeft: paddingHorizontal,
+            paddingRight: paddingHorizontal,
+            width: "100%",
+          }}
+        >
+          <Content
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+              gap,
+              alignContent: "start",
+              width: "100%",
+            }}
+          />
+        </div>
+      </section>
+    );
+  },
 };

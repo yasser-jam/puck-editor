@@ -18,6 +18,14 @@ import { GroupProps } from "./blocks/Group";
 
 import { RootProps } from "./root";
 import { RichTextProps } from "./blocks/RichText";
+import { ContentHeadingProps } from "./blocks/ContentHeading";
+import { ContentParagraphProps } from "./blocks/ContentParagraph";
+import { ContentImageProps } from "./blocks/ContentImage";
+import { ContentButtonProps } from "./blocks/ContentButton";
+import { ContentDividerProps } from "./blocks/ContentDivider";
+import { ImageGalleryProps } from "./blocks/ImageGallery";
+import { VideoEmbedProps } from "./blocks/VideoEmbed";
+import { ContentIconProps } from "./blocks/ContentIcon";
 
 export type { RootProps } from "./root";
 
@@ -39,12 +47,26 @@ export type Components = {
   ProductCard: ProductCardProps;
   ProductImage: ProductImageProps;
   ProductInfo: ProductInfoProps;
+  ContentHeading: ContentHeadingProps;
+  ContentParagraph: ContentParagraphProps;
+  ContentImage: ContentImageProps;
+  ContentButton: ContentButtonProps;
+  ContentDivider: ContentDividerProps;
+  ImageGallery: ImageGalleryProps;
+  VideoEmbed: VideoEmbedProps;
+  ContentIcon: ContentIconProps;
 };
 
 export type UserConfig = Config<{
   components: Components;
   root: RootProps;
-  categories: ["presets", "sections", "layout", "typography", "interactive", "products", "other"];
+  categories: [
+    "presets",
+    "sections",
+    "content",
+    "products",
+    "legacy",
+  ];
   fields: {
     userField: {
       type: "userField";

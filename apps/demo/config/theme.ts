@@ -291,10 +291,229 @@ export function getThemeRootClassNames(
   );
 }
 
+// ─── Typography / radius / button scales (content blocks) ─────────────────────
+
+export type TextSizeStep = "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+
+export type ScaleThemeProps = {
+  textSizeXs: string;
+  textSizeSm: string;
+  textSizeMd: string;
+  textSizeLg: string;
+  textSizeXl: string;
+  textSize2xl: string;
+  radiusNone: string;
+  radiusSm: string;
+  radiusMd: string;
+  radiusLg: string;
+  radiusXl: string;
+  radiusFull: string;
+  buttonSmHeight: string;
+  buttonSmPaddingX: string;
+  buttonSmPaddingY: string;
+  buttonSmFontSize: string;
+  buttonMdHeight: string;
+  buttonMdPaddingX: string;
+  buttonMdPaddingY: string;
+  buttonMdFontSize: string;
+  buttonLgHeight: string;
+  buttonLgPaddingX: string;
+  buttonLgPaddingY: string;
+  buttonLgFontSize: string;
+  fontWeightNormal: string;
+  fontWeightMedium: string;
+  fontWeightSemibold: string;
+  fontWeightBold: string;
+  lineHeightTight: string;
+  lineHeightNormal: string;
+  lineHeightRelaxed: string;
+};
+
+export const DEFAULT_SCALES: ScaleThemeProps = {
+  textSizeXs: "0.75rem",
+  textSizeSm: "0.875rem",
+  textSizeMd: "1rem",
+  textSizeLg: "1.125rem",
+  textSizeXl: "1.25rem",
+  textSize2xl: "1.5rem",
+  radiusNone: "0",
+  radiusSm: "4px",
+  radiusMd: "8px",
+  radiusLg: "12px",
+  radiusXl: "16px",
+  radiusFull: "9999px",
+  buttonSmHeight: "32px",
+  buttonSmPaddingX: "12px",
+  buttonSmPaddingY: "6px",
+  buttonSmFontSize: "0.875rem",
+  buttonMdHeight: "40px",
+  buttonMdPaddingX: "16px",
+  buttonMdPaddingY: "8px",
+  buttonMdFontSize: "1rem",
+  buttonLgHeight: "48px",
+  buttonLgPaddingX: "24px",
+  buttonLgPaddingY: "10px",
+  buttonLgFontSize: "1rem",
+  fontWeightNormal: "400",
+  fontWeightMedium: "500",
+  fontWeightSemibold: "600",
+  fontWeightBold: "700",
+  lineHeightTight: "1.25",
+  lineHeightNormal: "1.5",
+  lineHeightRelaxed: "1.75",
+};
+
+/** CSS var for a theme text size step */
+export function textSizeVar(step: TextSizeStep): string {
+  const map: Record<TextSizeStep, string> = {
+    xs: "var(--theme-text-size-xs)",
+    sm: "var(--theme-text-size-sm)",
+    md: "var(--theme-text-size-md)",
+    lg: "var(--theme-text-size-lg)",
+    xl: "var(--theme-text-size-xl)",
+    "2xl": "var(--theme-text-size-2xl)",
+  };
+  return map[step];
+}
+
+export type RadiusStep = "none" | "sm" | "md" | "lg" | "xl" | "full";
+
+export function radiusVar(step: RadiusStep): string {
+  const map: Record<RadiusStep, string> = {
+    none: "var(--theme-radius-none)",
+    sm: "var(--theme-radius-sm)",
+    md: "var(--theme-radius-md)",
+    lg: "var(--theme-radius-lg)",
+    xl: "var(--theme-radius-xl)",
+    full: "var(--theme-radius-full)",
+  };
+  return map[step];
+}
+
+export type FontWeightStep = "normal" | "medium" | "semibold" | "bold";
+
+export type LineHeightStep = "tight" | "normal" | "relaxed";
+
+export function lineHeightVar(step: LineHeightStep): string {
+  const map: Record<LineHeightStep, string> = {
+    tight: "var(--theme-line-height-tight)",
+    normal: "var(--theme-line-height-normal)",
+    relaxed: "var(--theme-line-height-relaxed)",
+  };
+  return map[step];
+}
+
+export function fontWeightVar(step: FontWeightStep): string {
+  const map: Record<FontWeightStep, string> = {
+    normal: "var(--theme-font-weight-normal)",
+    medium: "var(--theme-font-weight-medium)",
+    semibold: "var(--theme-font-weight-semibold)",
+    bold: "var(--theme-font-weight-bold)",
+  };
+  return map[step];
+}
+
+export type ButtonSizeStep = "sm" | "md" | "lg";
+
+/** Returns CSS for height, padding, font-size from theme button scale */
+export function buttonSizeVars(step: ButtonSizeStep): {
+  height: string;
+  paddingLeft: string;
+  paddingRight: string;
+  paddingTop: string;
+  paddingBottom: string;
+  fontSize: string;
+} {
+  const map: Record<
+    ButtonSizeStep,
+    {
+      height: string;
+      pl: string;
+      pr: string;
+      pt: string;
+      pb: string;
+      fs: string;
+    }
+  > = {
+    sm: {
+      height: "var(--theme-button-sm-height)",
+      pl: "var(--theme-button-sm-padding-x)",
+      pr: "var(--theme-button-sm-padding-x)",
+      pt: "var(--theme-button-sm-padding-y)",
+      pb: "var(--theme-button-sm-padding-y)",
+      fs: "var(--theme-button-sm-font-size)",
+    },
+    md: {
+      height: "var(--theme-button-md-height)",
+      pl: "var(--theme-button-md-padding-x)",
+      pr: "var(--theme-button-md-padding-x)",
+      pt: "var(--theme-button-md-padding-y)",
+      pb: "var(--theme-button-md-padding-y)",
+      fs: "var(--theme-button-md-font-size)",
+    },
+    lg: {
+      height: "var(--theme-button-lg-height)",
+      pl: "var(--theme-button-lg-padding-x)",
+      pr: "var(--theme-button-lg-padding-x)",
+      pt: "var(--theme-button-lg-padding-y)",
+      pb: "var(--theme-button-lg-padding-y)",
+      fs: "var(--theme-button-lg-font-size)",
+    },
+  };
+  const m = map[step];
+  return {
+    height: m.height,
+    paddingLeft: m.pl,
+    paddingRight: m.pr,
+    paddingTop: m.pt,
+    paddingBottom: m.pb,
+    fontSize: m.fs,
+  };
+}
+
+/** Build :root scale lines for ThemeInjector / server */
+export function computeScaleThemeVars(scales: Partial<ScaleThemeProps> | undefined): Record<string, string> {
+  const s = { ...DEFAULT_SCALES, ...scales };
+  return {
+    "--theme-text-size-xs": s.textSizeXs,
+    "--theme-text-size-sm": s.textSizeSm,
+    "--theme-text-size-md": s.textSizeMd,
+    "--theme-text-size-lg": s.textSizeLg,
+    "--theme-text-size-xl": s.textSizeXl,
+    "--theme-text-size-2xl": s.textSize2xl,
+    "--theme-radius-none": s.radiusNone,
+    "--theme-radius-sm": s.radiusSm,
+    "--theme-radius-md": s.radiusMd,
+    "--theme-radius-lg": s.radiusLg,
+    "--theme-radius-xl": s.radiusXl,
+    "--theme-radius-full": s.radiusFull,
+    "--theme-button-sm-height": s.buttonSmHeight,
+    "--theme-button-sm-padding-x": s.buttonSmPaddingX,
+    "--theme-button-sm-padding-y": s.buttonSmPaddingY,
+    "--theme-button-sm-font-size": s.buttonSmFontSize,
+    "--theme-button-md-height": s.buttonMdHeight,
+    "--theme-button-md-padding-x": s.buttonMdPaddingX,
+    "--theme-button-md-padding-y": s.buttonMdPaddingY,
+    "--theme-button-md-font-size": s.buttonMdFontSize,
+    "--theme-button-lg-height": s.buttonLgHeight,
+    "--theme-button-lg-padding-x": s.buttonLgPaddingX,
+    "--theme-button-lg-padding-y": s.buttonLgPaddingY,
+    "--theme-button-lg-font-size": s.buttonLgFontSize,
+    "--theme-font-weight-normal": s.fontWeightNormal,
+    "--theme-font-weight-medium": s.fontWeightMedium,
+    "--theme-font-weight-semibold": s.fontWeightSemibold,
+    "--theme-font-weight-bold": s.fontWeightBold,
+    "--theme-line-height-tight": s.lineHeightTight,
+    "--theme-line-height-normal": s.lineHeightNormal,
+    "--theme-line-height-relaxed": s.lineHeightRelaxed,
+  };
+}
+
 // ─── Combined theme shape ─────────────────────────────────────────────────────
 // A single root.props object carries fonts, colours, badge + shell options.
 
 export type FullThemeProps = ThemeProps &
   Partial<ColorTheme> &
   Partial<BadgeThemeProps> &
-  Partial<ShellThemeProps>;
+  Partial<ShellThemeProps> &
+  Partial<ScaleThemeProps>;

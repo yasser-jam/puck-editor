@@ -13,7 +13,9 @@ import {
   DEFAULT_COLORS,
   DEFAULT_BADGE,
   DEFAULT_SHELL,
+  DEFAULT_SCALES,
   FullThemeProps,
+  ScaleThemeProps,
 } from "../../../theme";
 import styles from "./styles.module.css";
 
@@ -132,7 +134,7 @@ function ColorCard({
 
 // ─── Panel ───────────────────────────────────────────────────────────────────
 
-type Tab = "fonts" | "colors" | "look";
+type Tab = "fonts" | "colors" | "look" | "scales";
 
 const BADGE_SHAPE_OPTIONS = [
   { label: "Rounded", value: "rounded" },
@@ -220,6 +222,13 @@ export function SettingsPanel() {
           onClick={() => setActiveTab("look")}
         >
           Look
+        </button>
+        <button
+          type="button"
+          className={`${getClassName("tab")} ${activeTab === "scales" ? getClassName("tab--active") : ""}`}
+          onClick={() => setActiveTab("scales")}
+        >
+          Scales
         </button>
       </div>
 
@@ -315,6 +324,144 @@ export function SettingsPanel() {
                 onChange={(v) => updateProps({ footerVariant: v as typeof footerVariant })}
               />
             </div>
+          </div>
+        )}
+
+        {activeTab === "scales" && (
+          <div className={getClassName("section")}>
+            <p className={getClassName("sectionHint")}>
+              These tokens power content blocks when &quot;theme&quot; is selected (text sizes, radii,
+              button dimensions). Use any valid CSS length.
+            </p>
+
+            <div className={getClassName("sectionTitle")}>Text sizes</div>
+            {(
+              [
+                ["textSizeXs", "XS"],
+                ["textSizeSm", "SM"],
+                ["textSizeMd", "MD"],
+                ["textSizeLg", "LG"],
+                ["textSizeXl", "XL"],
+                ["textSize2xl", "2XL"],
+              ] as const
+            ).map(([key, label]) => (
+              <div key={key} className={getClassName("field")}>
+                <AutoField
+                  field={{ type: "text", label: `Text ${label}` }}
+                  value={(rootProps?.[key] ?? DEFAULT_SCALES[key]) as string}
+                  onChange={(v) => updateProps({ [key]: v } as Partial<ScaleThemeProps>)}
+                />
+              </div>
+            ))}
+
+            <div className={getClassName("sectionTitle")}>Border radius</div>
+            {(
+              [
+                ["radiusNone", "None"],
+                ["radiusSm", "SM"],
+                ["radiusMd", "MD"],
+                ["radiusLg", "LG"],
+                ["radiusXl", "XL"],
+                ["radiusFull", "Full (pill)"],
+              ] as const
+            ).map(([key, label]) => (
+              <div key={key} className={getClassName("field")}>
+                <AutoField
+                  field={{ type: "text", label: `Radius ${label}` }}
+                  value={(rootProps?.[key] ?? DEFAULT_SCALES[key]) as string}
+                  onChange={(v) => updateProps({ [key]: v } as Partial<ScaleThemeProps>)}
+                />
+              </div>
+            ))}
+
+            <div className={getClassName("sectionTitle")}>Button — small</div>
+            {(
+              [
+                ["buttonSmHeight", "Height"],
+                ["buttonSmPaddingX", "Padding X"],
+                ["buttonSmPaddingY", "Padding Y"],
+                ["buttonSmFontSize", "Font size"],
+              ] as const
+            ).map(([key, label]) => (
+              <div key={key} className={getClassName("field")}>
+                <AutoField
+                  field={{ type: "text", label }}
+                  value={(rootProps?.[key] ?? DEFAULT_SCALES[key]) as string}
+                  onChange={(v) => updateProps({ [key]: v } as Partial<ScaleThemeProps>)}
+                />
+              </div>
+            ))}
+
+            <div className={getClassName("sectionTitle")}>Button — medium</div>
+            {(
+              [
+                ["buttonMdHeight", "Height"],
+                ["buttonMdPaddingX", "Padding X"],
+                ["buttonMdPaddingY", "Padding Y"],
+                ["buttonMdFontSize", "Font size"],
+              ] as const
+            ).map(([key, label]) => (
+              <div key={key} className={getClassName("field")}>
+                <AutoField
+                  field={{ type: "text", label }}
+                  value={(rootProps?.[key] ?? DEFAULT_SCALES[key]) as string}
+                  onChange={(v) => updateProps({ [key]: v } as Partial<ScaleThemeProps>)}
+                />
+              </div>
+            ))}
+
+            <div className={getClassName("sectionTitle")}>Button — large</div>
+            {(
+              [
+                ["buttonLgHeight", "Height"],
+                ["buttonLgPaddingX", "Padding X"],
+                ["buttonLgPaddingY", "Padding Y"],
+                ["buttonLgFontSize", "Font size"],
+              ] as const
+            ).map(([key, label]) => (
+              <div key={key} className={getClassName("field")}>
+                <AutoField
+                  field={{ type: "text", label }}
+                  value={(rootProps?.[key] ?? DEFAULT_SCALES[key]) as string}
+                  onChange={(v) => updateProps({ [key]: v } as Partial<ScaleThemeProps>)}
+                />
+              </div>
+            ))}
+
+            <div className={getClassName("sectionTitle")}>Font weights</div>
+            {(
+              [
+                ["fontWeightNormal", "Normal"],
+                ["fontWeightMedium", "Medium"],
+                ["fontWeightSemibold", "Semibold"],
+                ["fontWeightBold", "Bold"],
+              ] as const
+            ).map(([key, label]) => (
+              <div key={key} className={getClassName("field")}>
+                <AutoField
+                  field={{ type: "text", label }}
+                  value={(rootProps?.[key] ?? DEFAULT_SCALES[key]) as string}
+                  onChange={(v) => updateProps({ [key]: v } as Partial<ScaleThemeProps>)}
+                />
+              </div>
+            ))}
+
+            <div className={getClassName("sectionTitle")}>Line heights</div>
+            {(
+              [
+                ["lineHeightTight", "Tight"],
+                ["lineHeightNormal", "Normal"],
+                ["lineHeightRelaxed", "Relaxed"],
+              ] as const
+            ).map(([key, label]) => (
+              <div key={key} className={getClassName("field")}>
+                <AutoField
+                  field={{ type: "text", label }}
+                  value={(rootProps?.[key] ?? DEFAULT_SCALES[key]) as string}
+                  onChange={(v) => updateProps({ [key]: v } as Partial<ScaleThemeProps>)}
+                />
+              </div>
+            ))}
           </div>
         )}
       </div>

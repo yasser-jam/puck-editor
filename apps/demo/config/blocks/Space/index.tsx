@@ -14,7 +14,7 @@ export type SpaceProps = {
 };
 
 export const Space: ComponentConfig<SpaceProps> = {
-  label: "Space",
+  label: "Spacer",
   fields: {
     size: {
       type: "select",
