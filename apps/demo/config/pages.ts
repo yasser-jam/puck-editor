@@ -11,7 +11,7 @@ export type PageDefinition = {
   /** Short description shown below the label */
   description: string;
   /** Lucide icon name (used by the plugin UI) */
-  iconName: "Home" | "ShoppingCart" | "Package";
+  iconName: "Home" | "ShoppingCart" | "Package" | "Palette";
   /**
    * true = the path contains a dynamic segment (e.g. :product-slug).
    * The editor will load a representative example URL (examplePath).
@@ -27,6 +27,12 @@ export const PAGES: PageDefinition[] = [
     label: "Home",
     description: "Main landing page",
     iconName: "Home",
+  },
+  {
+    path: "/themes",
+    label: "Theme gallery",
+    description: "Browse and edit theme presets",
+    iconName: "Palette",
   },
   {
     path: "/products/:product-slug",

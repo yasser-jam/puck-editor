@@ -12,6 +12,13 @@ import {
   DEFAULT_COLORS,
   FullThemeProps,
   colorVar,
+  DEFAULT_BADGE,
+  DEFAULT_SHELL,
+  computeBadgeThemeVars,
+  getThemeRootClassNames,
+  type BadgeShape,
+  type BadgeStyle,
+  type ShellVariant,
 } from "./theme";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -30,20 +37,27 @@ export const Root: RootConfig<{
     title: "My Page",
     ...DEFAULT_THEME,
     ...DEFAULT_COLORS,
+    ...DEFAULT_BADGE,
+    ...DEFAULT_SHELL,
   },
 
   render: (props) => {
+    const p = props as any;
     const {
       bodyFont = DEFAULT_THEME.bodyFont,
       fontOption1 = DEFAULT_THEME.fontOption1,
       fontOption2 = DEFAULT_THEME.fontOption2,
+      badgeShape = DEFAULT_BADGE.badgeShape,
+      badgeStyle = DEFAULT_BADGE.badgeStyle,
+      headerVariant = DEFAULT_SHELL.headerVariant,
+      footerVariant = DEFAULT_SHELL.footerVariant,
+      title: siteTitle = "Meridian",
       puck: { isEditing, renderDropZone: DropZone },
-    } = props as any;
+    } = p;
 
-    // Resolve color values (fall back to defaults for older saved data)
     const colors: ColorTheme = {} as ColorTheme;
     COLOR_KEYS.forEach(({ key }) => {
-      colors[key] = ((props as any)[key] as string) ?? DEFAULT_COLORS[key];
+      colors[key] = (p[key] as string) ?? DEFAULT_COLORS[key];
     });
 
     const bf = (bodyFont as string) ?? DEFAULT_THEME.bodyFont;
@@ -55,7 +69,16 @@ export const Root: RootConfig<{
     const font2Css = getFontCssValue(f2);
     const googleFontsUrl = getGoogleFontsUrl([bf, f1, f2]);
 
-    // Build CSS custom-property style object
+    const shape = badgeShape as BadgeShape;
+    const bStyle = badgeStyle as BadgeStyle;
+    const badgeVars = computeBadgeThemeVars(
+      shape,
+      bStyle,
+      colors.error,
+      colors.success,
+      colors.neutral
+    );
+
     const themeVars: Record<string, string> = {
       "--theme-body-font": bodyFontCss,
       "--theme-font-1": font1Css,
@@ -65,15 +88,19 @@ export const Root: RootConfig<{
       display: "flex",
       flexDirection: "column",
       minHeight: "100vh",
+      ...badgeVars,
     };
     COLOR_KEYS.forEach(({ key }) => {
       themeVars[colorVar(key)] = colors[key];
     });
 
+    const rootClass = getThemeRootClassNames(bStyle, shape);
+
+    const hv = headerVariant as ShellVariant;
+    const fv = footerVariant as ShellVariant;
+
     return (
       <>
-        {/* Load Google Fonts for the published / server-rendered view.
-            In editor mode the ThemeInjector (overrides.iframe) handles this. */}
         {!isEditing && googleFontsUrl && (
           <>
             <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -82,38 +109,29 @@ export const Root: RootConfig<{
           </>
         )}
 
-        <div style={themeVars as CSSProperties}>
-          <Header editMode={isEditing} />
+        <div className={rootClass} style={themeVars as CSSProperties}>
+          <Header editMode={isEditing} variant={hv} siteTitle={siteTitle} />
           <DropZone
             zone="default-zone"
             allow={["Section"]}
             style={{ flexGrow: 1 }}
           />
 
-          <Footer>
-            <Footer.List title="Section">
-              <Footer.Link href="#">Label</Footer.Link>
-              <Footer.Link href="#">Label</Footer.Link>
-              <Footer.Link href="#">Label</Footer.Link>
-              <Footer.Link href="#">Label</Footer.Link>
+          <Footer variant={fv} siteTitle={siteTitle}>
+            <Footer.List title="Shop">
+              <Footer.Link href="/">Home</Footer.Link>
+              <Footer.Link href="/products/example-product">Products</Footer.Link>
+              <Footer.Link href="/cart">Cart</Footer.Link>
             </Footer.List>
-            <Footer.List title="Section">
-              <Footer.Link href="#">Label</Footer.Link>
-              <Footer.Link href="#">Label</Footer.Link>
-              <Footer.Link href="#">Label</Footer.Link>
-              <Footer.Link href="#">Label</Footer.Link>
+            <Footer.List title="Explore">
+              <Footer.Link href="/themes">Themes</Footer.Link>
+              <Footer.Link href="/pricing">Pricing</Footer.Link>
+              <Footer.Link href="/about">About</Footer.Link>
             </Footer.List>
-            <Footer.List title="Section">
-              <Footer.Link href="#">Label</Footer.Link>
-              <Footer.Link href="#">Label</Footer.Link>
-              <Footer.Link href="#">Label</Footer.Link>
-              <Footer.Link href="#">Label</Footer.Link>
-            </Footer.List>
-            <Footer.List title="Section">
-              <Footer.Link href="#">Label</Footer.Link>
-              <Footer.Link href="#">Label</Footer.Link>
-              <Footer.Link href="#">Label</Footer.Link>
-              <Footer.Link href="#">Label</Footer.Link>
+            <Footer.List title="Support">
+              <Footer.Link href="#">Shipping</Footer.Link>
+              <Footer.Link href="#">Returns</Footer.Link>
+              <Footer.Link href="#">Contact</Footer.Link>
             </Footer.List>
           </Footer>
         </div>

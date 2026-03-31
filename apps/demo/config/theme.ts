@@ -184,14 +184,14 @@ export const COLOR_KEYS: { key: ColorKey; label: string; description: string }[]
 ];
 
 export const DEFAULT_COLORS: ColorTheme = {
-  primary: "#3b82f6",
-  surface: "#ffffff",
-  success: "#22c55e",
-  warning: "#f59e0b",
-  error:   "#ef4444",
-  dark:    "#111827",
-  text:    "#1f2937",
-  neutral: "#6b7280",
+  primary: "#2563eb",
+  surface: "#f8fafc",
+  success: "#16a34a",
+  warning: "#d97706",
+  error: "#dc2626",
+  dark: "#0f172a",
+  text: "#0f172a",
+  neutral: "#64748b",
 };
 
 /** CSS custom property name for a given color key */
@@ -199,9 +199,102 @@ export function colorVar(key: ColorKey): string {
   return `--theme-color-${key}`;
 }
 
-// ─── Combined theme shape ─────────────────────────────────────────────────────
-// A single root.props object carries both font keys and color values.
-// ColorTheme fields are optional so existing saved pages (pre-color support)
-// still load and fall back to DEFAULT_COLORS at render time.
+// ─── Badge + shell (header/footer) ───────────────────────────────────────────
 
-export type FullThemeProps = ThemeProps & Partial<ColorTheme>;
+export type BadgeShape = "pill" | "rounded" | "square";
+export type BadgeStyle = "solid" | "outline" | "soft";
+
+export type BadgeThemeProps = {
+  badgeShape: BadgeShape;
+  badgeStyle: BadgeStyle;
+};
+
+export const DEFAULT_BADGE: BadgeThemeProps = {
+  badgeShape: "rounded",
+  badgeStyle: "solid",
+};
+
+export type ShellVariant = "default" | "commerce";
+
+export type ShellThemeProps = {
+  headerVariant: ShellVariant;
+  footerVariant: ShellVariant;
+};
+
+export const DEFAULT_SHELL: ShellThemeProps = {
+  headerVariant: "commerce",
+  footerVariant: "commerce",
+};
+
+/** CSS vars for product badges (discount / stock), driven by Settings */
+export function computeBadgeThemeVars(
+  shape: BadgeShape,
+  style: BadgeStyle,
+  errorHex: string,
+  successHex: string,
+  neutralHex: string
+): Record<string, string> {
+  const radius =
+    shape === "pill" ? "9999px" : shape === "square" ? "2px" : "8px";
+
+  const padX = shape === "pill" ? "12px" : "10px";
+  const padY = "4px";
+
+  const solid = (bg: string, fg: string, border: string) => ({
+    bg,
+    fg,
+    border,
+  });
+
+  const forTone = (main: string, _muted: string) => {
+    if (style === "outline") {
+      return solid("transparent", main, `1px solid ${main}`);
+    }
+    if (style === "soft") {
+      return solid(
+        `color-mix(in srgb, ${main} 20%, white)`,
+        main,
+        "none"
+      );
+    }
+    return solid(main, "#ffffff", "none");
+  };
+
+  const d = forTone(errorHex, errorHex);
+  const s = forTone(successHex, successHex);
+  const o = forTone(neutralHex, neutralHex);
+
+  return {
+    "--theme-badge-radius": radius,
+    "--theme-badge-padding-x": padX,
+    "--theme-badge-padding-y": padY,
+    "--theme-badge-font-size": "11px",
+    "--theme-badge-font-weight": "600",
+    "--theme-badge-discount-bg": d.bg,
+    "--theme-badge-discount-fg": d.fg,
+    "--theme-badge-discount-border": d.border,
+    "--theme-badge-stock-bg": s.bg,
+    "--theme-badge-stock-fg": s.fg,
+    "--theme-badge-stock-border": s.border,
+    "--theme-badge-out-bg": o.bg,
+    "--theme-badge-out-fg": o.fg,
+    "--theme-badge-out-border": o.border,
+  };
+}
+
+export function getThemeRootClassNames(
+  badgeStyle: BadgeStyle,
+  badgeShape: BadgeShape
+): string {
+  return ["theme-root", `theme-badge-style-${badgeStyle}`, `theme-badge-shape-${badgeShape}`].join(
+    " "
+  );
+}
+
+// ─── Combined theme shape ─────────────────────────────────────────────────────
+// A single root.props object carries fonts, colours, badge + shell options.
+
+export type FullThemeProps = ThemeProps &
+  Partial<ColorTheme> &
+  Partial<BadgeThemeProps> &
+  Partial<ShellThemeProps>;

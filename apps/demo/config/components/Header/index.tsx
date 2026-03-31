@@ -1,46 +1,103 @@
-import { getClassNameFactory } from "@/core/lib";
+import classnames from "classnames";
+
+import type { ShellVariant } from "../../theme";
 
 import styles from "./styles.module.css";
 
-const getClassName = getClassNameFactory("Header", styles);
+const normalizePath = (pathname: string) =>
+  pathname.replace(/\/edit$/, "").replace(/\/$/, "") || "/";
 
-const NavItem = ({ label, href }: { label: string; href: string }) => {
+const NavItem = ({
+  label,
+  href,
+  variant,
+}: {
+  label: string;
+  href: string;
+  variant: ShellVariant;
+}) => {
   const navPath =
     typeof window !== "undefined"
-      ? window.location.pathname.replace("/edit", "") || "/"
+      ? normalizePath(window.location.pathname)
       : "/";
 
-  const isActive = navPath === (href.replace("/edit", "") || "/");
+  const target = href.replace(/\/edit$/, "").replace(/\/$/, "") || "/";
+  const isActive = navPath === target;
 
-  const El = href ? "a" : "span";
+  if (variant === "commerce") {
+    return (
+      <a
+        href={href || "/"}
+        className={classnames(
+          styles.navLinkCommerce,
+          isActive && styles.navLinkCommerceActive
+        )}
+      >
+        {label}
+      </a>
+    );
+  }
 
   return (
-    <El
+    <a
       href={href || "/"}
-      style={{
-        textDecoration: "none",
-        color: isActive
-          ? "var(--puck-color-grey-02)"
-          : "var(--puck-color-grey-06)",
-        fontWeight: isActive ? "600" : "400",
-      }}
+      className={classnames(styles.navLink, isActive && styles.navLinkActive)}
     >
       {label}
-    </El>
+    </a>
   );
 };
 
-const Header = ({ editMode }: { editMode: boolean }) => (
-  <div className={getClassName()}>
-    <header className={getClassName("inner")}>
-      <div className={getClassName("logo")}>LOGO</div>
-      <nav className={getClassName("items")}>
-        <NavItem label="Home" href={`${editMode ? "" : "/"}`} />
-        <NavItem label="Pricing" href={editMode ? "" : "/pricing"} />
-        <NavItem label="About" href={editMode ? "" : "/about"} />
-      </nav>
-    </header>
-  </div>
-);
+export type HeaderProps = {
+  editMode: boolean;
+  variant?: ShellVariant;
+  siteTitle?: string;
+};
+
+const Header = ({
+  editMode,
+  variant = "commerce",
+  siteTitle = "Meridian",
+}: HeaderProps) => {
+  const base = "";
+
+  const paths = {
+    home: `${base}/`,
+    shop: `${base}/products/example-product`,
+    cart: `${base}/cart`,
+    themes: `${base}/themes`,
+  };
+
+  if (variant === "default") {
+    return (
+      <div className={styles.root}>
+        <header className={styles.inner}>
+          <div className={styles.logo}>{siteTitle}</div>
+          <nav className={styles.items}>
+            <NavItem label="Home" href={paths.home} variant="default" />
+            <NavItem label="Pricing" href={`${base}/pricing`} variant="default" />
+            <NavItem label="About" href={`${base}/about`} variant="default" />
+          </nav>
+        </header>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.rootCommerce}>
+      <header className={styles.innerCommerce}>
+        <a href={paths.home} className={styles.brand}>
+          {siteTitle}
+        </a>
+        <nav className={styles.navCommerce}>
+          <NavItem label="Home" href={paths.home} variant="commerce" />
+          <NavItem label="Shop" href={paths.shop} variant="commerce" />
+          <NavItem label="Cart" href={paths.cart} variant="commerce" />
+          <NavItem label="Themes" href={paths.themes} variant="commerce" />
+        </nav>
+      </header>
+    </div>
+  );
+};
 
 export { Header };

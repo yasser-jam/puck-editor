@@ -11,6 +11,8 @@ import {
   ColorKey,
   ColorTheme,
   DEFAULT_COLORS,
+  DEFAULT_BADGE,
+  DEFAULT_SHELL,
   FullThemeProps,
 } from "../../../theme";
 import styles from "./styles.module.css";
@@ -130,7 +132,24 @@ function ColorCard({
 
 // ─── Panel ───────────────────────────────────────────────────────────────────
 
-type Tab = "fonts" | "colors";
+type Tab = "fonts" | "colors" | "look";
+
+const BADGE_SHAPE_OPTIONS = [
+  { label: "Rounded", value: "rounded" },
+  { label: "Pill", value: "pill" },
+  { label: "Square", value: "square" },
+];
+
+const BADGE_STYLE_OPTIONS = [
+  { label: "Solid", value: "solid" },
+  { label: "Outline", value: "outline" },
+  { label: "Soft", value: "soft" },
+];
+
+const SHELL_VARIANT_OPTIONS = [
+  { label: "Commerce", value: "commerce" },
+  { label: "Default (legacy)", value: "default" },
+];
 
 export function SettingsPanel() {
   const rootProps = useAppStore(
@@ -156,6 +175,11 @@ export function SettingsPanel() {
     text:     (rootProps?.text     ?? DEFAULT_COLORS.text),
     neutral:  (rootProps?.neutral  ?? DEFAULT_COLORS.neutral),
   };
+
+  const badgeShape = rootProps?.badgeShape ?? DEFAULT_BADGE.badgeShape;
+  const badgeStyle = rootProps?.badgeStyle ?? DEFAULT_BADGE.badgeStyle;
+  const headerVariant = rootProps?.headerVariant ?? DEFAULT_SHELL.headerVariant;
+  const footerVariant = rootProps?.footerVariant ?? DEFAULT_SHELL.footerVariant;
 
   const updateProps = (patch: Partial<FullThemeProps>) => {
     dispatch({
@@ -189,6 +213,13 @@ export function SettingsPanel() {
           onClick={() => setActiveTab("colors")}
         >
           Colors
+        </button>
+        <button
+          type="button"
+          className={`${getClassName("tab")} ${activeTab === "look" ? getClassName("tab--active") : ""}`}
+          onClick={() => setActiveTab("look")}
+        >
+          Look
         </button>
       </div>
 
@@ -243,6 +274,46 @@ export function SettingsPanel() {
                   onChange={updateColor}
                 />
               ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === "look" && (
+          <div className={getClassName("section")}>
+            <div className={getClassName("sectionTitle")}>Badges</div>
+            <p className={getClassName("sectionHint")}>
+              Product discount and stock labels use your palette (error, success, neutral). Shape and
+              style apply site-wide.
+            </p>
+            <div className={getClassName("field")}>
+              <AutoField
+                field={{ type: "select", label: "Badge shape", options: BADGE_SHAPE_OPTIONS }}
+                value={badgeShape}
+                onChange={(v) => updateProps({ badgeShape: v as typeof badgeShape })}
+              />
+            </div>
+            <div className={getClassName("field")}>
+              <AutoField
+                field={{ type: "select", label: "Badge style", options: BADGE_STYLE_OPTIONS }}
+                value={badgeStyle}
+                onChange={(v) => updateProps({ badgeStyle: v as typeof badgeStyle })}
+              />
+            </div>
+
+            <div className={getClassName("sectionTitle")}>Header &amp; footer</div>
+            <div className={getClassName("field")}>
+              <AutoField
+                field={{ type: "select", label: "Header layout", options: SHELL_VARIANT_OPTIONS }}
+                value={headerVariant}
+                onChange={(v) => updateProps({ headerVariant: v as typeof headerVariant })}
+              />
+            </div>
+            <div className={getClassName("field")}>
+              <AutoField
+                field={{ type: "select", label: "Footer layout", options: SHELL_VARIANT_OPTIONS }}
+                value={footerVariant}
+                onChange={(v) => updateProps({ footerVariant: v as typeof footerVariant })}
+              />
             </div>
           </div>
         )}

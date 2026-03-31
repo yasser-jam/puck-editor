@@ -1,5 +1,9 @@
 import { UserData } from "./types";
 import { products } from "./data/products";
+import {
+  buildThemesGalleryData,
+  buildAllThemeDemoInitialEntries,
+} from "./theme-presets";
 
 /** Shared ProductCard advanced styling defaults (empty = use theme / scheme) */
 const PC_ADV = {
@@ -369,6 +373,10 @@ export const initialData: Record<string, UserData> = {
       },
     ],
   },
+
+  ...buildAllThemeDemoInitialEntries(),
+
+  "/themes": buildThemesGalleryData(),
 
   "/pricing": {
     content: [],

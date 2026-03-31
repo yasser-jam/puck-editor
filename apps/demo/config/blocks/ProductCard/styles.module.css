@@ -164,29 +164,34 @@
 .ProductCard-badge {
   display: inline-flex;
   align-items: center;
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
+  padding: var(--theme-badge-padding-y, 4px) var(--theme-badge-padding-x, 8px);
+  border-radius: var(--theme-badge-radius, 4px);
+  font-size: var(--theme-badge-font-size, 11px);
+  font-weight: var(--theme-badge-font-weight, 600);
   line-height: 1.4;
   background: var(--pc-badge-bg);
   color: var(--pc-badge-text);
   letter-spacing: 0.02em;
+  border: var(--theme-badge-generic-border, none);
+  box-sizing: border-box;
 }
 
 .ProductCard-badge--discount {
-  background: var(--pc-discount-bg);
-  color: #ffffff;
+  background: var(--theme-badge-discount-bg, var(--pc-discount-bg));
+  color: var(--theme-badge-discount-fg, #ffffff);
+  border: var(--theme-badge-discount-border, none);
 }
 
 .ProductCard-badge--inStock {
-  background: var(--pc-instock-bg);
-  color: #ffffff;
+  background: var(--theme-badge-stock-bg, var(--pc-instock-bg));
+  color: var(--theme-badge-stock-fg, #ffffff);
+  border: var(--theme-badge-stock-border, none);
 }
 
 .ProductCard-badge--outOfStock {
-  background: var(--pc-outstock-bg);
-  color: #ffffff;
+  background: var(--theme-badge-out-bg, var(--pc-outstock-bg));
+  color: var(--theme-badge-out-fg, #ffffff);
+  border: var(--theme-badge-out-border, none);
 }
 
 /* ════════════════════════════════════════════════════════════════════════════

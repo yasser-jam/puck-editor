@@ -1,96 +1,106 @@
-import { ReactNode } from "react";
+import React, { ReactNode, createContext, useContext } from "react";
 import { Section } from "../Section";
+import type { ShellVariant } from "../../theme";
+
+import styles from "./styles.module.css";
+
+const FooterVariantContext = createContext<ShellVariant>("commerce");
 
 const FooterLink = ({ children, href }: { children: string; href: string }) => {
-  const El = href ? "a" : "span";
-
+  const variant = useContext(FooterVariantContext);
   return (
-    <li style={{ paddingBottom: 8 }}>
-      <El
+    <li className={styles.listItem}>
+      <a
         href={href}
-        style={{
-          textDecoration: "none",
-          fontSize: "14px",
-          color: "var(--puck-color-grey-05)",
-        }}
+        className={variant === "commerce" ? styles.linkCommerce : styles.linkDefault}
       >
         {children}
-      </El>
+      </a>
     </li>
   );
 };
 
-const FooterList = ({
-  children,
-  title,
-}: {
-  children: ReactNode;
-  title: string;
-}) => {
+const FooterList = ({ children, title }: { children: ReactNode; title: string }) => {
+  const variant = useContext(FooterVariantContext);
   return (
     <div>
       <h3
-        style={{
-          margin: 0,
-          padding: 0,
-          fontSize: "inherit",
-          fontWeight: "600",
-          color: "var(--puck-color-grey-03)",
-        }}
+        className={
+          variant === "commerce" ? styles.listTitleCommerce : styles.listTitleDefault
+        }
       >
         {title}
       </h3>
-      <ul
-        style={{
-          listStyle: "none",
-          margin: 0,
-          padding: 0,
-          paddingTop: 12,
-        }}
-      >
-        {children}
-      </ul>
+      <ul className={styles.list}>{children}</ul>
     </div>
   );
 };
 
-const Footer = ({ children }: { children: ReactNode }) => {
+export type FooterProps = {
+  children: ReactNode;
+  variant?: ShellVariant;
+  siteTitle?: string;
+};
+
+const Footer = ({
+  children,
+  variant = "commerce",
+  siteTitle = "Meridian",
+}: FooterProps) => {
+  if (variant === "default") {
+    return (
+      <FooterVariantContext.Provider value="default">
+        <footer className={styles.rootDefault}>
+          <h2 className={styles.visuallyHidden}>Footer</h2>
+          <div className={styles.innerPadDefault}>
+            <Section>
+              <div className={styles.gridDefault}>{children}</div>
+            </Section>
+          </div>
+          <div className={styles.bottomBarDefault}>
+            Made with{" "}
+            <a
+              href="https://github.com/puckeditor/puck"
+              target="_blank"
+              rel="noreferrer"
+              className={styles.bottomLinkDefault}
+            >
+              Puck
+            </a>
+          </div>
+        </footer>
+      </FooterVariantContext.Provider>
+    );
+  }
+
   return (
-    <footer style={{ background: "var(--puck-color-grey-12)" }}>
-      <h2 style={{ visibility: "hidden", height: 0, margin: 0 }}>Footer</h2>
-      <div style={{ padding: 32 }}>
-        <Section>
-          <div
-            style={{
-              display: "grid",
-              gridGap: 24,
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-              paddingTop: 24,
-              paddingBottom: 24,
-            }}
-          >
+    <FooterVariantContext.Provider value="commerce">
+      <footer className={styles.rootCommerce}>
+        <div className={styles.innerCommerce}>
+          <div className={styles.gridCommerce}>
+            <div className={styles.brandCol}>
+              <span className={styles.brandName}>{siteTitle}</span>
+              <p className={styles.brandTagline}>
+                Curated goods — styled with your theme tokens and shell layout from Settings.
+              </p>
+            </div>
             {children}
           </div>
-        </Section>
-      </div>
-      <div
-        style={{
-          padding: 64,
-          textAlign: "center",
-          color: "var(--puck-color-grey-03)",
-          background: "var(--puck-color-grey-11)",
-        }}
-      >
-        Made by{" "}
-        <a
-          href="https://github.com/chrisvxd"
-          target="_blank"
-          style={{ color: "inherit", textDecoration: "none", fontWeight: 600 }}
-        >
-          Chris Villa
-        </a>
-      </div>
-    </footer>
+        </div>
+        <div className={styles.bottomBarCommerce}>
+          <span>
+            © {new Date().getFullYear()} {siteTitle}
+          </span>
+          <span className={styles.bottomSep}>·</span>
+          <a href="#" className={styles.bottomLinkCommerce}>
+            Privacy
+          </a>
+          <a href="#" className={styles.bottomLinkCommerce}>
+            Terms
+          </a>
+        </div>
+      </footer>
+    </FooterVariantContext.Provider>
   );
 };
 

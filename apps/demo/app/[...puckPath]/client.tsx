@@ -9,6 +9,7 @@ import { Type } from "lucide-react";
 import { settingsPlugin } from "../../config/plugins/settings";
 import { ThemeInjector } from "../../config/plugins/settings/ThemeInjector";
 import { pagesPlugin } from "../../config/plugins/pages";
+import { themesPlugin } from "../../config/plugins/themes";
 
 export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
   const metadata = {
@@ -40,7 +41,7 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
           onPublish={async (data) => {
             localStorage.setItem(key, JSON.stringify(data));
           }}
-          plugins={[pagesPlugin, headingAnalyzer, settingsPlugin]}
+          plugins={[pagesPlugin, themesPlugin, headingAnalyzer, settingsPlugin]}
           headerPath={path}
           iframe={{
             enabled: params.get("disableIframe") === "true" ? false : true,

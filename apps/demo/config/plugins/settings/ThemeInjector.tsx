@@ -3,13 +3,16 @@ import { useAppStore } from "@/core/store";
 import {
   getFontCssValue,
   getGoogleFontsUrl,
-  ThemeProps,
   DEFAULT_THEME,
   COLOR_KEYS,
   ColorTheme,
   DEFAULT_COLORS,
+  DEFAULT_BADGE,
   FullThemeProps,
   colorVar,
+  computeBadgeThemeVars,
+  type BadgeShape,
+  type BadgeStyle,
 } from "../../theme";
 
 interface ThemeInjectorProps {
@@ -49,6 +52,20 @@ export function ThemeInjector({ children, document: iframeDoc }: ThemeInjectorPr
     neutral: rootProps?.neutral ?? DEFAULT_COLORS.neutral,
   };
 
+  const badgeShape = (rootProps?.badgeShape ?? DEFAULT_BADGE.badgeShape) as BadgeShape;
+  const badgeStyle = (rootProps?.badgeStyle ?? DEFAULT_BADGE.badgeStyle) as BadgeStyle;
+  const badgeVars = computeBadgeThemeVars(
+    badgeShape,
+    badgeStyle,
+    colors.error,
+    colors.success,
+    colors.neutral
+  );
+
+  const badgeVarLines = Object.entries(badgeVars)
+    .map(([k, v]) => `        ${k}: ${v};`)
+    .join("\n");
+
   useEffect(() => {
     const doc = iframeDoc ?? (typeof document !== "undefined" ? document : null);
     if (!doc) return;
@@ -74,6 +91,9 @@ export function ThemeInjector({ children, document: iframeDoc }: ThemeInjectorPr
 
         /* ── Colors ── */
 ${colorVarLines}
+
+        /* ── Badges (discount / stock) ── */
+${badgeVarLines}
       }
       body {
         font-family: var(--theme-body-font);
@@ -117,6 +137,7 @@ ${colorVarLines}
     font1Css,
     font2Css,
     googleFontsUrl,
+    badgeVarLines,
     // spread colors into deps
     colors.primary,
     colors.surface,

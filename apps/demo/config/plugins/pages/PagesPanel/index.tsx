@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Home, ShoppingCart, Package } from "lucide-react";
+import { Home, ShoppingCart, Package, Palette } from "lucide-react";
 import { getClassNameFactory } from "@/core/lib";
 import { PAGES, PageDefinition, getEditPath, matchCurrentPage } from "../../../pages";
 import styles from "./styles.module.css";
@@ -12,6 +12,7 @@ const ICON_MAP = {
   Home: Home,
   ShoppingCart: ShoppingCart,
   Package: Package,
+  Palette: Palette,
 };
 
 // ─── Page item ────────────────────────────────────────────────────────────────

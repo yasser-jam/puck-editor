@@ -1,11 +1,12 @@
-.Header {
+/* ── Default (legacy) ─────────────────────────────────────────────────────── */
+.root {
   background-color: white;
   position: sticky;
   top: 0;
   z-index: 2;
 }
 
-.Header-inner {
+.inner {
   align-items: center;
   display: flex;
   margin-inline-start: auto;
@@ -15,26 +16,97 @@
 }
 
 @media (min-width: 768px) {
-  .Header-inner {
+  .inner {
     padding: 24px;
   }
 }
 
-.Header-logo {
+.logo {
   font-size: 24px;
   font-weight: 800;
-  letter-spacing: 1.4;
+  letter-spacing: 1.4px;
   opacity: 0.8;
 }
 
-.Header-items {
+.items {
   display: flex;
   gap: 24px;
   margin-inline-start: auto;
 }
 
 @media (min-width: 1024px) {
-  .Header-items {
+  .items {
     gap: 32px;
   }
+}
+
+.navLink {
+  text-decoration: none;
+  color: var(--puck-color-grey-06);
+  font-weight: 400;
+  font-size: 15px;
+}
+
+.navLinkActive {
+  color: var(--puck-color-grey-02);
+  font-weight: 600;
+}
+
+/* ── Commerce ─────────────────────────────────────────────────────────────── */
+.rootCommerce {
+  background: var(--theme-color-dark, #0f172a);
+  border-bottom: 1px solid color-mix(in srgb, var(--theme-color-primary, #2563eb) 35%, transparent);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.innerCommerce {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px 20px;
+}
+
+.brand {
+  font-family: var(--theme-font-1, inherit);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-decoration: none;
+}
+
+.brand:hover {
+  color: color-mix(in srgb, #fff 88%, var(--theme-color-primary, #2563eb));
+}
+
+.navCommerce {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.navLinkCommerce {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 6px 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.navLinkCommerce:hover {
+  color: #fff;
+}
+
+.navLinkCommerceActive {
+  color: #fff;
+  border-bottom-color: var(--theme-color-primary, #2563eb);
 }
