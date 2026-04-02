@@ -13,6 +13,7 @@ import { SpaceProps } from "./blocks/Space";
 import { ProductCardProps } from "./blocks/ProductCard";
 import { ProductsGridProps } from "./blocks/ProductsGrid";
 import { CartSectionProps } from "./blocks/CartSection";
+import { CheckoutFormProps } from "./blocks/CheckoutForm";
 import { ProductImageProps } from "./blocks/ProductImage";
 import { ProductInfoProps } from "./blocks/ProductInfo";
 import { SectionProps } from "./blocks/Section";
@@ -49,6 +50,7 @@ export type Components = {
   ProductCard: ProductCardProps;
   ProductsGrid: ProductsGridProps;
   CartSection: CartSectionProps;
+  CheckoutForm: CheckoutFormProps;
   ProductImage: ProductImageProps;
   ProductInfo: ProductInfoProps;
   ContentHeading: ContentHeadingProps;

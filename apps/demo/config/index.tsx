@@ -13,6 +13,7 @@ import { RichText } from "./blocks/RichText";
 import { ProductCard } from "./blocks/ProductCard";
 import { ProductsGrid } from "./blocks/ProductsGrid";
 import { CartSection } from "./blocks/CartSection";
+import { CheckoutForm } from "./blocks/CheckoutForm";
 import { ProductImage } from "./blocks/ProductImage";
 import { ProductInfo } from "./blocks/ProductInfo";
 import { Section } from "./blocks/Section";
@@ -37,7 +38,12 @@ export const conf: UserConfig = {
     presets: {
       title: "Presets",
       defaultExpanded: true,
-      components: ["ProductCard", "ProductsGrid", "CartSection"],
+      components: [
+        "ProductCard",
+        "ProductsGrid",
+        "CartSection",
+        "CheckoutForm",
+      ],
     },
     sections: {
       title: "Sections",
@@ -99,6 +105,7 @@ export const conf: UserConfig = {
     ProductCard,
     ProductsGrid,
     CartSection,
+    CheckoutForm,
     ProductImage,
     ProductInfo,
     ContentHeading,

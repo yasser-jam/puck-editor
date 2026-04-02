@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { getClassNameFactory } from "@/core/lib";
