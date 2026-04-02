@@ -14,6 +14,7 @@ import { ProductCardProps } from "./blocks/ProductCard";
 import { ProductsGridProps } from "./blocks/ProductsGrid";
 import { CartSectionProps } from "./blocks/CartSection";
 import { CheckoutFormProps } from "./blocks/CheckoutForm";
+import { ProductSearchMenuProps } from "./blocks/ProductSearchMenu";
 import { ProductImageProps } from "./blocks/ProductImage";
 import { ProductInfoProps } from "./blocks/ProductInfo";
 import { SectionProps } from "./blocks/Section";
@@ -51,6 +52,7 @@ export type Components = {
   ProductsGrid: ProductsGridProps;
   CartSection: CartSectionProps;
   CheckoutForm: CheckoutFormProps;
+  ProductSearchMenu: ProductSearchMenuProps;
   ProductImage: ProductImageProps;
   ProductInfo: ProductInfoProps;
   ContentHeading: ContentHeadingProps;
