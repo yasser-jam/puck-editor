@@ -5,10 +5,11 @@ import { getClassNameFactory } from "@/core/lib";
 import { Button } from "@/core/components/Button";
 import { Section } from "../../components/Section";
 import { PuckComponent, RichText, Slot } from "@/core/types";
+import type { WithLayout } from "../../components/Layout";
 
 const getClassName = getClassNameFactory("Hero", styles);
 
-export type HeroProps = {
+export type HeroProps = WithLayout<{
   quote?: { index: number; label: string };
   title: string | ReactNode;
   description: RichText;
@@ -26,7 +27,7 @@ export type HeroProps = {
     href: string;
     variant?: "primary" | "secondary";
   }[];
-};
+}>;
 
 export const Hero: PuckComponent<HeroProps> = ({
   align,

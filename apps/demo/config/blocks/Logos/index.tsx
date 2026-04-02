@@ -4,17 +4,18 @@ import { ComponentConfig } from "@/core";
 import styles from "./styles.module.css";
 import { getClassNameFactory } from "@/core/lib";
 import { Section } from "../../components/Section";
+import { WithLayout, withLayout } from "../../components/Layout";
 
 const getClassName = getClassNameFactory("Logos", styles);
 
-export type LogosProps = {
+export type LogosProps = WithLayout<{
   logos: {
     alt: string;
     imageUrl: string;
   }[];
-};
+}>;
 
-export const Logos: ComponentConfig<LogosProps> = {
+const LogosInner: ComponentConfig<LogosProps> = {
   fields: {
     logos: {
       type: "array",
@@ -77,3 +78,5 @@ export const Logos: ComponentConfig<LogosProps> = {
     );
   },
 };
+
+export const Logos = withLayout(LogosInner);

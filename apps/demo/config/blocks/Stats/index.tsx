@@ -4,17 +4,18 @@ import { ComponentConfig } from "@/core";
 import styles from "./styles.module.css";
 import { getClassNameFactory } from "@/core/lib";
 import { Section } from "../../components/Section";
+import { WithLayout, withLayout } from "../../components/Layout";
 
 const getClassName = getClassNameFactory("Stats", styles);
 
-export type StatsProps = {
+export type StatsProps = WithLayout<{
   items: {
     title: string;
     description: string;
   }[];
-};
+}>;
 
-export const Stats: ComponentConfig<StatsProps> = {
+const StatsInner: ComponentConfig<StatsProps> = {
   fields: {
     items: {
       type: "array",
@@ -65,3 +66,5 @@ export const Stats: ComponentConfig<StatsProps> = {
     );
   },
 };
+
+export const Stats = withLayout(StatsInner);

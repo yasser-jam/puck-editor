@@ -2,6 +2,7 @@ import React from "react";
 import { ComponentConfig, Slot } from "@/core/types";
 import { getClassNameFactory } from "@/core/lib";
 import { spacingOptions } from "../../options";
+import { WithLayout, withLayout } from "../../components/Layout";
 import styles from "./styles.module.css";
 
 const getClassName = getClassNameFactory("Section", styles);
@@ -36,7 +37,7 @@ const columnOptions = [1, 2, 3, 4, 5, 6].map((n) => ({
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
-export type SectionProps = {
+export type SectionProps = WithLayout<{
   paddingTop: string;
   paddingBottom: string;
   paddingHorizontal: string;
@@ -49,11 +50,11 @@ export type SectionProps = {
   /** Gap between grid cells */
   gridGap?: string;
   content: Slot;
-};
+}>;
 
 // ─── Component config ──────────────────────────────────────────────────────
 
-export const Section: ComponentConfig<SectionProps> = {
+const SectionInner: ComponentConfig<SectionProps> = {
   label: "Section",
 
   fields: {
@@ -175,3 +176,5 @@ export const Section: ComponentConfig<SectionProps> = {
     );
   },
 };
+
+export const Section = withLayout(SectionInner);

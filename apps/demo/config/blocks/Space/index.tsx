@@ -3,17 +3,18 @@ import React from "react";
 import { ComponentConfig } from "@/core";
 import { spacingOptions } from "../../options";
 import { getClassNameFactory } from "@/core/lib";
+import { WithLayout, withLayout } from "../../components/Layout";
 
 import styles from "./styles.module.css";
 
 const getClassName = getClassNameFactory("Space", styles);
 
-export type SpaceProps = {
+export type SpaceProps = WithLayout<{
   direction?: "" | "vertical" | "horizontal";
   size: string;
-};
+}>;
 
-export const Space: ComponentConfig<SpaceProps> = {
+const SpaceInner: ComponentConfig<SpaceProps> = {
   label: "Spacer",
   fields: {
     size: {
@@ -34,13 +35,14 @@ export const Space: ComponentConfig<SpaceProps> = {
     size: "24px",
   },
   inline: true,
-  render: ({ direction, size, puck }) => {
+  render: ({ direction, size }) => {
     return (
       <div
-        ref={puck.dragRef}
         className={getClassName(direction ? { [direction]: direction } : {})}
-        style={{ "--size": size } as any}
+        style={{ "--size": size } as React.CSSProperties}
       />
     );
   },
 };
+
+export const Space = withLayout(SpaceInner);

@@ -6,13 +6,14 @@ import {
   BUTTON_ACTION_OPTIONS,
   buttonActionLabel,
 } from "../../content/button-actions";
+import { WithLayout, withLayout } from "../../components/Layout";
 
-export type ButtonProps = {
+export type ButtonProps = WithLayout<{
   label: string;
   buttonAction: ButtonAction;
   href: string;
   variant: "primary" | "secondary";
-};
+}>;
 
 const buttonFields = {
   label: {
@@ -35,7 +36,17 @@ const buttonFields = {
   },
 };
 
-export const Button: ComponentConfig<ButtonProps> = {
+function filterButtonHrefFields(
+  fields: Fields<ButtonProps>,
+  data: { props?: { buttonAction?: ButtonAction } }
+): Fields<ButtonProps> {
+  const action = data.props?.buttonAction ?? "link";
+  if (action === "link") return fields;
+  const { href: _h, ...rest } = fields as Record<string, unknown>;
+  return rest as Fields<ButtonProps>;
+}
+
+const ButtonInner: ComponentConfig<ButtonProps> = {
   label: "Button",
   fields: buttonFields,
   defaultProps: {
@@ -43,12 +54,6 @@ export const Button: ComponentConfig<ButtonProps> = {
     buttonAction: "link",
     href: "#",
     variant: "primary",
-  },
-  resolveFields: (data) => {
-    const action = data.props?.buttonAction ?? "link";
-    if (action === "link") return buttonFields;
-    const { href: _h, ...rest } = buttonFields;
-    return rest as Fields<ButtonProps>;
   },
   render: ({ href, variant, label, buttonAction: actionProp, puck }) => {
     const buttonAction = actionProp ?? "link";
@@ -88,5 +93,28 @@ export const Button: ComponentConfig<ButtonProps> = {
         </_Button>
       </div>
     );
+  },
+};
+
+const WithLayoutButton = withLayout(ButtonInner);
+
+export const Button: typeof WithLayoutButton = {
+  ...WithLayoutButton,
+  resolveFields: (data, params) => {
+    const base = (
+      WithLayoutButton as { resolveFields?: (typeof WithLayoutButton)["resolveFields"] }
+    ).resolveFields?.(data, params);
+    if (base != null && typeof (base as Promise<unknown>).then === "function") {
+      return (base as Promise<Fields<ButtonProps>>).then((f) =>
+        filterButtonHrefFields(f, data)
+      );
+    }
+    if (base == null) {
+      return filterButtonHrefFields(
+        ButtonInner.fields as Fields<ButtonProps>,
+        data
+      );
+    }
+    return filterButtonHrefFields(base as Fields<ButtonProps>, data);
   },
 };

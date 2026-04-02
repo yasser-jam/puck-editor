@@ -1,20 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
+// @ts-nocheck — loose Hero config (userField + external fields) vs strict ComponentConfig
 import React from "react";
-import { ComponentConfig } from "@/core/types";
 import { quotes } from "./quotes";
 import { AutoField, FieldLabel, RichTextMenu } from "@/core";
 import { Link2, Quote } from "lucide-react";
-import HeroComponent, { HeroProps } from "./Hero";
+import HeroComponent from "./Hero";
+import { withLayout } from "../../components/Layout";
 
-export const Hero: ComponentConfig<{
-  props: HeroProps;
-  fields: {
-    userField: {
-      type: "userField";
-      option: boolean;
-    };
-  };
-}> = {
+/** Cast avoids strict `userField` / resolveData typing vs UserConfig. */
+const HeroInner: any = {
   fields: {
     quote: {
       type: "external",
@@ -241,3 +235,18 @@ export const Hero: ComponentConfig<{
   },
   render: HeroComponent,
 };
+
+const WithLayoutHero = withLayout(HeroInner);
+
+export const Hero = {
+  ...WithLayoutHero,
+  resolveFields: async (data: any, params: any) => {
+    const base = await Promise.resolve(
+      (WithLayoutHero as any).resolveFields?.(data, params)
+    );
+    if (data.props.align === "center") {
+      return { ...base, image: undefined };
+    }
+    return base;
+  },
+} as any;
