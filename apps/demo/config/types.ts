@@ -15,6 +15,7 @@ import { ProductsGridProps } from "./blocks/ProductsGrid";
 import { CartSectionProps } from "./blocks/CartSection";
 import { CheckoutFormProps } from "./blocks/CheckoutForm";
 import { ProductSearchMenuProps } from "./blocks/ProductSearchMenu";
+import { CategoryListMenuProps } from "./blocks/CategoryListMenu";
 import { ProductImageProps } from "./blocks/ProductImage";
 import { ProductInfoProps } from "./blocks/ProductInfo";
 import { SectionProps } from "./blocks/Section";
@@ -53,6 +54,7 @@ export type Components = {
   CartSection: CartSectionProps;
   CheckoutForm: CheckoutFormProps;
   ProductSearchMenu: ProductSearchMenuProps;
+  CategoryListMenu: CategoryListMenuProps;
   ProductImage: ProductImageProps;
   ProductInfo: ProductInfoProps;
   ContentHeading: ContentHeadingProps;

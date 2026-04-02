@@ -15,6 +15,7 @@ import { ProductsGrid } from "./blocks/ProductsGrid";
 import { CartSection } from "./blocks/CartSection";
 import { CheckoutForm } from "./blocks/CheckoutForm";
 import { ProductSearchMenu } from "./blocks/ProductSearchMenu";
+import { CategoryListMenu } from "./blocks/CategoryListMenu";
 import { ProductImage } from "./blocks/ProductImage";
 import { ProductInfo } from "./blocks/ProductInfo";
 import { Section } from "./blocks/Section";
@@ -42,6 +43,7 @@ const conf: UserConfig = {
         "CartSection",
         "CheckoutForm",
         "ProductSearchMenu",
+        "CategoryListMenu",
       ],
     },
     sections: {
@@ -66,7 +68,12 @@ const conf: UserConfig = {
     },
     products: {
       title: "Product Blocks",
-      components: ["ProductImage", "ProductInfo", "ProductSearchMenu"],
+      components: [
+        "ProductImage",
+        "ProductInfo",
+        "ProductSearchMenu",
+        "CategoryListMenu",
+      ],
     },
     legacy: {
       title: "Legacy",
@@ -106,6 +113,7 @@ const conf: UserConfig = {
     CartSection,
     CheckoutForm,
     ProductSearchMenu,
+    CategoryListMenu,
     ProductImage,
     ProductInfo,
     ContentHeading,
