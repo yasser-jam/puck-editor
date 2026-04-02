@@ -83,9 +83,35 @@ function discountedPrice(price: number, discount: number): number {
   return price * (1 - discount / 100);
 }
 
+// ─── Default props (shared with ProductsGrid nested cards) ─────────────────
+
+export const DEFAULT_PRODUCT_CARD_PROPS: Omit<
+  ProductCardProps,
+  "product" | "layout"
+> = {
+  variant: "vertical",
+  colorScheme: "light",
+  fontFamily: "body",
+  fontWeight: "400",
+  lineHeight: "normal",
+  imageMode: "img",
+  imageHeight: "",
+  imageBorderRadius: "none",
+  imageObjectFit: "cover",
+  imageBackgroundSize: "cover",
+  imageBackgroundPosition: "center",
+  imageBackgroundAttachment: "scroll",
+  spacing: "normal",
+  showDescription: true,
+  showCategories: true,
+  showBadge: true,
+  showStockBadge: true,
+  advanced: { ...DEFAULT_ADVANCED },
+};
+
 // ─── Render ──────────────────────────────────────────────────────────────────
 
-function ProductCardRender({
+export function ProductCardRender({
   product,
   variant,
   colorScheme,
@@ -489,24 +515,7 @@ const ProductCardInner: ComponentConfig<ProductCardProps> = {
 
   defaultProps: {
     product: products[0] ?? null,
-    variant: "vertical",
-    colorScheme: "light",
-    fontFamily: "body",
-    fontWeight: "400",
-    lineHeight: "normal",
-    imageMode: "img",
-    imageHeight: "",
-    imageBorderRadius: "none",
-    imageObjectFit: "cover",
-    imageBackgroundSize: "cover",
-    imageBackgroundPosition: "center",
-    imageBackgroundAttachment: "scroll",
-    spacing: "normal",
-    showDescription: true,
-    showCategories: true,
-    showBadge: true,
-    showStockBadge: true,
-    advanced: { ...DEFAULT_ADVANCED },
+    ...DEFAULT_PRODUCT_CARD_PROPS,
   },
 
   render: ProductCardRender,

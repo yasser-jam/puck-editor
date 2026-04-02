@@ -11,6 +11,7 @@ import { Text } from "./blocks/Text";
 import { Space } from "./blocks/Space";
 import { RichText } from "./blocks/RichText";
 import { ProductCard } from "./blocks/ProductCard";
+import { ProductsGrid } from "./blocks/ProductsGrid";
 import { ProductImage } from "./blocks/ProductImage";
 import { ProductInfo } from "./blocks/ProductInfo";
 import { Section } from "./blocks/Section";
@@ -35,7 +36,7 @@ export const conf: UserConfig = {
     presets: {
       title: "Presets",
       defaultExpanded: true,
-      components: ["ProductCard"],
+      components: ["ProductCard", "ProductsGrid"],
     },
     sections: {
       title: "Sections",
@@ -95,6 +96,7 @@ export const conf: UserConfig = {
     Space,
     RichText,
     ProductCard,
+    ProductsGrid,
     ProductImage,
     ProductInfo,
     ContentHeading,

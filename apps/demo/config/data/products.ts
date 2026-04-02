@@ -111,12 +111,91 @@ export const products: Product[] = [
     categories: ["Sports", "Kitchen", "Outdoor"],
     collections: ["Eco Picks", "Summer 2025"],
   },
+  {
+    id: "prod-009",
+    title: "Artisan Soy Candle Trio",
+    image:
+      "https://images.unsplash.com/photo-1602874801007-bd458bb1b542?w=600&auto=format&fit=crop&q=80",
+    description:
+      "Three hand-poured soy candles in cedar, vanilla, and lavender. Burn time ~40 hours each, gift-ready box.",
+    price: 48.0,
+    inStock: true,
+    categories: ["Home", "Wellness"],
+    collections: ["Gifts", "Home & Living"],
+    discount: 12,
+  },
+  {
+    id: "prod-010",
+    title: "Leather Passport Wallet",
+    image:
+      "https://images.unsplash.com/photo-1627123424574-724758594e93?w=600&auto=format&fit=crop&q=80",
+    description:
+      "Full-grain leather holder with RFID blocking, passport slot, and card pockets. Monogramming available.",
+    price: 64.0,
+    inStock: true,
+    categories: ["Accessories", "Travel"],
+    collections: ["Gifts", "Essentials"],
+  },
+  {
+    id: "prod-011",
+    title: "Gourmet Chocolate Assortment",
+    image:
+      "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=600&auto=format&fit=crop&q=80",
+    description:
+      "24-piece box of dark, milk, and praline chocolates. Fair-trade cocoa, presented in a ribbon-tied tin.",
+    price: 36.5,
+    inStock: true,
+    categories: ["Food", "Gifts"],
+    collections: ["Gifts", "New Arrivals"],
+    discount: 8,
+  },
+  {
+    id: "prod-012",
+    title: "Silk Eye Mask & Scrunchie Set",
+    image:
+      "https://images.unsplash.com/photo-1616628182505-8490e192697?w=600&auto=format&fit=crop&q=80",
+    description:
+      "Mulberry silk sleep mask and matching scrunchies in a soft drawstring pouch. Gentle on hair and skin.",
+    price: 29.99,
+    inStock: true,
+    categories: ["Accessories", "Wellness"],
+    collections: ["Gifts", "Eco Picks"],
+  },
+  {
+    id: "prod-013",
+    title: "Mini Indoor Bonsai Starter Kit",
+    image:
+      "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=600&auto=format&fit=crop&q=80",
+    description:
+      "Everything to grow a tabletop juniper: ceramic pot, soil, pruning shears, and care guide. Ideal for plant lovers.",
+    price: 52.0,
+    inStock: true,
+    categories: ["Home", "Outdoor"],
+    collections: ["Gifts", "Home & Living"],
+  },
+  {
+    id: "prod-014",
+    title: "Brass Desk Compass & Letter Opener",
+    image:
+      "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=600&auto=format&fit=crop&q=80",
+    description:
+      "Vintage-style brass compass paired with a matching letter opener, lined presentation case included.",
+    price: 44.0,
+    inStock: false,
+    categories: ["Stationery", "Office"],
+    collections: ["Gifts", "Stationery Picks"],
+  },
 ];
 
 export const productOptions = products.map((p) => ({
   label: p.title,
   value: p.id,
 }));
+
+/** Unique collection names across the demo catalog (for collection pickers). */
+export const allCollections: string[] = [
+  ...new Set(products.flatMap((p) => p.collections)),
+].sort();
 
 // ─── Shared helpers ─────────────────────────────────────────────────────────
 

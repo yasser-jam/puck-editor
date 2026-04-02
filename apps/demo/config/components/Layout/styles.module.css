@@ -1,3 +1,265 @@
+/* Class names MUST follow .RootClass-name because getClassNameFactory("Layout", styles)
+   resolves getClassName("boxField") → styles["Layout-boxField"] */
+
 .Layout {
   display: block;
+}
+
+.Layout-boxField {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.Layout-boxLegend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--puck-color-grey-03, #374151);
+}
+
+.Layout-legendSep {
+  color: var(--puck-color-grey-08, #cbd5e1);
+  font-weight: 400;
+  user-select: none;
+}
+
+.Layout-legendMargin {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #9a3412;
+}
+
+.Layout-legendMargin::before {
+  content: "";
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: #ffedd5;
+  border: 2px solid #ea580c;
+}
+
+.Layout-legendPadding {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #166534;
+}
+
+.Layout-legendPadding::before {
+  content: "";
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: #dcfce7;
+  border: 2px solid #16a34a;
+}
+
+.Layout-legendElement {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #334155;
+}
+
+.Layout-legendElement::before {
+  content: "";
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: #e2e8f0;
+  border: 2px solid #64748b;
+}
+
+.Layout-layoutControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.Layout-controlItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--puck-color-grey-04, #64748b);
+}
+
+.Layout-controlItem select {
+  min-width: 80px;
+  padding: 6px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  border: 1px solid var(--puck-color-grey-09, #e2e8f0);
+}
+
+/* Box model: margin (amber) → padding (green) → element (slate) */
+
+.Layout-marginFrame {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  grid-template-rows: auto minmax(96px, auto) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 14px;
+  background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+  border: 2px dashed #ea580c;
+  border-radius: 8px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.Layout-mt {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: center;
+  width: 100%;
+  max-width: 80px;
+}
+
+.Layout-mb {
+  grid-column: 2;
+  grid-row: 3;
+  justify-self: center;
+  width: 100%;
+  max-width: 80px;
+}
+
+.Layout-midRow {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  gap: 8px;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.Layout-ml,
+.Layout-mr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Layout-mlInput,
+.Layout-mrInput {
+  width: 44px;
+  max-width: 100%;
+}
+
+.Layout-paddingFrame {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  grid-template-rows: auto minmax(48px, auto) auto;
+  gap: 6px;
+  align-items: center;
+  padding: 10px;
+  min-width: 0;
+  background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%);
+  border: 2px solid #22c55e;
+  border-radius: 6px;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5);
+}
+
+.Layout-pt {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: center;
+  width: 100%;
+  max-width: 72px;
+}
+
+.Layout-pb {
+  grid-column: 2;
+  grid-row: 3;
+  justify-self: center;
+  width: 100%;
+  max-width: 72px;
+}
+
+.Layout-paddingMid {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 40px;
+  gap: 6px;
+  align-items: center;
+  min-height: 48px;
+  min-width: 0;
+}
+
+.Layout-pl,
+.Layout-pr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Layout-plInput,
+.Layout-prInput {
+  width: 38px;
+  max-width: 100%;
+}
+
+.Layout-elementCore {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 6px;
+  background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+  border: 2px solid #64748b;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #334155;
+  letter-spacing: 0.08em;
+  min-width: 0;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.8);
+}
+
+.Layout-edgeInput {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 4px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  border: 1px solid #94a3b8;
+  border-radius: 4px;
+  background: #fff;
+  color: #0f172a;
+  box-sizing: border-box;
+}
+
+.Layout-edgeInput:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 0;
+  border-color: #2563eb;
+}
+
+.Layout-edgeInput:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.Layout-edgeInput::-webkit-outer-spin-button,
+.Layout-edgeInput::-webkit-inner-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.Layout-edgeInput[type="number"] {
+  appearance: textfield;
 }
