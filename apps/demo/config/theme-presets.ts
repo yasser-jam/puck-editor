@@ -151,6 +151,7 @@ export function buildThemesGalleryData(): UserData {
                     props: {
                       id: "Button-theme-atelier",
                       label: "Edit Atelier theme",
+                      buttonAction: "link",
                       href: themeDemoEditPath("atelier"),
                       variant: "primary",
                     },

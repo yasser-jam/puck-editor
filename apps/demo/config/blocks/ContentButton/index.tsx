@@ -1,5 +1,5 @@
-import React from "react";
-import { ComponentConfig } from "@/core/types";
+import React, { CSSProperties, MouseEvent } from "react";
+import { ComponentConfig, Fields } from "@/core/types";
 import { WithLayout, withLayout } from "../../components/Layout";
 import {
   ColorKey,
@@ -9,11 +9,18 @@ import {
   COLOR_KEYS,
 } from "../../theme";
 import { MODE_OPTIONS, RADIUS_OPTIONS, resolveRadius } from "../../content/typography-fields";
+import {
+  type ButtonAction,
+  BUTTON_ACTION_OPTIONS,
+  buttonActionLabel,
+} from "../../content/button-actions";
 
 const COLOR_SELECT = COLOR_KEYS.map(({ key, label }) => ({ label, value: key }));
 
 export type ContentButtonProps = WithLayout<{
   label: string;
+  /** Stored in page JSON — `link` uses `href`; other values are functional jobs. */
+  buttonAction: ButtonAction;
   href: string;
   radiusMode: "theme" | "fixed";
   radiusTheme: "none" | "sm" | "md" | "lg" | "xl" | "full";
@@ -36,6 +43,11 @@ const ContentButtonInner: ComponentConfig<ContentButtonProps> = {
   label: "Button",
   fields: {
     label: { type: "text", contentEditable: true },
+    buttonAction: {
+      type: "select",
+      label: "Action",
+      options: BUTTON_ACTION_OPTIONS,
+    },
     href: { type: "text", label: "Link URL" },
     radiusMode: { type: "radio", label: "Border radius", options: [...MODE_OPTIONS] },
     radiusTheme: { type: "select", options: RADIUS_OPTIONS },
@@ -62,6 +74,7 @@ const ContentButtonInner: ComponentConfig<ContentButtonProps> = {
   },
   defaultProps: {
     label: "Button",
+    buttonAction: "link",
     href: "#",
     radiusMode: "theme",
     radiusTheme: "md",
@@ -81,6 +94,7 @@ const ContentButtonInner: ComponentConfig<ContentButtonProps> = {
   },
   render: ({
     label,
+    buttonAction,
     href,
     radiusMode,
     radiusTheme,
@@ -99,6 +113,7 @@ const ContentButtonInner: ComponentConfig<ContentButtonProps> = {
     fixedFontSize,
     puck,
   }) => {
+    const action = buttonAction ?? "link";
     const r = resolveRadius(radiusMode, radiusTheme, radiusFixed);
     const bg =
       bgMode === "theme" ? `var(${colorVar(bgTheme)})` : bgFixed;
@@ -115,29 +130,49 @@ const ContentButtonInner: ComponentConfig<ContentButtonProps> = {
             paddingBottom: fixedPadY,
             fontSize: fixedFontSize,
           };
+
+    const sharedStyle: CSSProperties = {
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: r,
+      background: bg,
+      color: fg,
+      textDecoration: "none",
+      fontWeight: 600,
+      boxSizing: "border-box",
+      minHeight: size.height,
+      paddingLeft: size.paddingLeft,
+      paddingRight: size.paddingRight,
+      paddingTop: size.paddingTop,
+      paddingBottom: size.paddingBottom,
+      fontSize: size.fontSize,
+      border: "none",
+      cursor: puck.isEditing ? "default" : "pointer",
+      fontFamily: "inherit",
+    };
+
+    const onFunctionalClick = (e: MouseEvent) => {
+      e.preventDefault();
+      if (puck.isEditing) return;
+      window.alert(
+        `Button action: ${action} — ${buttonActionLabel(action)}`
+      );
+    };
+
+    if (action !== "link") {
+      return (
+        <button type="button" onClick={onFunctionalClick} style={sharedStyle}>
+          {label}
+        </button>
+      );
+    }
+
     return (
       <a
         href={puck.isEditing ? "#" : href}
         onClick={puck.isEditing ? (e) => e.preventDefault() : undefined}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          borderRadius: r,
-          background: bg,
-          color: fg,
-          textDecoration: "none",
-          fontWeight: 600,
-          boxSizing: "border-box",
-          minHeight: size.height,
-          paddingLeft: size.paddingLeft,
-          paddingRight: size.paddingRight,
-          paddingTop: size.paddingTop,
-          paddingBottom: size.paddingBottom,
-          fontSize: size.fontSize,
-          border: "none",
-          cursor: puck.isEditing ? "default" : "pointer",
-        }}
+        style={sharedStyle}
       >
         {label}
       </a>
@@ -145,4 +180,33 @@ const ContentButtonInner: ComponentConfig<ContentButtonProps> = {
   },
 };
 
-export const ContentButton = withLayout(ContentButtonInner);
+const WithLayoutButton = withLayout(ContentButtonInner);
+
+function omitHrefField(
+  fields: Record<string, unknown>,
+  data: { props?: { buttonAction?: ButtonAction } }
+): Fields<ContentButtonProps> {
+  const action = data.props?.buttonAction ?? "link";
+  if (action === "link") return fields as Fields<ContentButtonProps>;
+  const { href: _omit, ...rest } = fields;
+  return rest as Fields<ContentButtonProps>;
+}
+
+export const ContentButton: typeof WithLayoutButton = {
+  ...WithLayoutButton,
+  resolveFields: (data, params) => {
+    const resolver = (
+      WithLayoutButton as { resolveFields?: (typeof WithLayoutButton)["resolveFields"] }
+    ).resolveFields;
+    const base = resolver?.(data, params);
+    if (base != null && typeof (base as Promise<unknown>).then === "function") {
+      return (base as Promise<Record<string, unknown>>).then((f) =>
+        omitHrefField(f, data)
+      );
+    }
+    if (base == null) {
+      return ContentButtonInner.fields as Fields<ContentButtonProps>;
+    }
+    return omitHrefField(base as Record<string, unknown>, data);
+  },
+};
