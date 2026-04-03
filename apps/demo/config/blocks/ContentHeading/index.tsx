@@ -1,7 +1,11 @@
 import React from "react";
 import { ComponentConfig } from "@/core/types";
 import { WithLayout, withLayout } from "../../components/Layout";
-import { COMPONENT_FONT_CSS, COMPONENT_FONT_OPTIONS } from "../../theme";
+import { COMPONENT_FONT_CSS, COMPONENT_FONT_OPTIONS, ColorKey } from "../../theme";
+import {
+  contentColorFields,
+  resolveContentColor,
+} from "../../content/color-fields";
 import {
   MODE_OPTIONS,
   TEXT_SIZE_OPTIONS,
@@ -28,6 +32,9 @@ export type ContentHeadingProps = WithLayout<{
   lineHeightFixed: string;
   fontStyle: "normal" | "italic";
   textTransform: "none" | "uppercase" | "lowercase" | "capitalize";
+  colorMode: "theme" | "fixed";
+  colorTheme: ColorKey;
+  colorFixed: string;
 }>;
 
 const Tag = ["h1", "h2", "h3", "h4", "h5", "h6"] as const;
@@ -92,6 +99,7 @@ const ContentHeadingInner: ComponentConfig<ContentHeadingProps> = {
         { label: "Capitalize", value: "capitalize" },
       ],
     },
+    ...contentColorFields,
   },
   defaultProps: {
     text: "Heading",
@@ -109,6 +117,9 @@ const ContentHeadingInner: ComponentConfig<ContentHeadingProps> = {
     lineHeightFixed: "1.4",
     fontStyle: "normal",
     textTransform: "none",
+    colorMode: "theme",
+    colorTheme: "text",
+    colorFixed: "#0f172a",
   },
   render: (props) => {
     const {
@@ -127,12 +138,16 @@ const ContentHeadingInner: ComponentConfig<ContentHeadingProps> = {
       lineHeightFixed,
       fontStyle,
       textTransform,
+      colorMode,
+      colorTheme,
+      colorFixed,
     } = props;
     const H = Tag[Math.min(Math.max(parseInt(level, 10) || 2, 1), 6) - 1];
     const fontCss = COMPONENT_FONT_CSS[fontFamily] ?? COMPONENT_FONT_CSS.body;
     const fs = resolveFontSize(fontSizeMode, fontSizeTheme, fontSizeFixed);
     const fw = resolveFontWeight(fontWeightMode, fontWeightTheme, fontWeightFixed);
     const lh = resolveLineHeight(lineHeightMode, lineHeightTheme, lineHeightFixed);
+    const color = resolveContentColor(colorMode, colorTheme, colorFixed);
     return (
       <H
         style={{
@@ -145,7 +160,7 @@ const ContentHeadingInner: ComponentConfig<ContentHeadingProps> = {
           textAlign,
           margin: 0,
           width: "100%",
-          color: "inherit",
+          color,
         }}
       >
         {text}

@@ -5,7 +5,15 @@ import { Heading as _Heading } from "@/core/components/Heading";
 import type { HeadingProps as _HeadingProps } from "@/core/components/Heading";
 import { Section } from "../../components/Section";
 import { WithLayout, withLayout } from "../../components/Layout";
-import { COMPONENT_FONT_OPTIONS, COMPONENT_FONT_CSS } from "../../theme";
+import {
+  COMPONENT_FONT_OPTIONS,
+  COMPONENT_FONT_CSS,
+  ColorKey,
+} from "../../theme";
+import {
+  contentColorFields,
+  resolveContentColor,
+} from "../../content/color-fields";
 
 export type HeadingProps = WithLayout<{
   align: "left" | "center" | "right";
@@ -13,6 +21,9 @@ export type HeadingProps = WithLayout<{
   level?: _HeadingProps["rank"];
   size: _HeadingProps["size"];
   fontFamily?: "body" | "option1" | "option2";
+  colorMode: "theme" | "fixed";
+  colorTheme: ColorKey;
+  colorFixed: string;
 }>;
 
 const sizeOptions = [
@@ -62,18 +73,32 @@ const HeadingInternal: ComponentConfig<HeadingProps> = {
       label: "Font Family",
       options: COMPONENT_FONT_OPTIONS,
     },
+    ...contentColorFields,
   },
   defaultProps: {
     align: "left",
     text: "Heading",
     size: "m",
     fontFamily: "body",
+    colorMode: "theme",
+    colorTheme: "text",
+    colorFixed: "#0f172a",
     layout: {
       padding: "8px",
     },
   },
-  render: ({ align, text, size, level, fontFamily }) => {
+  render: ({
+    align,
+    text,
+    size,
+    level,
+    fontFamily,
+    colorMode,
+    colorTheme,
+    colorFixed,
+  }) => {
     const fontCss = COMPONENT_FONT_CSS[fontFamily ?? "body"] ?? COMPONENT_FONT_CSS.body;
+    const color = resolveContentColor(colorMode, colorTheme, colorFixed);
     return (
       <Section>
         <_Heading size={size} rank={level as any}>
@@ -83,6 +108,7 @@ const HeadingInternal: ComponentConfig<HeadingProps> = {
               textAlign: align,
               width: "100%",
               fontFamily: fontCss,
+              color,
             }}
           >
             {text}
