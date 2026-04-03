@@ -12,6 +12,8 @@ import {
   colorVar,
   computeBadgeThemeVars,
   computeScaleThemeVars,
+  buildResponsiveLayoutCss,
+  normalizeBreakpoints,
   type BadgeShape,
   type BadgeStyle,
 } from "../../theme";
@@ -72,6 +74,14 @@ export function ThemeInjector({ children, document: iframeDoc }: ThemeInjectorPr
     .map(([k, v]) => `        ${k}: ${v};`)
     .join("\n");
 
+  const bp = normalizeBreakpoints({
+    breakpointMobileMax: rootProps?.breakpointMobileMax,
+    breakpointTabletMax: rootProps?.breakpointTabletMax,
+  });
+  const responsiveLayoutCss = buildResponsiveLayoutCss(bp);
+  const bpMobile = bp.breakpointMobileMax;
+  const bpTablet = bp.breakpointTabletMax;
+
   useEffect(() => {
     const doc = iframeDoc ?? (typeof document !== "undefined" ? document : null);
     if (!doc) return;
@@ -103,6 +113,10 @@ ${badgeVarLines}
 
         /* ── Typography / radius / button scales ── */
 ${scaleVarLines}
+
+        /* ── Responsive layout (visibility) ── */
+        --theme-bp-mobile-max: ${bpMobile}px;
+        --theme-bp-tablet-max: ${bpTablet}px;
       }
       body {
         font-family: var(--theme-body-font);
@@ -112,6 +126,14 @@ ${scaleVarLines}
 
     // ── Inject / update Google Fonts link ──
     let linkEl = doc.getElementById("puck-theme-fonts") as HTMLLinkElement | null;
+    let responsiveEl = doc.getElementById("puck-responsive-layout") as HTMLStyleElement | null;
+    if (!responsiveEl) {
+      responsiveEl = doc.createElement("style");
+      responsiveEl.id = "puck-responsive-layout";
+      doc.head.appendChild(responsiveEl);
+    }
+    responsiveEl.textContent = responsiveLayoutCss;
+
     if (googleFontsUrl) {
       if (!linkEl) {
         const pre1 = doc.createElement("link");
@@ -157,6 +179,9 @@ ${scaleVarLines}
     colors.text,
     colors.neutral,
     scaleVarLines,
+    responsiveLayoutCss,
+    bpMobile,
+    bpTablet,
   ]);
 
   return <>{children}</>;

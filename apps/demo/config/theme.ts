@@ -226,6 +226,80 @@ export const DEFAULT_SHELL: ShellThemeProps = {
   footerVariant: "commerce",
 };
 
+// ─── Responsive breakpoints (layout visibility per viewport) ─────────────────
+
+export type BreakpointThemeProps = {
+  /** Inclusive max width (px) for “mobile”; ≤ this matches mobile rules */
+  breakpointMobileMax: number;
+  /** Inclusive max width (px) for “tablet”; between mobile+1 and this = tablet */
+  breakpointTabletMax: number;
+};
+
+export const DEFAULT_BREAKPOINTS: BreakpointThemeProps = {
+  breakpointMobileMax: 767,
+  breakpointTabletMax: 1023,
+};
+
+/** Clamp breakpoint values so tablet range is non-empty. */
+export function normalizeBreakpoints(
+  input?: Partial<BreakpointThemeProps>
+): BreakpointThemeProps {
+  const base = { ...DEFAULT_BREAKPOINTS, ...input };
+  let mobile = Math.max(320, Math.min(2000, Math.round(base.breakpointMobileMax)));
+  let tablet = Math.max(mobile + 1, Math.min(2400, Math.round(base.breakpointTabletMax)));
+  return { breakpointMobileMax: mobile, breakpointTabletMax: tablet };
+}
+
+export type ViewportBucket = "mobile" | "tablet" | "desktop";
+
+export function getViewportBucket(
+  widthPx: number,
+  bp: BreakpointThemeProps
+): ViewportBucket {
+  if (widthPx <= bp.breakpointMobileMax) return "mobile";
+  if (widthPx <= bp.breakpointTabletMax) return "tablet";
+  return "desktop";
+}
+
+/**
+ * CSS for per-breakpoint visibility (see Layout `data-puck-hide-*`).
+ * Hiding is suppressed when `data-puck-layout-editor-visible="true"` (edit mode).
+ */
+export function buildResponsiveLayoutCss(bp: BreakpointThemeProps): string {
+  const { breakpointMobileMax: m, breakpointTabletMax: t } = normalizeBreakpoints(bp);
+  const tabletMin = m + 1;
+  const desktopMin = t + 1;
+  return `
+@media (max-width: ${m}px) {
+  [data-puck-hide-mobile="true"]:not([data-puck-layout-editor-visible="true"]) {
+    display: none !important;
+  }
+}
+@media (min-width: ${tabletMin}px) and (max-width: ${t}px) {
+  [data-puck-hide-tablet="true"]:not([data-puck-layout-editor-visible="true"]) {
+    display: none !important;
+  }
+}
+@media (min-width: ${desktopMin}px) {
+  [data-puck-hide-desktop="true"]:not([data-puck-layout-editor-visible="true"]) {
+    display: none !important;
+  }
+}
+`;
+}
+
+/** Parse Puck canvas viewport width (number, "360px", or "100%") to a pixel width for bucket checks. */
+export function parseViewportWidthForBucket(
+  w: string | number | undefined
+): number {
+  if (w == null) return DEFAULT_BREAKPOINTS.breakpointTabletMax + 1;
+  if (typeof w === "number" && Number.isFinite(w)) return w;
+  const s = String(w).trim();
+  if (s === "100%" || s === "auto") return 1440;
+  const m = s.match(/^(\d+)/);
+  return m ? parseInt(m[1], 10) : DEFAULT_BREAKPOINTS.breakpointTabletMax + 1;
+}
+
 /** CSS vars for product badges (discount / stock), driven by Settings */
 export function computeBadgeThemeVars(
   shape: BadgeShape,
@@ -516,4 +590,5 @@ export type FullThemeProps = ThemeProps &
   Partial<ColorTheme> &
   Partial<BadgeThemeProps> &
   Partial<ShellThemeProps> &
-  Partial<ScaleThemeProps>;
+  Partial<ScaleThemeProps> &
+  Partial<BreakpointThemeProps>;

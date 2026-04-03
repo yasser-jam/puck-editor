@@ -15,6 +15,9 @@ import {
   DEFAULT_BADGE,
   DEFAULT_SHELL,
   DEFAULT_SCALES,
+  DEFAULT_BREAKPOINTS,
+  buildResponsiveLayoutCss,
+  normalizeBreakpoints,
   computeBadgeThemeVars,
   computeScaleThemeVars,
   getThemeRootClassNames,
@@ -49,6 +52,7 @@ export const Root: RootConfig<{
     ...DEFAULT_BADGE,
     ...DEFAULT_SHELL,
     ...DEFAULT_SCALES,
+    ...DEFAULT_BREAKPOINTS,
   },
 
   render: (props) => {
@@ -91,6 +95,12 @@ export const Root: RootConfig<{
 
     const scaleVars = computeScaleThemeVars(p as Partial<typeof DEFAULT_SCALES>);
 
+    const bp = normalizeBreakpoints({
+      breakpointMobileMax: p.breakpointMobileMax as number | undefined,
+      breakpointTabletMax: p.breakpointTabletMax as number | undefined,
+    });
+    const responsiveLayoutCss = buildResponsiveLayoutCss(bp);
+
     const themeVars: Record<string, string> = {
       "--theme-body-font": bodyFontCss,
       "--theme-font-1": font1Css,
@@ -114,6 +124,10 @@ export const Root: RootConfig<{
 
     return (
       <>
+        <style
+          id="puck-responsive-layout"
+          dangerouslySetInnerHTML={{ __html: responsiveLayoutCss }}
+        />
         {!isEditing && googleFontsUrl && (
           <>
             <link rel="preconnect" href="https://fonts.googleapis.com" />

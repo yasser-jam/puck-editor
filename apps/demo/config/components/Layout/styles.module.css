@@ -11,70 +11,65 @@
   gap: 12px;
 }
 
-.Layout-boxLegend {
+/* Color key — directly above the margin / padding diagram */
+.Layout-boxModelKey {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px 14px;
+  gap: 8px 12px;
   font-size: 12px;
   font-weight: 600;
   line-height: 1.4;
   color: var(--puck-color-grey-03, #374151);
 }
 
-.Layout-legendSep {
+.Layout-keySep {
   color: var(--puck-color-grey-08, #cbd5e1);
   font-weight: 400;
   user-select: none;
 }
 
-.Layout-legendMargin {
+.Layout-keyItemMargin,
+.Layout-keyItemPadding,
+.Layout-keyItemElement {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+}
+
+.Layout-keyItemMargin {
   color: #9a3412;
 }
 
-.Layout-legendMargin::before {
-  content: "";
+.Layout-keyItemPadding {
+  color: #166534;
+}
+
+.Layout-keyItemElement {
+  color: #334155;
+}
+
+.Layout-keySwatchMargin,
+.Layout-keySwatchPadding,
+.Layout-keySwatchElement {
   flex-shrink: 0;
   width: 14px;
   height: 14px;
   border-radius: 3px;
+  box-sizing: border-box;
+}
+
+.Layout-keySwatchMargin {
   background: #ffedd5;
   border: 2px solid #ea580c;
 }
 
-.Layout-legendPadding {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #166534;
-}
-
-.Layout-legendPadding::before {
-  content: "";
-  flex-shrink: 0;
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
+.Layout-keySwatchPadding {
   background: #dcfce7;
   border: 2px solid #16a34a;
 }
 
-.Layout-legendElement {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #334155;
-}
-
-.Layout-legendElement::before {
-  content: "";
-  flex-shrink: 0;
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
+.Layout-keySwatchElement {
   background: #e2e8f0;
   border: 2px solid #64748b;
 }
@@ -207,6 +202,16 @@
 
 /* Box model: margin (amber) → padding (green) → element (slate) */
 
+.Layout-visibilityPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--puck-color-grey-09, #e2e8f0);
+  background: #fafafa;
+}
+
 .Layout-marginFrame {
   display: grid;
   grid-template-columns: 48px minmax(0, 1fr) 48px;
@@ -227,6 +232,14 @@
   justify-self: center;
   width: 100%;
   max-width: 80px;
+}
+
+.Layout-visibilityTitle {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--puck-color-grey-03, #475569);
 }
 
 .Layout-mb {
@@ -460,4 +473,58 @@
   border-radius: 6px;
   background: #fff;
   border: 1px solid var(--puck-color-grey-09, #e2e8f0);
+}
+
+.Layout-visibilityToggles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.Layout-visibilityLegend {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--puck-color-grey-03, #475569);
+}
+
+.Layout-checkRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--puck-color-grey-02, #334155);
+  cursor: pointer;
+  user-select: none;
+}
+
+.Layout-checkRow input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.Layout-editorHiddenHint {
+  position: relative;
+  outline: 2px dashed #f59e0b;
+  outline-offset: 2px;
+}
+
+.Layout-viewportHiddenBadge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 20;
+  max-width: calc(100% - 12px);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #f59e0b;
+  pointer-events: none;
+  text-align: right;
 }

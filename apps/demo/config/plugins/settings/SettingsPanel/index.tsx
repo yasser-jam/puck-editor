@@ -14,8 +14,10 @@ import {
   DEFAULT_BADGE,
   DEFAULT_SHELL,
   DEFAULT_SCALES,
+  DEFAULT_BREAKPOINTS,
   FullThemeProps,
   ScaleThemeProps,
+  normalizeBreakpoints,
 } from "../../../theme";
 import styles from "./styles.module.css";
 
@@ -188,6 +190,11 @@ export function SettingsPanel() {
   const headerVariant = rootProps?.headerVariant ?? DEFAULT_SHELL.headerVariant;
   const footerVariant = rootProps?.footerVariant ?? DEFAULT_SHELL.footerVariant;
 
+  const bpMobile =
+    rootProps?.breakpointMobileMax ?? DEFAULT_BREAKPOINTS.breakpointMobileMax;
+  const bpTablet =
+    rootProps?.breakpointTabletMax ?? DEFAULT_BREAKPOINTS.breakpointTabletMax;
+
   const updateProps = (patch: Partial<SettingsRootProps>) => {
     dispatch({
       type: "replaceRoot",
@@ -334,6 +341,54 @@ export function SettingsPanel() {
                 field={{ type: "select", label: "Footer layout", options: SHELL_VARIANT_OPTIONS }}
                 value={footerVariant}
                 onChange={(v) => updateProps({ footerVariant: v as typeof footerVariant })}
+              />
+            </div>
+
+            <div className={getClassName("sectionTitle")}>Breakpoints</div>
+            <p className={getClassName("sectionHint")}>
+              Max widths (px) for mobile and tablet. Used with each block&apos;s Layout → Hide on
+              viewport. Desktop is anything wider than the tablet max.
+            </p>
+            <div className={getClassName("field")}>
+              <AutoField
+                field={{
+                  type: "number",
+                  label: "Mobile — max width (px)",
+                  min: 320,
+                  max: 2000,
+                }}
+                value={bpMobile}
+                onChange={(v) => {
+                  const n = Math.round(Number(v));
+                  if (Number.isNaN(n)) return;
+                  updateProps(
+                    normalizeBreakpoints({
+                      breakpointMobileMax: n,
+                      breakpointTabletMax: bpTablet,
+                    })
+                  );
+                }}
+              />
+            </div>
+            <div className={getClassName("field")}>
+              <AutoField
+                field={{
+                  type: "number",
+                  label: "Tablet — max width (px)",
+                  min: 321,
+                  max: 2400,
+                }}
+                value={bpTablet}
+                onChange={(v) => {
+                  const n = Math.round(Number(v));
+                  if (Number.isNaN(n)) return;
+                  updateProps(
+                    normalizeBreakpoints({
+                      breakpointMobileMax: bpMobile,
+                      breakpointTabletMax: n,
+                    })
+                  );
+                }}
               />
             </div>
           </div>

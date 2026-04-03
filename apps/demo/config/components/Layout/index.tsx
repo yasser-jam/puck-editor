@@ -1,3 +1,5 @@
+"use client";
+
 import {
   CSSProperties,
   ChangeEvent,
@@ -5,6 +7,7 @@ import {
   ReactNode,
   useId,
 } from "react";
+import { useAppStore } from "@/core/store";
 import {
   ComponentConfig,
   ComponentConfigParams,
@@ -13,6 +16,13 @@ import {
 } from "@/core/types";
 import type { LeftOrExactRight } from "@/core/types/Internal";
 import { getClassNameFactory } from "@/core/lib";
+import {
+  getViewportBucket,
+  normalizeBreakpoints,
+  parseViewportWidthForBucket,
+  type BreakpointThemeProps,
+  type ViewportBucket,
+} from "../../theme";
 import styles from "./styles.module.css";
 
 const getClassName = getClassNameFactory("Layout", styles);
@@ -64,6 +74,12 @@ type LayoutFieldProps = {
   shadowBlur?: string;
   shadowSpread?: string;
   shadowColor?: string;
+  /** Root box `display` for the block wrapper. */
+  displayMode?: "block" | "flex" | "grid";
+  /** When true, block is hidden at that viewport width (theme breakpoints). */
+  hideOnMobile?: boolean;
+  hideOnTablet?: boolean;
+  hideOnDesktop?: boolean;
 };
 
 type LayoutVisibility = {
@@ -83,6 +99,8 @@ type LayoutProps = WithLayout<{
   children: ReactNode;
   className?: string;
   style?: CSSProperties;
+  /** When true (Puck edit mode), responsive hiding is suppressed and viewport hints may show. */
+  puckIsEditing?: boolean;
 }>;
 
 const defaultLayoutValue: Required<
@@ -118,6 +136,10 @@ const defaultLayoutValue: Required<
     | "shadowBlur"
     | "shadowSpread"
     | "shadowColor"
+    | "displayMode"
+    | "hideOnMobile"
+    | "hideOnTablet"
+    | "hideOnDesktop"
   >
 > = {
   spanCol: 1,
@@ -150,6 +172,10 @@ const defaultLayoutValue: Required<
   shadowBlur: "6px",
   shadowSpread: "0px",
   shadowColor: "rgba(0, 0, 0, 0.12)",
+  displayMode: "block",
+  hideOnMobile: false,
+  hideOnTablet: false,
+  hideOnDesktop: false,
 };
 
 function normalizeLayout(value?: LayoutFieldProps): Required<LayoutFieldProps> {
@@ -337,7 +363,6 @@ function LayoutBoxField({
 }) {
   const floatGroupId = useId();
   const layout = normalizeLayout(value);
-  const maxSpanCol = field.maxSpanCol ?? 12;
 
   const updateLayout = (partial: Partial<LayoutFieldProps>) => {
     onChange({ ...layout, ...partial });
@@ -364,75 +389,63 @@ function LayoutBoxField({
 
   return (
     <div className={getClassName("boxField")}>
-      <div className={getClassName("boxLegend")}>
-        <span className={getClassName("legendMargin")}>Margin</span>
-        <span className={getClassName("legendSep")} aria-hidden>
-          ·
-        </span>
-        <span className={getClassName("legendPadding")}>Padding</span>
-        <span className={getClassName("legendSep")} aria-hidden>
-          ·
-        </span>
-        <span className={getClassName("legendElement")}>Element</span>
-      </div>
-
-      {(field.showSpanCol || field.showSpanRow || field.showGrow) && (
+      {field.showGrow && (
         <div className={getClassName("layoutControls")}>
-          {field.showSpanCol && (
-            <label className={getClassName("controlItem")}>
-              <span>Columns</span>
-              <select
-                value={String(layout.spanCol ?? 1)}
-                onChange={(event) =>
-                  updateLayout({ spanCol: Number(event.target.value) })
-                }
-                disabled={readOnly}
-              >
-                {Array.from({ length: maxSpanCol }, (_, idx) => idx + 1).map(
-                  (n) => (
-                    <option key={`span-col-${n}`} value={String(n)}>
-                      {n}
-                    </option>
-                  )
-                )}
-              </select>
-            </label>
-          )}
-          {field.showSpanRow && (
-            <label className={getClassName("controlItem")}>
-              <span>Rows</span>
-              <select
-                value={String(layout.spanRow ?? 1)}
-                onChange={(event) =>
-                  updateLayout({ spanRow: Number(event.target.value) })
-                }
-                disabled={readOnly}
-              >
-                {Array.from({ length: 12 }, (_, idx) => idx + 1).map((n) => (
-                  <option key={`span-row-${n}`} value={String(n)}>
-                    {n}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
-          {field.showGrow && (
-            <label className={getClassName("controlItem")}>
-              <span>Grow</span>
-              <select
-                value={layout.grow ? "true" : "false"}
-                onChange={(event) =>
-                  updateLayout({ grow: event.target.value === "true" })
-                }
-                disabled={readOnly}
-              >
-                <option value="true">true</option>
-                <option value="false">false</option>
-              </select>
-            </label>
-          )}
+          <label className={getClassName("controlItem")}>
+            <span>Grow</span>
+            <select
+              value={layout.grow ? "true" : "false"}
+              onChange={(event) =>
+                updateLayout({ grow: event.target.value === "true" })
+              }
+              disabled={readOnly}
+            >
+              <option value="true">true</option>
+              <option value="false">false</option>
+            </select>
+          </label>
         </div>
       )}
+
+      <div className={getClassName("visibilityPanel")}>
+        <div className={getClassName("visibilityTitle")}>Visibility</div>
+        <div className={getClassName("visibilityToggles")}>
+          <span className={getClassName("visibilityLegend")}>Hide on viewport</span>
+          <label className={getClassName("checkRow")}>
+            <input
+              type="checkbox"
+              checked={layout.hideOnMobile}
+              onChange={(event) =>
+                updateLayout({ hideOnMobile: event.target.checked })
+              }
+              disabled={readOnly}
+            />
+            Mobile
+          </label>
+          <label className={getClassName("checkRow")}>
+            <input
+              type="checkbox"
+              checked={layout.hideOnTablet}
+              onChange={(event) =>
+                updateLayout({ hideOnTablet: event.target.checked })
+              }
+              disabled={readOnly}
+            />
+            Tablet
+          </label>
+          <label className={getClassName("checkRow")}>
+            <input
+              type="checkbox"
+              checked={layout.hideOnDesktop}
+              onChange={(event) =>
+                updateLayout({ hideOnDesktop: event.target.checked })
+              }
+              disabled={readOnly}
+            />
+            Desktop
+          </label>
+        </div>
+      </div>
 
       <label className={getClassName("controlItem")}>
         <span>Position</span>
@@ -749,6 +762,23 @@ function LayoutBoxField({
         )}
       </div>
 
+      <div className={getClassName("boxModelKey")} aria-hidden>
+        <span className={getClassName("keyItemMargin")}>
+          <span className={getClassName("keySwatchMargin")} />
+          Margin
+        </span>
+        <span className={getClassName("keySep")}>·</span>
+        <span className={getClassName("keyItemPadding")}>
+          <span className={getClassName("keySwatchPadding")} />
+          Padding
+        </span>
+        <span className={getClassName("keySep")}>·</span>
+        <span className={getClassName("keyItemElement")}>
+          <span className={getClassName("keySwatchElement")} />
+          Element
+        </span>
+      </div>
+
       <div className={getClassName("marginFrame")}>
         <div className={getClassName("mt")}>
           <input
@@ -896,14 +926,63 @@ function resolvePaddingBottom(layout: LayoutFieldProps | undefined): string | un
   return undefined;
 }
 
+function viewportBucketLabel(bucket: ViewportBucket): string {
+  if (bucket === "mobile") return "mobile";
+  if (bucket === "tablet") return "tablet";
+  return "desktop";
+}
+
 const Layout = forwardRef<HTMLDivElement, LayoutProps>(
-  ({ children, className, layout, style }, ref) => {
+  (
+    { children, className, layout, style, puckIsEditing = false },
+    ref
+  ) => {
     const pt = resolvePaddingTop(layout) ?? "0px";
     const pb = resolvePaddingBottom(layout) ?? "0px";
     const norm = normalizeLayout(layout);
     const isFloat = norm.positionMode === "float";
     const floatPlacementMode = norm.floatPlacementMode ?? "preset";
     const useFixedPos = norm.floatUseFixedPosition !== false;
+
+    const previewMode = useAppStore((s) => s.state.ui.previewMode);
+    const viewportW = useAppStore((s) => s.state.ui.viewports.current.width);
+    const rootBp = useAppStore(
+      (s) => s.state.data.root.props as Partial<BreakpointThemeProps> | undefined
+    );
+
+    /** Arranging canvas (not interactive preview): keep hidden blocks visible with a hint. */
+    const editorLayoutOverride =
+      puckIsEditing && previewMode === "edit";
+
+    const bp = normalizeBreakpoints({
+      breakpointMobileMax: rootBp?.breakpointMobileMax,
+      breakpointTabletMax: rootBp?.breakpointTabletMax,
+    });
+    /** Canvas width from Puck UI (not the iframe’s CSS viewport — media queries often miss that). */
+    const widthPx = puckIsEditing
+      ? parseViewportWidthForBucket(viewportW)
+      : 0;
+    const bucket = puckIsEditing
+      ? getViewportBucket(widthPx, bp)
+      : ("desktop" as ViewportBucket);
+
+    const hiddenAtViewport =
+      (bucket === "mobile" && norm.hideOnMobile) ||
+      (bucket === "tablet" && norm.hideOnTablet) ||
+      (bucket === "desktop" && norm.hideOnDesktop);
+
+    const showViewportHint = editorLayoutOverride && hiddenAtViewport;
+
+    /**
+     * In the editor, interactive preview: apply hide via inline display using the canvas width
+     * from the store. CSS @media uses the iframe document viewport, which stays wide while the
+     * “mobile” canvas is only 360px wide — so media queries never matched.
+     * Published pages rely on CSS + real viewport (puckIsEditing is false here).
+     */
+    const hideByViewportInEditor =
+      puckIsEditing &&
+      !editorLayoutOverride &&
+      hiddenAtViewport;
 
     const floatStyle: CSSProperties = !isFloat
       ? { position: "static" }
@@ -924,9 +1003,11 @@ const Layout = forwardRef<HTMLDivElement, LayoutProps>(
 
     const appearanceStyle = resolveLayoutAppearanceStyles(norm);
 
+    const displayMode = norm.displayMode;
+
     return (
       <div
-        className={className}
+        className={`${className ?? ""}${showViewportHint ? ` ${getClassName("editorHiddenHint")}` : ""}`.trim()}
         style={{
           gridColumn: layout?.spanCol
             ? `span ${Math.max(Math.min(layout.spanCol, 12), 1)}`
@@ -947,9 +1028,26 @@ const Layout = forwardRef<HTMLDivElement, LayoutProps>(
           ...floatStyle,
           ...appearanceStyle,
           ...style,
+          display: hideByViewportInEditor
+            ? "none"
+            : (style?.display ?? displayMode),
         }}
         ref={ref}
+        data-puck-hide-mobile={norm.hideOnMobile ? "true" : undefined}
+        data-puck-hide-tablet={norm.hideOnTablet ? "true" : undefined}
+        data-puck-hide-desktop={norm.hideOnDesktop ? "true" : undefined}
+        data-puck-layout-editor-visible={
+          editorLayoutOverride ? "true" : undefined
+        }
       >
+        {showViewportHint && (
+          <span
+            className={getClassName("viewportHiddenBadge")}
+            title="This block is hidden at the live site for this viewport width"
+          >
+            Hidden on {viewportBucketLabel(bucket)}
+          </span>
+        )}
         {children}
       </div>
     );
@@ -1033,6 +1131,7 @@ export function withLayout<
           className={getClassName()}
           layout={layoutProps.layout as LayoutFieldProps}
           ref={layoutProps.puck.dragRef}
+          puckIsEditing={layoutProps.puck?.isEditing === true}
         >
           {componentConfig.render(props as never)}
         </Layout>
