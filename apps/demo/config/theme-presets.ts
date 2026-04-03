@@ -106,6 +106,9 @@ export function buildThemesGalleryData(): UserData {
                 fontFamily: "option1",
                 layout: { padding: "0px" },
                 size: "xxl",
+                colorMode: "theme",
+                colorTheme: "text",
+                colorFixed: "#0f172a",
               },
             },
             {
@@ -284,6 +287,9 @@ function buildAtelierThemeDemoPageData(): UserData {
                 fontFamily: "option1",
                 layout: { padding: "0px" },
                 size: "xxl",
+                colorMode: "theme",
+                colorTheme: "text",
+                colorFixed: "#0f172a",
               },
             },
             {
@@ -487,6 +493,9 @@ function buildAtelierThemeDemoPageData(): UserData {
                             fontFamily: "option1",
                             layout: { padding: "0px" },
                             size: "xl",
+                            colorMode: "theme",
+                            colorTheme: "text",
+                            colorFixed: "#0f172a",
                           },
                         },
                         {
@@ -560,6 +569,9 @@ function buildAtelierThemeDemoPageData(): UserData {
                             fontFamily: "option1",
                             layout: { padding: "0px" },
                             size: "xl",
+                            colorMode: "theme",
+                            colorTheme: "text",
+                            colorFixed: "#0f172a",
                           },
                         },
                         {

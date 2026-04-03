@@ -104,6 +104,9 @@ export const initialData: Record<string, UserData> = {
                 fontFamily: "option1",
                 layout: { padding: "0px" },
                 size: "xxl",
+                colorMode: "theme",
+                colorTheme: "text",
+                colorFixed: "#0f172a",
               },
             },
             {
@@ -307,6 +310,9 @@ export const initialData: Record<string, UserData> = {
                             fontFamily: "option1",
                             layout: { padding: "0px" },
                             size: "xl",
+                            colorMode: "theme",
+                            colorTheme: "text",
+                            colorFixed: "#0f172a",
                           },
                         },
                         {
@@ -420,6 +426,9 @@ export const initialData: Record<string, UserData> = {
                 text: "Your Cart",
                 size: "xxl",
                 layout: { padding: "0px" },
+                colorMode: "theme",
+                colorTheme: "text",
+                colorFixed: "#0f172a",
               },
             },
             {

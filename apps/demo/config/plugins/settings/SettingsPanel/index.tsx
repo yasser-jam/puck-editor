@@ -134,6 +134,11 @@ function ColorCard({
 
 // ─── Panel ───────────────────────────────────────────────────────────────────
 
+/** Root props stored in page data (theme + editor toggles not on FullThemeProps). */
+type SettingsRootProps = Partial<FullThemeProps> & {
+  enableHtmlRichTextBlock?: boolean;
+};
+
 type Tab = "fonts" | "colors" | "look" | "scales" | "editor";
 
 const BADGE_SHAPE_OPTIONS = [
@@ -155,7 +160,7 @@ const SHELL_VARIANT_OPTIONS = [
 
 export function SettingsPanel() {
   const rootProps = useAppStore(
-    (s) => s.state.data.root.props as Partial<FullThemeProps> | undefined
+    (s) => s.state.data.root.props as SettingsRootProps | undefined
   );
   const dispatch = useAppStore((s) => s.dispatch);
 
@@ -183,9 +188,7 @@ export function SettingsPanel() {
   const headerVariant = rootProps?.headerVariant ?? DEFAULT_SHELL.headerVariant;
   const footerVariant = rootProps?.footerVariant ?? DEFAULT_SHELL.footerVariant;
 
-  const updateProps = (
-    patch: Partial<FullThemeProps> & { enableHtmlRichTextBlock?: boolean }
-  ) => {
+  const updateProps = (patch: Partial<SettingsRootProps>) => {
     dispatch({
       type: "replaceRoot",
       root: {

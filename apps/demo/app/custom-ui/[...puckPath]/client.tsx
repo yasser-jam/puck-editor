@@ -233,6 +233,7 @@ const CustomPuck = ({ dataKey }: { dataKey: string }) => {
         position: "relative",
       }}
     >
+      <HtmlBlockPaletteSync />
       <div style={{ position: "sticky", top: 0, zIndex: 2 }}>
         <CustomHeader
           onPublish={async (data: Data) => {
@@ -403,12 +404,6 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
           lockable: true,
         }}
         overrides={{
-          puck: ({ children }) => (
-            <>
-              <HtmlBlockPaletteSync />
-              {children}
-            </>
-          ),
           fieldTypes: {
             userField: ({ readOnly, field, name, value, onChange }) => (
               <FieldLabel
