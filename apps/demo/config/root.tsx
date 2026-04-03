@@ -25,7 +25,13 @@ import {
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-export type RootProps = DefaultRootRenderProps<Partial<FullThemeProps> & { title?: string }>;
+export type RootProps = DefaultRootRenderProps<
+  Partial<FullThemeProps> & {
+    title?: string;
+    /** When true, the HTML block appears in the Content palette (Settings → Editor). */
+    enableHtmlRichTextBlock?: boolean;
+  }
+>;
 
 // ─── Root config ─────────────────────────────────────────────────────────────
 
@@ -37,6 +43,7 @@ export const Root: RootConfig<{
 }> = {
   defaultProps: {
     title: "My Page",
+    enableHtmlRichTextBlock: false,
     ...DEFAULT_THEME,
     ...DEFAULT_COLORS,
     ...DEFAULT_BADGE,

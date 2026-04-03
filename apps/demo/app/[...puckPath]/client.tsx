@@ -7,6 +7,7 @@ import { useDemoData } from "../../lib/use-demo-data";
 import { useEffect, useState } from "react";
 import { Type } from "lucide-react";
 import { settingsPlugin } from "../../config/plugins/settings";
+import { HtmlBlockPaletteSync } from "../../config/plugins/html-block-palette";
 import { ThemeInjector } from "../../config/plugins/settings/ThemeInjector";
 import { pagesPlugin } from "../../config/plugins/pages";
 import { themesPlugin } from "../../config/plugins/themes";
@@ -51,6 +52,12 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
           }}
           _experimentalFullScreenCanvas={false}
           overrides={{
+            puck: ({ children }) => (
+              <>
+                <HtmlBlockPaletteSync />
+                {children}
+              </>
+            ),
             // Inject theme CSS custom properties + Google Fonts into the preview iframe
             iframe: ({ children, document }) => (
               <ThemeInjector document={document}>{children}</ThemeInjector>

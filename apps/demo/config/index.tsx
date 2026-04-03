@@ -28,6 +28,7 @@ import { ContentDivider } from "./blocks/ContentDivider";
 import { ImageGallery } from "./blocks/ImageGallery";
 import { VideoEmbed } from "./blocks/VideoEmbed";
 import { ContentIcon } from "./blocks/ContentIcon";
+import { ContentHtml } from "./blocks/ContentHtml";
 
 import Root from "./root";
 import { UserConfig } from "./types";
@@ -127,6 +128,7 @@ export const conf: UserConfig = {
     ImageGallery,
     VideoEmbed,
     ContentIcon,
+    ContentHtml,
   },
 };
 

@@ -134,7 +134,7 @@ function ColorCard({
 
 // ─── Panel ───────────────────────────────────────────────────────────────────
 
-type Tab = "fonts" | "colors" | "look" | "scales";
+type Tab = "fonts" | "colors" | "look" | "scales" | "editor";
 
 const BADGE_SHAPE_OPTIONS = [
   { label: "Rounded", value: "rounded" },
@@ -183,7 +183,9 @@ export function SettingsPanel() {
   const headerVariant = rootProps?.headerVariant ?? DEFAULT_SHELL.headerVariant;
   const footerVariant = rootProps?.footerVariant ?? DEFAULT_SHELL.footerVariant;
 
-  const updateProps = (patch: Partial<FullThemeProps>) => {
+  const updateProps = (
+    patch: Partial<FullThemeProps> & { enableHtmlRichTextBlock?: boolean }
+  ) => {
     dispatch({
       type: "replaceRoot",
       root: {
@@ -229,6 +231,13 @@ export function SettingsPanel() {
           onClick={() => setActiveTab("scales")}
         >
           Scales
+        </button>
+        <button
+          type="button"
+          className={`${getClassName("tab")} ${activeTab === "editor" ? getClassName("tab--active") : ""}`}
+          onClick={() => setActiveTab("editor")}
+        >
+          Editor
         </button>
       </div>
 
@@ -322,6 +331,32 @@ export function SettingsPanel() {
                 field={{ type: "select", label: "Footer layout", options: SHELL_VARIANT_OPTIONS }}
                 value={footerVariant}
                 onChange={(v) => updateProps({ footerVariant: v as typeof footerVariant })}
+              />
+            </div>
+          </div>
+        )}
+
+        {activeTab === "editor" && (
+          <div className={getClassName("section")}>
+            <div className={getClassName("sectionTitle")}>Blocks</div>
+            <p className={getClassName("sectionHint")}>
+              The HTML block renders custom markup (including scripts if your deployment allows it).
+              Turn it on only when you need raw HTML in the page.
+            </p>
+            <div className={getClassName("field")}>
+              <AutoField
+                field={{
+                  type: "radio",
+                  label: "HTML rich text block",
+                  options: [
+                    { label: "Off — not in palette", value: false },
+                    { label: "On — show under Content", value: true },
+                  ],
+                }}
+                value={rootProps?.enableHtmlRichTextBlock === true}
+                onChange={(v) =>
+                  updateProps({ enableHtmlRichTextBlock: v === true })
+                }
               />
             </div>
           </div>

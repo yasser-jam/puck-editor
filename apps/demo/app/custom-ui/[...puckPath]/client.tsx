@@ -16,6 +16,7 @@ import {
 import { HeadingAnalyzer } from "@/plugin-heading-analyzer/src/HeadingAnalyzer";
 import config from "../../../config";
 import { UserConfig } from "../../../config/types";
+import { HtmlBlockPaletteSync } from "../../../config/plugins/html-block-palette";
 import { useDemoData } from "../../../lib/use-demo-data";
 import { IconButton, createUsePuck } from "@/core";
 import { ReactNode, useEffect, useRef, useState } from "react";
@@ -402,6 +403,12 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
           lockable: true,
         }}
         overrides={{
+          puck: ({ children }) => (
+            <>
+              <HtmlBlockPaletteSync />
+              {children}
+            </>
+          ),
           fieldTypes: {
             userField: ({ readOnly, field, name, value, onChange }) => (
               <FieldLabel

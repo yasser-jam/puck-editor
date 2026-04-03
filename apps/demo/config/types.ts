@@ -31,6 +31,7 @@ import { ContentDividerProps } from "./blocks/ContentDivider";
 import { ImageGalleryProps } from "./blocks/ImageGallery";
 import { VideoEmbedProps } from "./blocks/VideoEmbed";
 import { ContentIconProps } from "./blocks/ContentIcon";
+import { ContentHtmlProps } from "./blocks/ContentHtml";
 
 export type { RootProps } from "./root";
 
@@ -65,6 +66,7 @@ export type Components = {
   ImageGallery: ImageGalleryProps;
   VideoEmbed: VideoEmbedProps;
   ContentIcon: ContentIconProps;
+  ContentHtml: ContentHtmlProps;
 };
 
 export type UserConfig = Config<{
