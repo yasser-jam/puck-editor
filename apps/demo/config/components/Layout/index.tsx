@@ -52,6 +52,18 @@ type LayoutFieldProps = {
   fixedRight?: string;
   fixedBottom?: string;
   fixedLeft?: string;
+  /** Border width (e.g. `1px`). */
+  borderWidth?: string;
+  /** `none` hides the border regardless of width. */
+  borderStyle?: "solid" | "dashed" | "none";
+  borderColor?: string;
+  shadowMode?: "none" | "preset" | "custom";
+  shadowPreset?: "sm" | "md" | "lg" | "xl";
+  shadowOffsetX?: string;
+  shadowOffsetY?: string;
+  shadowBlur?: string;
+  shadowSpread?: string;
+  shadowColor?: string;
 };
 
 type LayoutVisibility = {
@@ -96,6 +108,16 @@ const defaultLayoutValue: Required<
     | "fixedRight"
     | "fixedBottom"
     | "fixedLeft"
+    | "borderWidth"
+    | "borderStyle"
+    | "borderColor"
+    | "shadowMode"
+    | "shadowPreset"
+    | "shadowOffsetX"
+    | "shadowOffsetY"
+    | "shadowBlur"
+    | "shadowSpread"
+    | "shadowColor"
   >
 > = {
   spanCol: 1,
@@ -118,6 +140,16 @@ const defaultLayoutValue: Required<
   fixedRight: "auto",
   fixedBottom: "auto",
   fixedLeft: "auto",
+  borderWidth: "0px",
+  borderStyle: "solid",
+  borderColor: "#cbd5e1",
+  shadowMode: "none",
+  shadowPreset: "md",
+  shadowOffsetX: "0px",
+  shadowOffsetY: "4px",
+  shadowBlur: "6px",
+  shadowSpread: "0px",
+  shadowColor: "rgba(0, 0, 0, 0.12)",
 };
 
 function normalizeLayout(value?: LayoutFieldProps): Required<LayoutFieldProps> {
@@ -137,6 +169,43 @@ function normalizeLayout(value?: LayoutFieldProps): Required<LayoutFieldProps> {
     merged.floatUseFixedPosition = true;
   }
   return merged;
+}
+
+type ShadowPresetKey = NonNullable<LayoutFieldProps["shadowPreset"]>;
+
+const SHADOW_PRESET_CSS: Record<ShadowPresetKey, string> = {
+  sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+  md: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)",
+  lg: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)",
+  xl: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+};
+
+function resolveLayoutAppearanceStyles(
+  layout: Required<LayoutFieldProps>
+): CSSProperties {
+  const appearance: CSSProperties = {
+    boxSizing: "border-box",
+  };
+
+  if (layout.borderStyle === "none") {
+    appearance.borderStyle = "none";
+    appearance.borderWidth = 0;
+  } else {
+    appearance.borderWidth = layout.borderWidth;
+    appearance.borderStyle = layout.borderStyle;
+    appearance.borderColor = layout.borderColor;
+  }
+
+  if (layout.shadowMode === "none") {
+    appearance.boxShadow = "none";
+  } else if (layout.shadowMode === "preset") {
+    const key = layout.shadowPreset ?? "md";
+    appearance.boxShadow = SHADOW_PRESET_CSS[key] ?? SHADOW_PRESET_CSS.md;
+  } else {
+    appearance.boxShadow = `${layout.shadowOffsetX} ${layout.shadowOffsetY} ${layout.shadowBlur} ${layout.shadowSpread} ${layout.shadowColor}`;
+  }
+
+  return appearance;
 }
 
 /** Inset for custom float mode: omit when auto. */
@@ -235,6 +304,25 @@ function toPx(n: number): string {
   const v = Math.min(999, Math.max(0, Math.round(Number.isFinite(n) ? n : 0)));
   return `${v}px`;
 }
+
+/** Read stored shadow distances like `-4px` or `12` as integer pixels. */
+function parseShadowPx(raw: string | undefined): number {
+  if (raw == null || raw === "") return 0;
+  const m = String(raw).trim().match(/^(-?\d+)/);
+  return m ? parseInt(m[1], 10) : 0;
+}
+
+function clampShadowPx(n: number, min: number, max: number): number {
+  const v = Math.round(Number.isFinite(n) ? n : 0);
+  return Math.min(max, Math.max(min, v));
+}
+
+const SHADOW_NUMBER_FIELDS = [
+  { key: "shadowOffsetX" as const, label: "X", min: -999, max: 999 },
+  { key: "shadowOffsetY" as const, label: "Y", min: -999, max: 999 },
+  { key: "shadowBlur" as const, label: "Blur", min: 0, max: 999 },
+  { key: "shadowSpread" as const, label: "Spread", min: -999, max: 999 },
+];
 
 function LayoutBoxField({
   field,
@@ -481,6 +569,186 @@ function LayoutBoxField({
         </div>
       )}
 
+      <div className={getClassName("appearanceSection")}>
+        <div className={getClassName("appearanceTitle")}>Border</div>
+        <div className={getClassName("appearanceRow")}>
+          <label className={getClassName("controlItem")}>
+            <span>Width</span>
+            <input
+              type="number"
+              min={0}
+              max={32}
+              className={getClassName("edgeInput")}
+              value={String(parsePx(layout.borderWidth))}
+              onChange={(event) => {
+                const raw = event.target.value;
+                if (raw === "") {
+                  updateLayout({ borderWidth: "0px" });
+                  return;
+                }
+                const n = parseInt(raw, 10);
+                if (Number.isNaN(n)) return;
+                updateLayout({ borderWidth: toPx(Math.min(32, n)) });
+              }}
+              disabled={readOnly}
+              aria-label="Border width"
+            />
+          </label>
+          <label className={getClassName("controlItem")}>
+            <span>Style</span>
+            <select
+              value={layout.borderStyle}
+              onChange={(event) =>
+                updateLayout({
+                  borderStyle: event.target.value as LayoutFieldProps["borderStyle"],
+                })
+              }
+              disabled={readOnly}
+            >
+              <option value="solid">Solid</option>
+              <option value="dashed">Dashed</option>
+              <option value="none">None</option>
+            </select>
+          </label>
+        </div>
+        <label className={getClassName("controlItem")}>
+          <span>Color</span>
+          <div className={getClassName("colorRow")}>
+            <input
+              type="color"
+              className={getClassName("colorPicker")}
+              value={
+                /^#[0-9A-Fa-f]{6}$/.test(layout.borderColor)
+                  ? layout.borderColor
+                  : "#cbd5e1"
+              }
+              onChange={(event) => updateLayout({ borderColor: event.target.value })}
+              disabled={readOnly}
+              aria-label="Border color"
+            />
+            <input
+              type="text"
+              className={getClassName("textInput")}
+              value={layout.borderColor}
+              onChange={(event) => updateLayout({ borderColor: event.target.value })}
+              disabled={readOnly}
+              spellCheck={false}
+            />
+          </div>
+        </label>
+
+        <div className={getClassName("appearanceTitle")}>Shadow</div>
+        <label className={getClassName("controlItem")}>
+          <span>Mode</span>
+          <select
+            value={layout.shadowMode}
+            onChange={(event) =>
+              updateLayout({
+                shadowMode: event.target.value as LayoutFieldProps["shadowMode"],
+              })
+            }
+            disabled={readOnly}
+          >
+            <option value="none">None</option>
+            <option value="preset">Preset</option>
+            <option value="custom">Custom</option>
+          </select>
+        </label>
+        {layout.shadowMode === "preset" && (
+          <label className={getClassName("controlItem")}>
+            <span>Preset</span>
+            <select
+              value={layout.shadowPreset}
+              onChange={(event) =>
+                updateLayout({
+                  shadowPreset: event.target.value as ShadowPresetKey,
+                })
+              }
+              disabled={readOnly}
+            >
+              <option value="sm">Small</option>
+              <option value="md">Medium</option>
+              <option value="lg">Large</option>
+              <option value="xl">Extra large</option>
+            </select>
+          </label>
+        )}
+        {layout.shadowMode === "custom" && (
+          <>
+            <div className={getClassName("shadowGrid")}>
+              {SHADOW_NUMBER_FIELDS.map(({ key, label, min, max }) => (
+                <label key={key} className={getClassName("fixedCell")}>
+                  <span>{label}</span>
+                  <input
+                    type="number"
+                    min={min}
+                    max={max}
+                    className={getClassName("edgeInput")}
+                    value={String(parseShadowPx(layout[key]))}
+                    onChange={(event) => {
+                      const raw = event.target.value;
+                      if (raw === "") {
+                        updateLayout({ [key]: "0px" } as Partial<LayoutFieldProps>);
+                        return;
+                      }
+                      const n = parseInt(raw, 10);
+                      if (Number.isNaN(n)) return;
+                      updateLayout({
+                        [key]: `${clampShadowPx(n, min, max)}px`,
+                      } as Partial<LayoutFieldProps>);
+                    }}
+                    disabled={readOnly}
+                    aria-label={`Shadow ${label}`}
+                  />
+                </label>
+              ))}
+            </div>
+            <label className={getClassName("controlItem")}>
+              <span>Color</span>
+              <div className={getClassName("colorRow")}>
+                <input
+                  type="color"
+                  className={getClassName("colorPicker")}
+                  value={
+                    /^#[0-9A-Fa-f]{6}$/.test(layout.shadowColor)
+                      ? layout.shadowColor
+                      : "#000000"
+                  }
+                  onChange={(event) =>
+                    updateLayout({ shadowColor: event.target.value })
+                  }
+                  disabled={readOnly}
+                />
+                <input
+                  type="text"
+                  className={getClassName("textInput")}
+                  value={layout.shadowColor}
+                  onChange={(event) =>
+                    updateLayout({ shadowColor: event.target.value })
+                  }
+                  disabled={readOnly}
+                  spellCheck={false}
+                />
+              </div>
+            </label>
+          </>
+        )}
+        {layout.shadowMode !== "none" && (
+          <div className={getClassName("shadowPreviewWrap")}>
+            <span className={getClassName("shadowPreviewLabel")}>Preview</span>
+            <div
+              className={getClassName("shadowPreview")}
+              style={{
+                boxShadow:
+                  layout.shadowMode === "preset"
+                    ? SHADOW_PRESET_CSS[layout.shadowPreset ?? "md"]
+                    : `${layout.shadowOffsetX} ${layout.shadowOffsetY} ${layout.shadowBlur} ${layout.shadowSpread} ${layout.shadowColor}`,
+              }}
+            />
+          </div>
+        )}
+      </div>
+
       <div className={getClassName("marginFrame")}>
         <div className={getClassName("mt")}>
           <input
@@ -654,6 +922,8 @@ const Layout = forwardRef<HTMLDivElement, LayoutProps>(
               }),
         };
 
+    const appearanceStyle = resolveLayoutAppearanceStyles(norm);
+
     return (
       <div
         className={className}
@@ -675,6 +945,7 @@ const Layout = forwardRef<HTMLDivElement, LayoutProps>(
           paddingLeft: layout?.paddingLeft ?? "0px",
           flex: layout?.grow ? "1 1 0" : undefined,
           ...floatStyle,
+          ...appearanceStyle,
           ...style,
         }}
         ref={ref}
