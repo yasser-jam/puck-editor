@@ -4,7 +4,8 @@ import { initialData } from "../../config/initial-data";
 import { Components, RootProps } from "../../config/types";
 
 import { Config } from "@/core";
-import { Render, resolveAllData } from "@/core/bundle/rsc";
+import { resolveAllData } from "@/core/bundle/rsc";
+import { PuckRenderClient } from "./puck-render-client";
 
 // NB This is only necessary for this demo app, as the `@/core/bundle/rsc` path does not resolve to dist but the type for Config does
 // This will be resolved once the RSC package is merged with the regular package after DropZone support is dropped
@@ -28,5 +29,5 @@ export default async function Page() {
     metadata
   );
 
-  return <Render config={conf} data={resolvedData} metadata={metadata} />;
+  return <PuckRenderClient data={resolvedData} metadata={metadata} />;
 }

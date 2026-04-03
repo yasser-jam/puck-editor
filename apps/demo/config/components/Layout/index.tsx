@@ -7,9 +7,11 @@ import {
 } from "react";
 import {
   ComponentConfig,
+  ComponentConfigParams,
   CustomField,
   DefaultComponentProps,
 } from "@/core/types";
+import type { LeftOrExactRight } from "@/core/types/Internal";
 import { getClassNameFactory } from "@/core/lib";
 import styles from "./styles.module.css";
 
@@ -688,8 +690,12 @@ Layout.displayName = "Layout";
 export { Layout };
 
 export function withLayout<
-  ThisComponentConfig extends ComponentConfig<any> = ComponentConfig
->(componentConfig: ThisComponentConfig): ThisComponentConfig {
+  Props extends LeftOrExactRight<
+    Props,
+    DefaultComponentProps,
+    ComponentConfigParams
+  >
+>(componentConfig: ComponentConfig<Props>): ComponentConfig<Props> {
   return {
     ...componentConfig,
     fields: {
@@ -747,14 +753,19 @@ export function withLayout<
       };
     },
     inline: true,
-    render: (props) => (
-      <Layout
-        className={getClassName()}
-        layout={props.layout as LayoutFieldProps}
-        ref={props.puck.dragRef}
-      >
-        {componentConfig.render(props)}
-      </Layout>
-    ),
-  };
+    render: (props: Parameters<typeof componentConfig.render>[0]) => {
+      const layoutProps = props as Parameters<
+        typeof componentConfig.render
+      >[0] & { layout?: LayoutFieldProps };
+      return (
+        <Layout
+          className={getClassName()}
+          layout={layoutProps.layout as LayoutFieldProps}
+          ref={layoutProps.puck.dragRef}
+        >
+          {componentConfig.render(props as never)}
+        </Layout>
+      );
+    },
+  } as ComponentConfig<Props>;
 }
