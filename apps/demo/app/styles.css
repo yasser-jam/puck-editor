@@ -50,12 +50,76 @@ body {
   --puck-color-grey-10: #eef2f7;
   --puck-color-grey-11: #f4f7fb;
   --puck-color-grey-12: #f8fafc;
+
+  --editor-bg-top: #f8fbff;
+  --editor-bg-bottom: #eef4ff;
+  --editor-surface: #ffffff;
+  --editor-surface-soft: rgba(255, 255, 255, 0.82);
+  --editor-shadow-sm: 0 8px 24px rgba(15, 23, 42, 0.06);
+  --editor-shadow-md: 0 18px 44px rgba(15, 23, 42, 0.11);
 }
 
 /* Softer body background behind the editor canvas. */
 html,
 body {
-  background: var(--puck-color-grey-11);
+  background: radial-gradient(
+      120% 70% at 0% 0%,
+      rgba(96, 165, 250, 0.14),
+      transparent
+    ),
+    radial-gradient(110% 90% at 100% 0%, rgba(37, 99, 235, 0.1), transparent),
+    linear-gradient(180deg, var(--editor-bg-top), var(--editor-bg-bottom));
+  background-attachment: fixed;
+}
+
+[class*="_PuckLayout"] {
+  animation: EditorShell-enter 220ms ease-out;
+}
+
+@keyframes EditorShell-enter {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+[class*="_PuckHeader"] {
+  background: linear-gradient(
+    180deg,
+    var(--editor-surface-soft),
+    rgba(255, 255, 255, 0.7)
+  ) !important;
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.24) !important;
+  box-shadow: var(--editor-shadow-sm);
+}
+
+[class*="_PuckHeader"] button {
+  border-radius: 10px !important;
+}
+
+[class*="_PuckLayout"] [class*="_SidePanel"],
+[class*="_PuckLayout"] [class*="_Sidebar"] {
+  background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.95),
+      rgba(255, 255, 255, 0.78)
+    ),
+    var(--editor-surface) !important;
+  box-shadow: var(--editor-shadow-sm);
+}
+
+[class*="_PuckLayout"] [class*="_Preview"] {
+  background: radial-gradient(
+      120% 90% at 50% -10%,
+      rgba(191, 219, 254, 0.38),
+      rgba(219, 234, 254, 0)
+    ),
+    linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
 }
 
 /* ── Form controls ───────────────────────────────────────────────────── */
@@ -114,8 +178,8 @@ body {
 /* Buttons inside the property panel — softer & slightly bolder. */
 [class*="_SidebarSection"] button[class*="Button"] {
   border-radius: 8px !important;
-  transition: background 120ms ease, color 120ms ease,
-    border-color 120ms ease, transform 80ms ease !important;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease,
+    transform 80ms ease !important;
 }
 
 [class*="_SidebarSection"] button[class*="Button"]:hover {
@@ -155,6 +219,18 @@ body {
 
 /* ── Selected component outline in the canvas ────────────────────────── */
 /* Match our refined azure palette so selection looks calmer. */
-[class*="_DraggableComponent--isSelected"] [class*="_DraggableComponent-overlay"] {
+[class*="_DraggableComponent--isSelected"]
+  [class*="_DraggableComponent-overlay"] {
   box-shadow: 0 0 0 2px var(--puck-color-azure-04) inset !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [class*="_PuckLayout"],
+  [class*="_SidebarSection"] button[class*="Button"],
+  [class*="_SidebarSection"] input,
+  [class*="_SidebarSection"] textarea,
+  [class*="_SidebarSection"] select {
+    animation: none !important;
+    transition: none !important;
+  }
 }

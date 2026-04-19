@@ -22,6 +22,7 @@ import { Section } from "./blocks/Section";
 import { Group } from "./blocks/Group";
 import { ContentHeading } from "./blocks/ContentHeading";
 import { ContentParagraph } from "./blocks/ContentParagraph";
+import { Accordion } from "./blocks/Accordion";
 import { ContentImage } from "./blocks/ContentImage";
 import { ContentButton } from "./blocks/ContentButton";
 import { ContentDivider } from "./blocks/ContentDivider";
@@ -29,27 +30,41 @@ import { ImageGallery } from "./blocks/ImageGallery";
 import { VideoEmbed } from "./blocks/VideoEmbed";
 import { ContentIcon } from "./blocks/ContentIcon";
 import { ContentHtml } from "./blocks/ContentHtml";
+import { OrderHistory } from "./blocks/OrderHistory";
+import { Wishlist } from "./blocks/Wishlist";
+import { Testimonials } from "./blocks/Testimonials";
+import { ContactForm } from "./blocks/ContactForm";
+import { Sidebar } from "./blocks/Sidebar";
+import { NavMenu } from "./blocks/NavMenu";
+import { SideDrawer } from "./blocks/SideDrawer";
 import Root from "./root";
 import { UserConfig } from "./types";
 
 const conf: UserConfig = {
   root: Root,
   categories: {
-    presets: {
-      title: "Presets",
+    sections: {
+      title: "Sections",
+      defaultExpanded: true,
+      components: ["Section"],
+    },
+    bound: {
+      title: "Store Blocks",
       defaultExpanded: true,
       components: [
-        "ProductCard",
         "ProductsGrid",
+        "ProductCard",
+        "CategoryListMenu",
         "CartSection",
         "CheckoutForm",
         "ProductSearchMenu",
-        "CategoryListMenu",
+        "OrderHistory",
+        "Wishlist",
+        "Testimonials",
+        "ContactForm",
+        "ProductImage",
+        "ProductInfo",
       ],
-    },
-    sections: {
-      title: "Sections",
-      components: ["Section"],
     },
     content: {
       title: "Content",
@@ -57,6 +72,7 @@ const conf: UserConfig = {
       components: [
         "ContentHeading",
         "ContentParagraph",
+        "Accordion",
         "ContentImage",
         "ContentButton",
         "ContentDivider",
@@ -64,22 +80,19 @@ const conf: UserConfig = {
         "ImageGallery",
         "VideoEmbed",
         "ContentIcon",
-        "Group",
+        "ContentHtml",
       ],
     },
-    products: {
-      title: "Product Blocks",
-      components: [
-        "ProductImage",
-        "ProductInfo",
-        "ProductSearchMenu",
-        "CategoryListMenu",
-      ],
+    group: {
+      title: "Layout",
+      defaultExpanded: true,
+      components: ["Group", "Sidebar", "NavMenu"],
     },
     legacy: {
-      title: "Legacy",
+      title: "Legacy (hidden)",
       visible: false,
       components: [
+        "SideDrawer",
         "Heading",
         "Text",
         "RichText",
@@ -119,6 +132,7 @@ const conf: UserConfig = {
     ProductInfo,
     ContentHeading,
     ContentParagraph,
+    Accordion,
     ContentImage,
     ContentButton,
     ContentDivider,
@@ -126,6 +140,13 @@ const conf: UserConfig = {
     VideoEmbed,
     ContentIcon,
     ContentHtml,
+    OrderHistory,
+    Wishlist,
+    Testimonials,
+    ContactForm,
+    Sidebar,
+    NavMenu,
+    SideDrawer,
   },
 };
 

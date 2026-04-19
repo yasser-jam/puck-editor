@@ -13,6 +13,7 @@ import { pagesPlugin } from "../../config/plugins/pages";
 import { themesPlugin } from "../../config/plugins/themes";
 import { shopifyOutlinePlugin } from "../../config/plugins/shopify-editor";
 import { canvasInteractionsPlugin } from "../../config/plugins/canvas-interactions";
+import { normalizeEditorData } from "../../lib/normalize-editor-data";
 
 export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
   const metadata = {
@@ -42,7 +43,8 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
           config={config}
           data={data}
           onPublish={async (data) => {
-            localStorage.setItem(key, JSON.stringify(data));
+            const normalized = normalizeEditorData(data);
+            localStorage.setItem(key, JSON.stringify(normalized));
           }}
           plugins={[
             shopifyOutlinePlugin,

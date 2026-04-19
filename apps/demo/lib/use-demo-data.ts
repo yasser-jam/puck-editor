@@ -4,6 +4,7 @@ import { initialData } from "../config/initial-data";
 import { Metadata, resolveAllData } from "@/core";
 import { Components, UserData } from "../config/types";
 import { RootProps } from "../config/root";
+import { normalizeEditorData } from "./normalize-editor-data";
 
 const isBrowser = typeof window !== "undefined";
 
@@ -21,15 +22,23 @@ export const useDemoData = ({
   const key = `puck-demo:${componentKey}:${path}`;
 
   const [data] = useState<Partial<UserData>>(() => {
+    const fallback = normalizeEditorData(initialData[path] || {});
+
     if (isBrowser) {
       const dataStr = localStorage.getItem(key);
 
       if (dataStr) {
-        return JSON.parse(dataStr);
+        try {
+          return normalizeEditorData(JSON.parse(dataStr));
+        } catch {
+          return fallback;
+        }
       }
 
-      return initialData[path] || {};
+      return fallback;
     }
+
+    return fallback;
   });
 
   // Normally this would happen on the server, but we can't

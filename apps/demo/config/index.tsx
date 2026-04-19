@@ -22,6 +22,7 @@ import { Section } from "./blocks/Section";
 import { Group } from "./blocks/Group";
 import { ContentHeading } from "./blocks/ContentHeading";
 import { ContentParagraph } from "./blocks/ContentParagraph";
+import { Accordion } from "./blocks/Accordion";
 import { ContentImage } from "./blocks/ContentImage";
 import { ContentButton } from "./blocks/ContentButton";
 import { ContentDivider } from "./blocks/ContentDivider";
@@ -84,23 +85,24 @@ export const conf: UserConfig = {
       defaultExpanded: true,
       components: [
         // DSN-004 a–j ordering
-        "ContentHeading",     // DSN-004a
-        "ContentParagraph",   // DSN-004b
-        "ContentImage",       // DSN-004c
-        "ContentButton",      // DSN-004d
-        "ContentDivider",     // DSN-004e
-        "Space",              // DSN-004f
-        "ImageGallery",       // DSN-004g
-        "VideoEmbed",         // DSN-004h
-        "ContentIcon",        // DSN-004i
-        "ContentHtml",        // DSN-004j
+        "ContentHeading", // DSN-004a
+        "ContentParagraph", // DSN-004b
+        "Accordion", // FAQ / disclosure content
+        "ContentImage", // DSN-004c
+        "ContentButton", // DSN-004d
+        "ContentDivider", // DSN-004e
+        "Space", // DSN-004f
+        "ImageGallery", // DSN-004g
+        "VideoEmbed", // DSN-004h
+        "ContentIcon", // DSN-004i
+        "ContentHtml", // DSN-004j
       ],
     },
     group: {
       title: "Layout",
       defaultExpanded: true,
       components: [
-        "Group",   // DSN-004k / DSN-006
+        "Group", // DSN-004k / DSN-006
         "Sidebar", // DSN-004l — vertical container for filters / nav / promos
         "NavMenu", // DSN-004m — repeating list of links (header, footer, nav)
       ],
@@ -151,6 +153,7 @@ export const conf: UserConfig = {
     // Content (DSN-004 a–j)
     ContentHeading,
     ContentParagraph,
+    Accordion,
     ContentImage,
     ContentButton,
     ContentDivider,

@@ -68,19 +68,30 @@ export type SectionPreset = {
 // Section defaultProps mirror apps/demo/config/blocks/Section/index.tsx.
 // Kept in sync manually rather than imported to keep preset metadata
 // purely declarative.
-const SECTION_BASE_PROPS = {
+type SectionBaseProps = {
+  paddingTop: string;
+  paddingBottom: string;
+  paddingHorizontal: string;
+  backgroundColor: string;
+  theme: "light" | "dark";
+  maxWidth: string;
+  columns: number;
+  gridGap: string;
+};
+
+const SECTION_BASE_PROPS: SectionBaseProps = {
   paddingTop: "64px",
   paddingBottom: "64px",
   paddingHorizontal: "24px",
   backgroundColor: "#ffffff",
-  theme: "light" as const,
+  theme: "light",
   maxWidth: "1280px",
   columns: 1,
   gridGap: "24px",
 };
 
 const section = (
-  overrides: Partial<typeof SECTION_BASE_PROPS> & {
+  overrides: Partial<SectionBaseProps> & {
     content?: unknown[];
   } = {}
 ) => ({
@@ -141,7 +152,8 @@ export const sectionCatalog: SectionPreset[] = [
     description: "Split content into two equal columns.",
     category: "layout",
     icon: <Columns2 size={20} />,
-    gradient: "linear-gradient(90deg, #eff6ff 0%, #eff6ff 50%, #f0fdf4 50%, #f0fdf4 100%)",
+    gradient:
+      "linear-gradient(90deg, #eff6ff 0%, #eff6ff 50%, #f0fdf4 50%, #f0fdf4 100%)",
     build: () => section({ columns: 2, gridGap: "32px" }),
   },
   {
@@ -151,7 +163,8 @@ export const sectionCatalog: SectionPreset[] = [
       "Two-column layout: main content on one side, a Sidebar for filters or nav on the other.",
     category: "layout",
     icon: <PanelLeft size={20} />,
-    gradient: "linear-gradient(90deg, #f3f4f6 0%, #f3f4f6 30%, #ffffff 30%, #ffffff 100%)",
+    gradient:
+      "linear-gradient(90deg, #f3f4f6 0%, #f3f4f6 30%, #ffffff 30%, #ffffff 100%)",
     build: () => ({
       type: "Section",
       props: {
@@ -397,6 +410,28 @@ export const sectionCatalog: SectionPreset[] = [
           },
           {
             type: "ContentParagraph",
+            props: {},
+          },
+        ],
+      },
+    }),
+  },
+  {
+    id: "faq-accordion",
+    label: "FAQ Accordion",
+    description:
+      "Expandable questions and answers for shipping, returns, and payments.",
+    category: "content",
+    icon: <MessageSquareText size={20} />,
+    gradient: "linear-gradient(135deg, #dbeafe 0%, #e0f2fe 100%)",
+    build: () => ({
+      type: "Section",
+      props: {
+        ...SECTION_BASE_PROPS,
+        maxWidth: "860px",
+        content: [
+          {
+            type: "Accordion",
             props: {},
           },
         ],

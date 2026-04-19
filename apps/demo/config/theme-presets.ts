@@ -64,7 +64,9 @@ export const ATELIER_PRESET: ThemePresetDefinition = {
 /** Only one demo theme besides the default home page */
 export const THEME_PRESETS: ThemePresetDefinition[] = [ATELIER_PRESET];
 
-export function getThemePresetById(id: string): ThemePresetDefinition | undefined {
+export function getThemePresetById(
+  id: string
+): ThemePresetDefinition | undefined {
   return THEME_PRESETS.find((t) => t.id === id);
 }
 
@@ -155,6 +157,10 @@ export function buildThemesGalleryData(): UserData {
                       id: "Button-theme-atelier",
                       label: "Edit Atelier theme",
                       buttonAction: "link",
+                      link: {
+                        kind: "page",
+                        pageId: themeDemoEditPath("atelier"),
+                      },
                       href: themeDemoEditPath("atelier"),
                       variant: "primary",
                     },

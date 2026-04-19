@@ -1,4 +1,4 @@
-import React, { startTransition, useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   Eye,
   EyeOff,
@@ -24,7 +24,7 @@ type SectionRowProps = {
   label: string;
   hidden: boolean;
   selected: boolean;
-  onRequestInsertAfter: (index: number) => void;
+  rowCount: number;
 };
 
 const SectionRow = React.memo(function SectionRow({
@@ -33,7 +33,7 @@ const SectionRow = React.memo(function SectionRow({
   label,
   hidden,
   selected,
-  onRequestInsertAfter,
+  rowCount,
 }: SectionRowProps) {
   const dispatch = useAppStore((s) => s.dispatch);
   const storeApi = useAppStoreApi();
@@ -45,36 +45,56 @@ const SectionRow = React.memo(function SectionRow({
     });
   };
 
-  const toggleHidden = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const selectAt = (nextIndex: number) => {
+    dispatch({
+      type: "setUi",
+      ui: { itemSelector: { index: nextIndex, zone: rootDroppableId } },
+    });
+  };
+
+  const performToggleHidden = () => {
     const snapshot = storeApi.getState().state.data.content?.[index];
     if (!snapshot) return;
-    startTransition(() => {
-      dispatch({
-        type: "replace",
-        destinationZone: rootDroppableId,
-        destinationIndex: index,
-        data: {
-          ...snapshot,
-          props: {
-            ...snapshot.props,
-            visible: !hidden ? false : true,
-          },
+    dispatch({
+      type: "replace",
+      destinationZone: rootDroppableId,
+      destinationIndex: index,
+      data: {
+        ...snapshot,
+        props: {
+          ...snapshot.props,
+          visible: !hidden ? false : true,
         },
-        recordHistory: true,
-      });
+      },
+      recordHistory: true,
+    });
+  };
+
+  const toggleHidden = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    performToggleHidden();
+  };
+
+  const performDuplicate = () => {
+    dispatch({
+      type: "duplicate",
+      sourceIndex: index,
+      sourceZone: rootDroppableId,
+      recordHistory: true,
     });
   };
 
   const duplicate = (e: React.MouseEvent) => {
     e.stopPropagation();
-    startTransition(() => {
-      dispatch({
-        type: "duplicate",
-        sourceIndex: index,
-        sourceZone: rootDroppableId,
-        recordHistory: true,
-      });
+    performDuplicate();
+  };
+
+  const performRemove = () => {
+    dispatch({
+      type: "remove",
+      index,
+      zone: rootDroppableId,
+      recordHistory: true,
     });
   };
 
@@ -82,14 +102,7 @@ const SectionRow = React.memo(function SectionRow({
     e.stopPropagation();
     // Skip a confirm() dialog — the action records history, so Cmd/Ctrl+Z
     // undoes it instantly. Shopify mirrors this pattern for section rows.
-    startTransition(() => {
-      dispatch({
-        type: "remove",
-        index,
-        zone: rootDroppableId,
-        recordHistory: true,
-      });
-    });
+    performRemove();
   };
 
   const rowClass = [
@@ -106,10 +119,41 @@ const SectionRow = React.memo(function SectionRow({
       onClick={select}
       role="button"
       tabIndex={0}
+      aria-keyshortcuts="ArrowUp ArrowDown Delete Control+D Meta+D H"
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           select();
+          return;
+        }
+
+        if (e.key === "ArrowUp") {
+          e.preventDefault();
+          selectAt(Math.max(0, index - 1));
+          return;
+        }
+
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          selectAt(Math.min(rowCount - 1, index + 1));
+          return;
+        }
+
+        if (e.key === "Delete" || e.key === "Backspace") {
+          e.preventDefault();
+          performRemove();
+          return;
+        }
+
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "d") {
+          e.preventDefault();
+          performDuplicate();
+          return;
+        }
+
+        if (!e.metaKey && !e.ctrlKey && e.key.toLowerCase() === "h") {
+          e.preventDefault();
+          performToggleHidden();
         }
       }}
       data-section-id={id}
@@ -124,7 +168,10 @@ const SectionRow = React.memo(function SectionRow({
       <span className={getClassName("sectionLabel")} title={label}>
         {label}
       </span>
-      <div className={getClassName("sectionActions")} onClick={(e) => e.stopPropagation()}>
+      <div
+        className={getClassName("sectionActions")}
+        onClick={(e) => e.stopPropagation()}
+      >
         <button
           type="button"
           className={getClassName("actionBtn")}
@@ -174,6 +221,8 @@ type Props = {
  * switching pages in another tab) will not re-render this list.
  */
 export function TemplateSectionList({ onAddSection }: Props) {
+  const storeApi = useAppStoreApi();
+
   const selectedIndex = useAppStore((s) => {
     const sel = s.state.ui.itemSelector;
     if (!sel) return -1;
@@ -189,8 +238,11 @@ export function TemplateSectionList({ onAddSection }: Props) {
   const content = useAppStore(
     (s) => s.state.data.content as ComponentData[] | undefined
   );
-  // Config is stable — read once.
-  const components = useAppStore((s) => s.config.components);
+  // Config is static for the lifetime of this editor instance.
+  const components = useMemo(
+    () => storeApi.getState().config.components,
+    [storeApi]
+  );
 
   // Derive the rows *after* subscription, so each re-render creates a fresh
   // mapped array but we don't trigger Zustand's subscription loop (which would
@@ -218,14 +270,14 @@ export function TemplateSectionList({ onAddSection }: Props) {
   const list = useMemo(
     () =>
       rows.map((row, index) => (
-        <React.Fragment key={row.id}>
+        <React.Fragment key={`${row.id}-${index}`}>
           <SectionRow
             index={index}
             id={row.id}
             label={row.label}
             hidden={!row.visible}
             selected={index === selectedIndex}
-            onRequestInsertAfter={onAddSection}
+            rowCount={rows.length}
           />
           {/* Inline "add section" gap between rows. Visible on list hover. */}
           {index < rows.length - 1 && (

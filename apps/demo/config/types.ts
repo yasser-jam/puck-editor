@@ -25,6 +25,7 @@ import { RootProps } from "./root";
 import { RichTextProps } from "./blocks/RichText";
 import { ContentHeadingProps } from "./blocks/ContentHeading";
 import { ContentParagraphProps } from "./blocks/ContentParagraph";
+import { AccordionProps } from "./blocks/Accordion";
 import { ContentImageProps } from "./blocks/ContentImage";
 import { ContentButtonProps } from "./blocks/ContentButton";
 import { ContentDividerProps } from "./blocks/ContentDivider";
@@ -38,6 +39,7 @@ import { TestimonialsProps } from "./blocks/Testimonials";
 import { ContactFormProps } from "./blocks/ContactForm";
 import { SidebarProps } from "./blocks/Sidebar";
 import { NavMenuProps } from "./blocks/NavMenu";
+import { SideDrawerProps } from "./blocks/SideDrawer";
 
 export type { RootProps } from "./root";
 
@@ -66,6 +68,7 @@ export type Components = {
   ProductInfo: ProductInfoProps;
   ContentHeading: ContentHeadingProps;
   ContentParagraph: ContentParagraphProps;
+  Accordion: AccordionProps;
   ContentImage: ContentImageProps;
   ContentButton: ContentButtonProps;
   ContentDivider: ContentDividerProps;
@@ -79,18 +82,13 @@ export type Components = {
   ContactForm: ContactFormProps;
   Sidebar: SidebarProps;
   NavMenu: NavMenuProps;
+  SideDrawer: SideDrawerProps;
 };
 
 export type UserConfig = Config<{
   components: Components;
   root: RootProps;
-  categories: [
-    "sections",
-    "bound",
-    "content",
-    "group",
-    "legacy",
-  ];
+  categories: ["sections", "bound", "content", "group", "legacy"];
   fields: {
     userField: {
       type: "userField";

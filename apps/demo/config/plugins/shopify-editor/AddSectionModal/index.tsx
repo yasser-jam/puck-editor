@@ -1,5 +1,4 @@
 import React, {
-  startTransition,
   useCallback,
   useEffect,
   useMemo,
@@ -39,9 +38,8 @@ type TabFilter = "all" | SectionCategory;
  * `store_config.json`. No editor-only state is introduced.
  *
  * Performance: we use the atomic `insert` action (targeted walkAppState on
- * the insertion path) rather than `setData` (full-tree walk). The dispatch
- * is wrapped in React's `startTransition` so the modal-close paint isn't
- * blocked by the downstream tree re-index.
+ * the insertion path) rather than `setData` (full-tree walk). We also move
+ * selection to the newly inserted section to reduce the next click.
  */
 export function AddSectionModal({ open, onClose, insertIndex }: Props) {
   // We read dispatch directly from the app store so we can round-trip
@@ -98,6 +96,14 @@ export function AddSectionModal({ open, onClose, insertIndex }: Props) {
     return ["all", ...CATEGORY_ORDER.filter((c) => present.has(c))];
   }, []);
 
+  const quickPicks = useMemo(() => {
+    return ["hero-band", "two-column", "faq-accordion"]
+      .map((id) => sectionCatalog.find((preset) => preset.id === id))
+      .filter((preset) => !!preset) as SectionPreset[];
+  }, []);
+
+  const showQuickPicks = tab === "all" && search.trim() === "";
+
   // Read content length from the store, but only when we actually need it
   // (inside the click handler). `useAppStoreApi()` returns the underlying
   // Zustand store — calling `.getState()` on it is imperative and does NOT
@@ -111,30 +117,31 @@ export function AddSectionModal({ open, onClose, insertIndex }: Props) {
       isInsertingRef.current = true;
 
       const payload = preset.build();
-      const currentLength =
-        storeApi.getState().state.data.content?.length ?? 0;
+      const currentLength = storeApi.getState().state.data.content?.length ?? 0;
       const idx =
         typeof insertIndex === "number"
           ? Math.min(Math.max(insertIndex, 0), currentLength)
           : currentLength;
 
-      // Close the modal FIRST (synchronous, cheap state flip) and mark the
-      // reducer dispatch as a non-urgent transition so React can paint the
-      // modal close before the heavy tree re-index runs.
+      // Close first, then insert and move selection to the new row so the
+      // merchant can edit immediately.
       onClose();
 
-      startTransition(() => {
-        dispatch({
-          type: "insert",
-          componentType: payload.type,
-          destinationZone: rootDroppableId,
-          destinationIndex: idx,
-          // The props field is merged over Section.defaultProps inside
-          // insertAction; nested slot content (e.g. the Bound block a
-          // Commerce preset wraps) is populated with ids by populateIds.
-          props: payload.props,
-          recordHistory: true,
-        });
+      dispatch({
+        type: "insert",
+        componentType: payload.type,
+        destinationZone: rootDroppableId,
+        destinationIndex: idx,
+        // The props field is merged over Section.defaultProps inside
+        // insertAction; nested slot content (e.g. the Bound block a
+        // Commerce preset wraps) is populated with ids by populateIds.
+        props: payload.props,
+        recordHistory: true,
+      });
+
+      dispatch({
+        type: "setUi",
+        ui: { itemSelector: { index: idx, zone: rootDroppableId } },
       });
     },
     [dispatch, storeApi, insertIndex, onClose]
@@ -183,6 +190,12 @@ export function AddSectionModal({ open, onClose, insertIndex }: Props) {
               placeholder="Search sections…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && filtered.length > 0) {
+                  e.preventDefault();
+                  handlePick(filtered[0]);
+                }
+              }}
               dir="ltr"
             />
           </div>
@@ -203,11 +216,42 @@ export function AddSectionModal({ open, onClose, insertIndex }: Props) {
           </div>
         </div>
 
+        {showQuickPicks && quickPicks.length > 0 && (
+          <div className={getClassName("quickPicks")}>
+            <span className={getClassName("quickPicksLabel")}>Quick start</span>
+            <div className={getClassName("quickPicksList")}>
+              {quickPicks.map((preset) => (
+                <button
+                  key={preset.id}
+                  type="button"
+                  className={getClassName("quickPick")}
+                  onClick={() => handlePick(preset)}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Card grid */}
         <div className={getClassName("grid")}>
           {filtered.length === 0 ? (
             <div className={getClassName("empty")}>
               No sections match "{search}". Try a different search term.
+              <div className={getClassName("emptyActions")}>
+                <button
+                  type="button"
+                  className={getClassName("emptyActionBtn")}
+                  onClick={() => {
+                    setSearch("");
+                    setTab("all");
+                    searchInputRef.current?.focus();
+                  }}
+                >
+                  Clear filters
+                </button>
+              </div>
             </div>
           ) : (
             filtered.map((preset) => (

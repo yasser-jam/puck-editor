@@ -12,8 +12,12 @@
 }
 
 @keyframes AddSectionModal-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .AddSectionModal-dialog {
@@ -30,8 +34,14 @@
 }
 
 @keyframes AddSectionModal-slide-up {
-  from { transform: translateY(12px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .AddSectionModal-header {
@@ -156,6 +166,50 @@
   color: #ffffff;
 }
 
+.AddSectionModal-quickPicks {
+  padding: 10px 24px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.AddSectionModal-quickPicksLabel {
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.AddSectionModal-quickPicksList {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.AddSectionModal-quickPick {
+  border: 1px solid #dbe4f4;
+  background: #ffffff;
+  color: #1f2937;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  transition: border-color 0.12s ease, background-color 0.12s ease,
+    transform 0.12s ease;
+}
+
+.AddSectionModal-quickPick:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+  transform: translateY(-1px);
+}
+
 .AddSectionModal-grid {
   padding: 20px 24px;
   overflow-y: auto;
@@ -242,4 +296,26 @@
   text-align: center;
   color: #9ca3af;
   font-size: 14px;
+}
+
+.AddSectionModal-emptyActions {
+  margin-top: 14px;
+}
+
+.AddSectionModal-emptyActionBtn {
+  border: 1px solid #dbe4f4;
+  background: #ffffff;
+  color: #1f2937;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.12s ease, background-color 0.12s ease;
+}
+
+.AddSectionModal-emptyActionBtn:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
 }

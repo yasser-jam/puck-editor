@@ -326,7 +326,10 @@ const SideDrawerInternal: ComponentConfig<SideDrawerProps> = {
       },
       {
         label: { ar: "المتجر", en: "Shop" },
-        link: { kind: "page", pageId: "/products/example-product" } as LinkValue,
+        link: {
+          kind: "page",
+          pageId: "/products/example-product",
+        } as LinkValue,
       },
       {
         label: { ar: "السلة", en: "Cart" },
@@ -359,7 +362,8 @@ const SideDrawerInternal: ComponentConfig<SideDrawerProps> = {
     items: Items,
     puck,
   }) => {
-    const isEditing = !!(puck as { isEditing?: boolean } | undefined)?.isEditing;
+    const isEditing = !!(puck as { isEditing?: boolean } | undefined)
+      ?.isEditing;
     const drawerName = (name && name.trim()) || "drawer";
     const resolvedTitle = pickLang(title);
     const resolvedTriggerLabel = pickLang(triggerLabel);
@@ -444,7 +448,7 @@ const SideDrawerInternal: ComponentConfig<SideDrawerProps> = {
 
     // Visibility kill switch. In editor we still render so the merchant can
     // see the block; at runtime `visible: false` removes it entirely.
-    if (!visible && !isEditing) return null;
+    if (!visible && !isEditing) return <></>;
 
     const deviceClass = [
       !showOnMobile ? getClassName("hideMobile") : "",
@@ -467,9 +471,7 @@ const SideDrawerInternal: ComponentConfig<SideDrawerProps> = {
 
     // Slide direction depends on which side the drawer lives on.
     const panelSideClass =
-      side === "right"
-        ? getClassName("side-right")
-        : getClassName("side-left");
+      side === "right" ? getClassName("side-right") : getClassName("side-left");
 
     const renderTrigger = () => {
       if (trigger !== "button" && trigger !== "floating") return null;
@@ -553,7 +555,9 @@ const SideDrawerInternal: ComponentConfig<SideDrawerProps> = {
 
         <aside
           id={`sooq-drawer-${drawerName}`}
-          className={`${getClassName("panel")} ${panelSideClass} ${panelAnimClass} ${
+          className={`${getClassName(
+            "panel"
+          )} ${panelSideClass} ${panelAnimClass} ${
             isOpen ? getClassName("panel--open") : ""
           }`}
           style={panelStyle}
@@ -644,7 +648,11 @@ const SideDrawerInternal: ComponentConfig<SideDrawerProps> = {
             className={getClassName("editorReopen")}
             onClick={open}
           >
-            {side === "right" ? <PanelRightOpen size={14} /> : <PanelLeftOpen size={14} />}
+            {side === "right" ? (
+              <PanelRightOpen size={14} />
+            ) : (
+              <PanelLeftOpen size={14} />
+            )}
             Reopen drawer
           </button>
         )}
