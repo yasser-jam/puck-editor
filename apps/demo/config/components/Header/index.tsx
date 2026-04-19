@@ -3,6 +3,12 @@ import classnames from "classnames";
 import { Menu, Filter, ShoppingCart, User } from "lucide-react";
 
 import type { ShellVariant } from "../../theme";
+import {
+  resolveHrefLegacy,
+  resolveLinkRel,
+  resolveLinkTarget,
+  type LinkValue,
+} from "../../fields/LinkField";
 
 import styles from "./styles.module.css";
 
@@ -24,11 +30,15 @@ const normalizePath = (pathname: string) =>
 
 const NavItem = ({
   label,
+  link,
   href,
+  editMode,
   variant,
 }: {
   label: string;
+  link?: LinkValue;
   href: string;
+  editMode: boolean;
   variant: ShellVariant;
 }) => {
   const navPath =
@@ -36,13 +46,51 @@ const NavItem = ({
       ? normalizePath(window.location.pathname)
       : "/";
 
-  const target = href.replace(/\/edit$/, "").replace(/\/$/, "") || "/";
-  const isActive = navPath === target;
+  const resolvedHref = resolveHrefLegacy(link, href);
+  const target = resolvedHref
+    ? resolvedHref.replace(/\/edit$/, "").replace(/\/$/, "") || "/"
+    : "";
+  const isActive = !!resolvedHref && navPath === target;
+  const targetAttr = resolveLinkTarget(link);
+  const relAttr = resolveLinkRel(link);
+
+  if (!resolvedHref) {
+    if (variant === "commerce") {
+      return <span className={styles.navLinkCommerce}>{label}</span>;
+    }
+
+    return <span className={styles.navLink}>{label}</span>;
+  }
+
+  if (editMode) {
+    if (variant === "commerce") {
+      return (
+        <span
+          className={classnames(
+            styles.navLinkCommerce,
+            isActive && styles.navLinkCommerceActive
+          )}
+        >
+          {label}
+        </span>
+      );
+    }
+
+    return (
+      <span
+        className={classnames(styles.navLink, isActive && styles.navLinkActive)}
+      >
+        {label}
+      </span>
+    );
+  }
 
   if (variant === "commerce") {
     return (
       <a
-        href={href || "/"}
+        href={resolvedHref}
+        target={targetAttr}
+        rel={relAttr}
         className={classnames(
           styles.navLinkCommerce,
           isActive && styles.navLinkCommerceActive
@@ -55,7 +103,9 @@ const NavItem = ({
 
   return (
     <a
-      href={href || "/"}
+      href={resolvedHref}
+      target={targetAttr}
+      rel={relAttr}
       className={classnames(styles.navLink, isActive && styles.navLinkActive)}
     >
       {label}
@@ -68,16 +118,34 @@ const NavItem = ({
 export type HeaderLink = {
   label: string;
   labelAr?: string;
-  href: string;
+  link?: LinkValue;
+  /** Legacy field kept for older persisted JSON payloads. */
+  href?: string;
 };
 
 // Sensible defaults that match the demo: any new store sees something
 // recognisable before the merchant edits the fields.
 export const DEFAULT_HEADER_LINKS: HeaderLink[] = [
-  { label: "Home", labelAr: "الرئيسية", href: "/" },
-  { label: "Shop", labelAr: "المتجر", href: "/products/example-product" },
-  { label: "Cart", labelAr: "السلة", href: "/cart" },
-  { label: "Themes", labelAr: "القوالب", href: "/themes" },
+  {
+    label: "Home",
+    labelAr: "الرئيسية",
+    link: { kind: "page", pageId: "/" },
+  },
+  {
+    label: "Shop",
+    labelAr: "المتجر",
+    link: { kind: "page", pageId: "/products/example-product" },
+  },
+  {
+    label: "Cart",
+    labelAr: "السلة",
+    link: { kind: "page", pageId: "/cart" },
+  },
+  {
+    label: "Themes",
+    labelAr: "القوالب",
+    link: { kind: "page", pageId: "/themes" },
+  },
 ];
 
 export type HeaderProps = {
@@ -106,7 +174,8 @@ export type HeaderProps = {
 };
 
 const pickLabel = (link: HeaderLink, language: "ar" | "en"): string => {
-  if (language === "ar" && link.labelAr && link.labelAr.trim()) return link.labelAr;
+  if (language === "ar" && link.labelAr && link.labelAr.trim())
+    return link.labelAr;
   return link.label || "";
 };
 
@@ -155,15 +224,21 @@ const Header = ({
       <div className={styles.root} style={rootStyle}>
         <header className={styles.inner}>
           {drawerButton}
-          <a href={brandHref || "/"} className={styles.logo}>
-            {siteTitle}
-          </a>
+          {editMode ? (
+            <span className={styles.logo}>{siteTitle}</span>
+          ) : (
+            <a href={brandHref || "/"} className={styles.logo}>
+              {siteTitle}
+            </a>
+          )}
           <nav className={styles.items}>
             {resolvedLinks.map((l, i) => (
               <NavItem
-                key={`${l.href}-${i}`}
+                key={`${resolveHrefLegacy(l.link, l.href) ?? "none"}-${i}`}
                 label={pickLabel(l, language)}
-                href={l.href}
+                link={l.link}
+                href={l.href ?? ""}
+                editMode={editMode}
                 variant="default"
               />
             ))}
@@ -177,15 +252,21 @@ const Header = ({
     <div className={styles.rootCommerce} style={rootStyle}>
       <header className={styles.innerCommerce}>
         {drawerButton}
-        <a href={brandHref || "/"} className={styles.brand}>
-          {siteTitle}
-        </a>
+        {editMode ? (
+          <span className={styles.brand}>{siteTitle}</span>
+        ) : (
+          <a href={brandHref || "/"} className={styles.brand}>
+            {siteTitle}
+          </a>
+        )}
         <nav className={styles.navCommerce}>
           {resolvedLinks.map((l, i) => (
             <NavItem
-              key={`${l.href}-${i}`}
+              key={`${resolveHrefLegacy(l.link, l.href) ?? "none"}-${i}`}
               label={pickLabel(l, language)}
-              href={l.href}
+              link={l.link}
+              href={l.href ?? ""}
+              editMode={editMode}
               variant="commerce"
             />
           ))}

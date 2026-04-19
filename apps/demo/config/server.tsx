@@ -37,12 +37,20 @@ import { ContactForm } from "./blocks/ContactForm";
 import { Sidebar } from "./blocks/Sidebar";
 import { NavMenu } from "./blocks/NavMenu";
 import { SideDrawer } from "./blocks/SideDrawer";
+import { SiteHeader } from "./blocks/SiteHeader";
+import { SiteDrawerShell } from "./blocks/SiteDrawerShell";
+import { SiteFooter } from "./blocks/SiteFooter";
 import Root from "./root";
 import { UserConfig } from "./types";
 
 const conf: UserConfig = {
   root: Root,
   categories: {
+    shell: {
+      title: "Shell",
+      defaultExpanded: true,
+      components: ["SiteHeader", "SiteDrawerShell", "SiteFooter"],
+    },
     sections: {
       title: "Sections",
       defaultExpanded: true,
@@ -108,6 +116,9 @@ const conf: UserConfig = {
     },
   },
   components: {
+    SiteHeader,
+    SiteDrawerShell,
+    SiteFooter,
     Section,
     Group,
     Button,

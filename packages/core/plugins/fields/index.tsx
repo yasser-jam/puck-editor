@@ -8,13 +8,32 @@ import { getClassNameFactory } from "../../lib";
 
 const getClassName = getClassNameFactory("FieldsPlugin", styles);
 
+const formatRootFocusTitle = (focus: string | null | undefined) => {
+  if (!focus) return "Page";
+
+  if (focus.startsWith("header")) return "Header";
+  if (focus.startsWith("footer")) return "Footer";
+  if (focus.startsWith("drawer")) return "Side Drawer";
+
+  return (
+    focus
+      .replace(/^__+/, "")
+      .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+      .replace(/[-_]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .replace(/^./, (c) => c.toUpperCase()) || "Page"
+  );
+};
+
 const CurrentTitle = () => {
   const label = useAppStore((s) => {
     const selectedItem = s.selectedItem;
+    const focus = s.state.ui.field.focus;
 
     return selectedItem
       ? s.config.components[selectedItem.type]?.label ?? selectedItem.type
-      : "Page";
+      : formatRootFocusTitle(focus);
   });
 
   return label;

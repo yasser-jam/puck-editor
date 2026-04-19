@@ -42,6 +42,7 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
         <Puck
           config={config}
           data={data}
+          ui={{ rightSideBarVisible: false, leftSideBarVisible: true }}
           onPublish={async (data) => {
             const normalized = normalizeEditorData(data);
             localStorage.setItem(key, JSON.stringify(normalized));

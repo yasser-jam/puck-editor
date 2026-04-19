@@ -37,6 +37,9 @@ import { ContactForm } from "./blocks/ContactForm";
 import { Sidebar } from "./blocks/Sidebar";
 import { NavMenu } from "./blocks/NavMenu";
 import { SideDrawer } from "./blocks/SideDrawer";
+import { SiteHeader } from "./blocks/SiteHeader";
+import { SiteDrawerShell } from "./blocks/SiteDrawerShell";
+import { SiteFooter } from "./blocks/SiteFooter";
 
 import Root from "./root";
 import { UserConfig } from "./types";
@@ -54,6 +57,11 @@ import { initialData } from "./initial-data";
 export const conf: UserConfig = {
   root: Root,
   categories: {
+    shell: {
+      title: "Shell",
+      defaultExpanded: true,
+      components: ["SiteHeader", "SiteDrawerShell", "SiteFooter"],
+    },
     sections: {
       title: "Sections",
       defaultExpanded: true,
@@ -111,11 +119,8 @@ export const conf: UserConfig = {
       title: "Legacy (hidden)",
       visible: false,
       components: [
-        // SideDrawer is now a site-wide root setting (see Settings → drawer*
-        // fields), not a per-page block. We keep the block registered so any
-        // existing store_config.json that instantiated it still renders, but
-        // it's hidden from the palette so merchants don't confuse themselves
-        // by dropping a second drawer on top of the root-level one.
+        // Legacy drawer kept for backward compatibility. New stores should use
+        // the Shell category's "Side Drawer" component.
         "SideDrawer",
         "Heading",
         "Text",
@@ -132,6 +137,10 @@ export const conf: UserConfig = {
     },
   },
   components: {
+    // Shell components
+    SiteHeader,
+    SiteDrawerShell,
+    SiteFooter,
     // Sections
     Section,
     // Group / Layout

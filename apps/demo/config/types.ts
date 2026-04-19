@@ -40,10 +40,16 @@ import { ContactFormProps } from "./blocks/ContactForm";
 import { SidebarProps } from "./blocks/Sidebar";
 import { NavMenuProps } from "./blocks/NavMenu";
 import { SideDrawerProps } from "./blocks/SideDrawer";
+import { SiteHeaderProps } from "./blocks/SiteHeader";
+import { SiteDrawerShellProps } from "./blocks/SiteDrawerShell";
+import { SiteFooterProps } from "./blocks/SiteFooter";
 
 export type { RootProps } from "./root";
 
 export type Components = {
+  SiteHeader: SiteHeaderProps;
+  SiteDrawerShell: SiteDrawerShellProps;
+  SiteFooter: SiteFooterProps;
   Section: SectionProps;
   Group: GroupProps;
   Button: ButtonProps;
@@ -88,7 +94,7 @@ export type Components = {
 export type UserConfig = Config<{
   components: Components;
   root: RootProps;
-  categories: ["sections", "bound", "content", "group", "legacy"];
+  categories: ["shell", "sections", "bound", "content", "group", "legacy"];
   fields: {
     userField: {
       type: "userField";

@@ -61,6 +61,24 @@
   line-height: 1;
 }
 
+/* ── Edge hover sensor ─────────────────────────────────────────────── */
+.edgeSensor {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 14px;
+  z-index: 59;
+  background: transparent;
+}
+
+.edgeLeft {
+  left: 0;
+}
+
+.edgeRight {
+  right: 0;
+}
+
 /* ── Overlay ────────────────────────────────────────────────────────── */
 .overlay {
   position: fixed;
@@ -162,6 +180,33 @@
 
 .panelOpen {
   pointer-events: auto;
+}
+
+.disabledPanel {
+  position: fixed;
+  top: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 0;
+  border: 1px dashed rgba(37, 99, 235, 0.45);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  z-index: 58;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.disabledTitle {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.disabledHint {
+  font-size: 11px;
+  opacity: 0.78;
 }
 
 /* ── Editor preview badge ──────────────────────────────────────────── */

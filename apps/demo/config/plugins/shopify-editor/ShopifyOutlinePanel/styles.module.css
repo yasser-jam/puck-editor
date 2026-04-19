@@ -64,6 +64,44 @@
   color: #6b7280;
 }
 
+.ShopifyOutlinePanel-shellRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: #374151;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+
+.ShopifyOutlinePanel-shellRow:hover {
+  background: rgba(239, 246, 255, 0.55);
+  transform: translateX(1px);
+}
+
+.ShopifyOutlinePanel-shellRow:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: -2px;
+}
+
+.ShopifyOutlinePanel-shellRow--selected {
+  background: #e6f0ff;
+  box-shadow: inset 3px 0 0 #2563eb;
+}
+
+.ShopifyOutlinePanel-shellRow--selected:hover {
+  background: #dbeafe;
+  transform: none;
+}
+
+.ShopifyOutlinePanel-shellRow--disabled .ShopifyOutlinePanel-fixedLabel,
+.ShopifyOutlinePanel-shellRow--disabled .ShopifyOutlinePanel-fixedHint {
+  opacity: 0.6;
+}
+
 .ShopifyOutlinePanel-fixedIcon {
   color: #9ca3af;
   flex-shrink: 0;
@@ -85,6 +123,22 @@
 .ShopifyOutlinePanel-fixedHint {
   font-size: 11px;
   color: #9ca3af;
+}
+
+.ShopifyOutlinePanel-shellActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+  transform: translateX(2px);
+  flex-shrink: 0;
+}
+
+.ShopifyOutlinePanel-shellRow:hover .ShopifyOutlinePanel-shellActions,
+.ShopifyOutlinePanel-shellRow--selected .ShopifyOutlinePanel-shellActions {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .ShopifyOutlinePanel-addSection {

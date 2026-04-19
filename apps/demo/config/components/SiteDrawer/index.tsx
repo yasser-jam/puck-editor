@@ -2,7 +2,21 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Menu, X, Filter, ShoppingCart, User, PanelRightOpen } from "lucide-react";
+import { useAppStore } from "@/core/store";
+import {
+  Menu,
+  X,
+  Filter,
+  ShoppingCart,
+  User,
+  PanelRightOpen,
+} from "lucide-react";
+import {
+  resolveHrefLegacy,
+  resolveLinkRel,
+  resolveLinkTarget,
+  type LinkValue,
+} from "../../fields/LinkField";
 
 import styles from "./styles.module.css";
 
@@ -29,15 +43,24 @@ import styles from "./styles.module.css";
 export type SiteDrawerLink = {
   label: string;
   labelAr?: string;
-  href: string;
+  link?: LinkValue;
+  /** Legacy field kept for older persisted JSON payloads. */
+  href?: string;
 };
 
 export type SiteDrawerSide = "left" | "right";
 export type SiteDrawerAnimation = "slide" | "fade" | "scale" | "none";
-export type SiteDrawerIcon = "menu" | "filter" | "cart" | "user" | "panel" | "none";
+export type SiteDrawerIcon =
+  | "menu"
+  | "filter"
+  | "cart"
+  | "user"
+  | "panel"
+  | "none";
 export type SiteDrawerTrigger = "floating" | "auto" | "external" | "none";
 
 export type SiteDrawerProps = {
+  id?: string;
   /** Unique name so external elements can open it with `data-sooq-drawer-toggle`. */
   name?: string;
   enabled?: boolean;
@@ -78,14 +101,18 @@ export type SiteDrawerProps = {
   startOpen?: boolean;
   showOnMobile?: boolean;
   showOnDesktop?: boolean;
+  /** Reveal drawer when the pointer reaches the screen edge. */
+  openOnEdgeHover?: boolean;
 
   language?: "ar" | "en";
-  /** When true, forces the drawer open regardless of runtime state. Used in
-   *  the editor so merchants can design their drawer without clicking. */
+  /** When true, drawer runs in editor mode (non-navigating links, editor hints). */
   editMode?: boolean;
 };
 
-const ICON_MAP: Record<SiteDrawerIcon, React.ComponentType<{ size?: number }> | null> = {
+const ICON_MAP: Record<
+  SiteDrawerIcon,
+  React.ComponentType<{ size?: number }> | null
+> = {
   menu: Menu,
   filter: Filter,
   cart: ShoppingCart,
@@ -104,6 +131,7 @@ const pickText = (
 };
 
 export const SiteDrawer = ({
+  id,
   name = "site-drawer",
   enabled = true,
   side = "left",
@@ -131,29 +159,104 @@ export const SiteDrawer = ({
   startOpen = false,
   showOnMobile = true,
   showOnDesktop = true,
+  openOnEdgeHover = true,
   language = "ar",
   editMode = false,
 }: SiteDrawerProps) => {
-  const [isOpen, setIsOpen] = useState<boolean>(editMode || !!startOpen);
+  const dispatch = useAppStore((s) => s.dispatch);
+  const selectorKey = useAppStore((s) => {
+    if (!editMode || typeof id !== "string" || !id) return "";
 
-  // If edit mode toggles on later (props arrive after mount) force-open so
-  // the merchant always sees the drawer in the editor preview.
-  useEffect(() => {
-    if (editMode) setIsOpen(true);
-  }, [editMode]);
+    const node = s.state.indexes.nodes[id];
+    if (!node?.parentId || !node.zone) return "";
 
-  const open = useCallback(() => setIsOpen(true), []);
-  // In editor mode we keep the panel pinned open so the merchant can design
-  // it — treating `close` and `toggle` as no-ops there. On the live site they
-  // behave normally.
+    const zoneCompound = `${node.parentId}:${node.zone}`;
+    const zone = s.state.indexes.zones[zoneCompound];
+    if (!zone) return "";
+
+    const index = zone.contentIds.indexOf(id);
+    if (index < 0) return "";
+
+    return `${zoneCompound}|${index}`;
+  });
+
+  const selectDrawerInEditor = useCallback(() => {
+    if (!editMode || !selectorKey) return;
+
+    const separator = selectorKey.lastIndexOf("|");
+    if (separator <= 0) return;
+
+    const zone = selectorKey.slice(0, separator);
+    const index = Number(selectorKey.slice(separator + 1));
+    if (!zone || !Number.isFinite(index) || index < 0) return;
+
+    dispatch({
+      type: "setUi",
+      ui: {
+        itemSelector: { zone, index },
+        plugin: { current: "fields" },
+        leftSideBarVisible: true,
+        rightSideBarVisible: false,
+      },
+    });
+  }, [dispatch, editMode, selectorKey]);
+
+  const handleEditorClickCapture = useCallback(
+    (event: React.MouseEvent) => {
+      if (!editMode) return;
+      event.stopPropagation();
+      selectDrawerInEditor();
+    },
+    [editMode, selectDrawerInEditor]
+  );
+
+  const [isOpen, setIsOpen] = useState<boolean>(!!startOpen);
+  const closeTimerRef = useRef<number | null>(null);
+  const edgeOpenedRef = useRef(false);
+
+  const clearCloseTimer = useCallback(() => {
+    if (closeTimerRef.current == null) return;
+    window.clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = null;
+  }, []);
+
+  const open = useCallback((source: "edge" | "manual" = "manual") => {
+    edgeOpenedRef.current = source === "edge";
+    setIsOpen(true);
+  }, []);
+
   const close = useCallback(() => {
-    if (editMode) return;
+    clearCloseTimer();
+    edgeOpenedRef.current = false;
     setIsOpen(false);
-  }, [editMode]);
+  }, [clearCloseTimer]);
+
   const toggle = useCallback(() => {
-    if (editMode) return;
+    clearCloseTimer();
+    edgeOpenedRef.current = false;
     setIsOpen((v) => !v);
-  }, [editMode]);
+  }, [clearCloseTimer]);
+
+  const scheduleCloseFromHover = useCallback(() => {
+    if (editMode) return;
+    if (!openOnEdgeHover || !edgeOpenedRef.current) return;
+    clearCloseTimer();
+    closeTimerRef.current = window.setTimeout(() => {
+      setIsOpen(false);
+      edgeOpenedRef.current = false;
+      closeTimerRef.current = null;
+    }, 420);
+  }, [editMode, openOnEdgeHover, clearCloseTimer]);
+
+  const openFromEdgeHover = useCallback(() => {
+    if (!editMode && !openOnEdgeHover) return;
+    clearCloseTimer();
+    open("edge");
+  }, [editMode, openOnEdgeHover, clearCloseTimer, open]);
+
+  useEffect(() => {
+    return () => clearCloseTimer();
+  }, [clearCloseTimer]);
 
   const apiRef = useRef({ open, close, toggle });
   apiRef.current = { open, close, toggle };
@@ -178,7 +281,8 @@ export const SiteDrawer = ({
     g.sooqDrawers[name] = apiRef.current;
 
     const onEvent = (e: Event) => {
-      const detail = (e as CustomEvent<{ name?: string; action?: string }>).detail;
+      const detail = (e as CustomEvent<{ name?: string; action?: string }>)
+        .detail;
       if (!detail || detail.name !== name) return;
       const action = detail.action || "toggle";
       if (action === "open") apiRef.current.open();
@@ -238,7 +342,9 @@ export const SiteDrawer = ({
     if (doc.body) setPortalTarget(doc.body);
   }, []);
 
-  if (!enabled) return null;
+  const disabledInEditor = !enabled && editMode;
+
+  if (!enabled && !editMode) return null;
 
   const resolvedTitle = pickText(title, titleAr, language);
   const resolvedTriggerLabel = pickText(triggerLabel, triggerLabelAr, language);
@@ -253,6 +359,7 @@ export const SiteDrawer = ({
 
   const durationMs = Math.max(0, animationDurationMs);
   const sideClass = side === "right" ? styles.sideRight : styles.sideLeft;
+  const panelIsOpen = isOpen;
 
   const animClass =
     animation === "fade"
@@ -300,7 +407,7 @@ export const SiteDrawer = ({
         className={triggerClass}
         style={btnStyle}
         onClick={toggle}
-        aria-expanded={isOpen}
+        aria-expanded={panelIsOpen}
         aria-controls={`sooq-drawer-${name}`}
         aria-label={resolvedTriggerLabel || "Open menu"}
       >
@@ -312,13 +419,48 @@ export const SiteDrawer = ({
     );
   };
 
-  const panelContent = (
-    <div className={`${styles.root} ${deviceClass}`.trim()} data-drawer-name={name}>
+  const edgeSensor = openOnEdgeHover || editMode ? (
+    <div
+      className={`${styles.edgeSensor} ${
+        side === "right" ? styles.edgeRight : styles.edgeLeft
+      } ${deviceClass}`}
+      onMouseEnter={openFromEdgeHover}
+      aria-hidden
+    />
+  ) : null;
+
+  const panelContent = disabledInEditor ? (
+    <div
+      className={`${styles.root} ${deviceClass}`.trim()}
+      data-drawer-name={name}
+      onClickCapture={editMode ? handleEditorClickCapture : undefined}
+    >
+      {edgeSensor}
+      <aside
+        className={`${styles.disabledPanel} ${sideClass}`}
+        style={{
+          width: `${Math.max(200, widthPx)}px`,
+          maxWidth: "100vw",
+          backgroundColor,
+          color: textColor,
+        }}
+      >
+        <span className={styles.disabledTitle}>Side drawer is disabled</span>
+        <span className={styles.disabledHint}>Enable it from this component settings</span>
+      </aside>
+    </div>
+  ) : (
+    <div
+      className={`${styles.root} ${deviceClass}`.trim()}
+      data-drawer-name={name}
+      onClickCapture={editMode ? handleEditorClickCapture : undefined}
+    >
+      {edgeSensor}
       {renderFloatingTrigger()}
 
       {overlay && !editMode && (
         <div
-          className={`${styles.overlay} ${isOpen ? styles.overlayOpen : ""}`}
+          className={`${styles.overlay} ${panelIsOpen ? styles.overlayOpen : ""}`}
           style={overlayStyle}
           onClick={() => {
             if (closeOnOverlayClick) close();
@@ -331,13 +473,15 @@ export const SiteDrawer = ({
       <aside
         id={`sooq-drawer-${name}`}
         className={`${styles.panel} ${sideClass} ${animClass} ${
-          isOpen ? styles.panelOpen : ""
+          panelIsOpen ? styles.panelOpen : ""
         }`}
         style={panelStyle}
+        onMouseEnter={clearCloseTimer}
+        onMouseLeave={scheduleCloseFromHover}
         data-sooq-drawer-panel={name}
         role="dialog"
-        aria-modal={isOpen ? "true" : "false"}
-        aria-hidden={!isOpen}
+        aria-modal={panelIsOpen ? "true" : "false"}
+        aria-hidden={!panelIsOpen}
       >
         {editMode && (
           <div className={styles.editorBadge} aria-hidden>
@@ -371,7 +515,9 @@ export const SiteDrawer = ({
           <nav className={styles.nav} aria-label={resolvedTitle}>
             {links.map((item, idx) => {
               const label = pickText(item.label, item.labelAr, language) || "—";
-              const href = item.href || "";
+              const href = resolveHrefLegacy(item.link, item.href);
+              const targetAttr = resolveLinkTarget(item.link);
+              const relAttr = resolveLinkRel(item.link);
               if (!href) {
                 return (
                   <span key={idx} className={styles.navItem}>
@@ -383,6 +529,8 @@ export const SiteDrawer = ({
                 <a
                   key={idx}
                   href={editMode ? undefined : href}
+                  target={targetAttr}
+                  rel={relAttr}
                   className={styles.navItem}
                   onClick={(e) => {
                     if (editMode) {
@@ -412,7 +560,11 @@ export const SiteDrawer = ({
 // Sensible defaults shared with root.tsx so both the field panel and the
 // render path agree on initial values.
 export const DEFAULT_DRAWER_LINKS: SiteDrawerLink[] = [
-  { label: "Home", labelAr: "الرئيسية", href: "/" },
-  { label: "Shop", labelAr: "المتجر", href: "/products/example-product" },
-  { label: "Cart", labelAr: "السلة", href: "/cart" },
+  { label: "Home", labelAr: "الرئيسية", link: { kind: "page", pageId: "/" } },
+  {
+    label: "Shop",
+    labelAr: "المتجر",
+    link: { kind: "page", pageId: "/products/example-product" },
+  },
+  { label: "Cart", labelAr: "السلة", link: { kind: "page", pageId: "/cart" } },
 ];

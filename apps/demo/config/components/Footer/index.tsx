@@ -3,18 +3,50 @@
 import React, { ReactNode, createContext, useContext } from "react";
 import { Section } from "../Section";
 import type { ShellVariant } from "../../theme";
+import {
+  resolveHrefLegacy,
+  resolveLinkRel,
+  resolveLinkTarget,
+  type LinkValue,
+} from "../../fields/LinkField";
 
 import styles from "./styles.module.css";
 
 const FooterVariantContext = createContext<ShellVariant>("commerce");
 
-const FooterLink = ({ children, href }: { children: string; href: string }) => {
+const FooterLink = ({
+  children,
+  link,
+  href,
+  editMode,
+}: {
+  children: string;
+  link?: LinkValue;
+  href?: string;
+  editMode?: boolean;
+}) => {
   const variant = useContext(FooterVariantContext);
+  const resolvedHref = resolveHrefLegacy(link, href);
+  const targetAttr = resolveLinkTarget(link);
+  const relAttr = resolveLinkRel(link);
+  const className =
+    variant === "commerce" ? styles.linkCommerce : styles.linkDefault;
+
+  if (!resolvedHref || editMode) {
+    return (
+      <li className={styles.listItem}>
+        <span className={className}>{children}</span>
+      </li>
+    );
+  }
+
   return (
     <li className={styles.listItem}>
       <a
-        href={href}
-        className={variant === "commerce" ? styles.linkCommerce : styles.linkDefault}
+        href={resolvedHref}
+        target={targetAttr}
+        rel={relAttr}
+        className={className}
       >
         {children}
       </a>
@@ -22,13 +54,21 @@ const FooterLink = ({ children, href }: { children: string; href: string }) => {
   );
 };
 
-const FooterList = ({ children, title }: { children: ReactNode; title: string }) => {
+const FooterList = ({
+  children,
+  title,
+}: {
+  children: ReactNode;
+  title: string;
+}) => {
   const variant = useContext(FooterVariantContext);
   return (
     <div>
       <h3
         className={
-          variant === "commerce" ? styles.listTitleCommerce : styles.listTitleDefault
+          variant === "commerce"
+            ? styles.listTitleCommerce
+            : styles.listTitleDefault
         }
       >
         {title}
@@ -41,7 +81,9 @@ const FooterList = ({ children, title }: { children: ReactNode; title: string })
 export type FooterLinkData = {
   label: string;
   labelAr?: string;
-  href: string;
+  link?: LinkValue;
+  /** Legacy field kept for older persisted JSON payloads. */
+  href?: string;
 };
 
 export type FooterColumn = {
@@ -50,32 +92,81 @@ export type FooterColumn = {
   links: FooterLinkData[];
 };
 
+export const DEFAULT_FOOTER_BOTTOM_LINKS: FooterLinkData[] = [
+  {
+    label: "Privacy",
+    labelAr: "الخصوصية",
+    link: { kind: "page", pageId: "/privacy" },
+  },
+  {
+    label: "Terms",
+    labelAr: "الشروط",
+    link: { kind: "page", pageId: "/terms" },
+  },
+];
+
 export const DEFAULT_FOOTER_COLUMNS: FooterColumn[] = [
   {
     title: "Shop",
     titleAr: "المتجر",
     links: [
-      { label: "Home", labelAr: "الرئيسية", href: "/" },
-      { label: "Products", labelAr: "المنتجات", href: "/products/example-product" },
-      { label: "Cart", labelAr: "السلة", href: "/cart" },
+      {
+        label: "Home",
+        labelAr: "الرئيسية",
+        link: { kind: "page", pageId: "/" },
+      },
+      {
+        label: "Products",
+        labelAr: "المنتجات",
+        link: { kind: "page", pageId: "/products/example-product" },
+      },
+      {
+        label: "Cart",
+        labelAr: "السلة",
+        link: { kind: "page", pageId: "/cart" },
+      },
     ],
   },
   {
     title: "Explore",
     titleAr: "استكشف",
     links: [
-      { label: "Themes", labelAr: "القوالب", href: "/themes" },
-      { label: "Pricing", labelAr: "الأسعار", href: "/pricing" },
-      { label: "About", labelAr: "من نحن", href: "/about" },
+      {
+        label: "Themes",
+        labelAr: "القوالب",
+        link: { kind: "page", pageId: "/themes" },
+      },
+      {
+        label: "Pricing",
+        labelAr: "الأسعار",
+        link: { kind: "page", pageId: "/pricing" },
+      },
+      {
+        label: "About",
+        labelAr: "من نحن",
+        link: { kind: "page", pageId: "/about" },
+      },
     ],
   },
   {
     title: "Support",
     titleAr: "الدعم",
     links: [
-      { label: "Shipping", labelAr: "الشحن", href: "#" },
-      { label: "Returns", labelAr: "الإرجاع", href: "#" },
-      { label: "Contact", labelAr: "اتصل بنا", href: "#" },
+      {
+        label: "Shipping",
+        labelAr: "الشحن",
+        link: { kind: "anchor", hash: "shipping" },
+      },
+      {
+        label: "Returns",
+        labelAr: "الإرجاع",
+        link: { kind: "anchor", hash: "returns" },
+      },
+      {
+        label: "Contact",
+        labelAr: "اتصل بنا",
+        link: { kind: "anchor", hash: "contact" },
+      },
     ],
   },
 ];
@@ -85,8 +176,13 @@ export type FooterProps = {
   variant?: ShellVariant;
   siteTitle?: string;
   columns?: FooterColumn[];
+  bottomLinks?: FooterLinkData[];
   language?: "ar" | "en";
+  editMode?: boolean;
   visible?: boolean;
+  showBottomBar?: boolean;
+  bottomBarText?: string;
+  bottomBarTextAr?: string;
   tagline?: string;
   taglineAr?: string;
   /** Any valid CSS colour. Empty falls back to the theme. */
@@ -108,8 +204,13 @@ const Footer = ({
   variant = "commerce",
   siteTitle = "Meridian",
   columns,
+  bottomLinks,
   language = "ar",
+  editMode = false,
   visible = true,
+  showBottomBar = true,
+  bottomBarText,
+  bottomBarTextAr,
   tagline,
   taglineAr,
   backgroundColor,
@@ -130,6 +231,11 @@ const Footer = ({
         : DEFAULT_FOOTER_COLUMNS
       : null;
 
+  const resolvedBottomLinks =
+    Array.isArray(bottomLinks) && bottomLinks.length > 0
+      ? bottomLinks
+      : DEFAULT_FOOTER_BOTTOM_LINKS;
+
   const renderedChildren =
     children ??
     (resolvedColumns
@@ -139,7 +245,12 @@ const Footer = ({
             title={pickText(col.title, col.titleAr, language) || col.title}
           >
             {col.links.map((lnk, li) => (
-              <FooterLink key={`${lnk.href}-${li}`} href={lnk.href}>
+              <FooterLink
+                key={`${resolveHrefLegacy(lnk.link, lnk.href) ?? "none"}-${li}`}
+                link={lnk.link}
+                href={lnk.href}
+                editMode={editMode}
+              >
                 {pickText(lnk.label, lnk.labelAr, language) || lnk.label}
               </FooterLink>
             ))}
@@ -190,18 +301,45 @@ const Footer = ({
             {renderedChildren}
           </div>
         </div>
-        <div className={styles.bottomBarCommerce}>
-          <span>
-            © {new Date().getFullYear()} {siteTitle}
-          </span>
-          <span className={styles.bottomSep}>·</span>
-          <a href="#" className={styles.bottomLinkCommerce}>
-            Privacy
-          </a>
-          <a href="#" className={styles.bottomLinkCommerce}>
-            Terms
-          </a>
-        </div>
+        {showBottomBar && (
+          <div className={styles.bottomBarCommerce}>
+            <span>
+              {pickText(bottomBarText, bottomBarTextAr, language) ||
+                `© ${new Date().getFullYear()} ${siteTitle}`}
+            </span>
+            <span className={styles.bottomSep}>·</span>
+            {resolvedBottomLinks.map((item, index) => {
+              const label =
+                pickText(item.label, item.labelAr, language) || item.label;
+              const href = resolveHrefLegacy(item.link, item.href);
+              const targetAttr = resolveLinkTarget(item.link);
+              const relAttr = resolveLinkRel(item.link);
+
+              if (editMode || !href) {
+                return (
+                  <span
+                    key={`footer-bottom-${index}`}
+                    className={styles.bottomLinkCommerce}
+                  >
+                    {label}
+                  </span>
+                );
+              }
+
+              return (
+                <a
+                  key={`footer-bottom-${index}`}
+                  href={href}
+                  target={targetAttr}
+                  rel={relAttr}
+                  className={styles.bottomLinkCommerce}
+                >
+                  {label}
+                </a>
+              );
+            })}
+          </div>
+        )}
       </footer>
     </FooterVariantContext.Provider>
   );
