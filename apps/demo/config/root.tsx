@@ -28,12 +28,26 @@ import {
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
+/**
+ * Locale & writing direction.
+ * SOOQ defaults to Arabic-first / RTL per SRS DSN-001 (Arabic default).
+ */
+export type LocaleProps = {
+  /** Page direction. Defaults to "rtl" (Arabic-first). DSN-001. */
+  direction?: "rtl" | "ltr";
+  /** Page language code (BCP-47). Defaults to "ar" (Arabic). */
+  language?: "ar" | "en";
+  /** Display currency. Defaults to SYP (Syrian Pound). DSN-010 / CUR module. */
+  currency?: "SYP" | "USD" | "EUR";
+};
+
 export type RootProps = DefaultRootRenderProps<
-  Partial<FullThemeProps> & {
-    title?: string;
-    /** When true, the HTML block appears in the Content palette (Settings → Editor). */
-    enableHtmlRichTextBlock?: boolean;
-  }
+  Partial<FullThemeProps> &
+    LocaleProps & {
+      title?: string;
+      /** When true, the HTML block appears in the Content palette (Settings → Editor). */
+      enableHtmlRichTextBlock?: boolean;
+    }
 >;
 
 // ─── Root config ─────────────────────────────────────────────────────────────
@@ -45,8 +59,11 @@ export const Root: RootConfig<{
   };
 }> = {
   defaultProps: {
-    title: "My Page",
+    title: "متجري على SOOQ",
     enableHtmlRichTextBlock: false,
+    direction: "rtl",
+    language: "ar",
+    currency: "SYP",
     ...DEFAULT_THEME,
     ...DEFAULT_COLORS,
     ...DEFAULT_BADGE,
@@ -65,7 +82,9 @@ export const Root: RootConfig<{
       badgeStyle = DEFAULT_BADGE.badgeStyle,
       headerVariant = DEFAULT_SHELL.headerVariant,
       footerVariant = DEFAULT_SHELL.footerVariant,
-      title: siteTitle = "Meridian",
+      title: siteTitle = "متجر SOOQ",
+      direction = "rtl",
+      language = "ar",
       puck: { isEditing, renderDropZone: DropZone },
     } = p;
 
@@ -136,7 +155,12 @@ export const Root: RootConfig<{
           </>
         )}
 
-        <div className={rootClass} style={themeVars as CSSProperties}>
+        <div
+          className={rootClass}
+          style={themeVars as CSSProperties}
+          dir={direction}
+          lang={language}
+        >
           <Header editMode={isEditing} variant={hv} siteTitle={siteTitle} />
           <DropZone
             zone="default-zone"

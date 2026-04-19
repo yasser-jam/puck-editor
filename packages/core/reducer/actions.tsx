@@ -7,6 +7,14 @@ export type InsertAction = {
   destinationIndex: number;
   destinationZone: string;
   id?: string;
+  /**
+   * Optional initial props merged over `config.components[componentType].defaultProps`.
+   * Enables inserting a fully-configured component (including nested slot
+   * content) in a single atomic action, avoiding an extra `replace`/`setData`
+   * round-trip. Nested slot arrays are still run through `populateIds` so
+   * child components receive stable ids.
+   */
+  props?: Record<string, unknown>;
 };
 
 export type DuplicateAction = {

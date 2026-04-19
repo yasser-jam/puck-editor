@@ -89,6 +89,13 @@ type PuckProps<
   metadata?: Metadata;
   height?: CSSProperties["height"];
   _experimentalFullScreenCanvas?: boolean;
+  /**
+   * Which built-in left-sidebar plugins to include. Defaults to `["blocks",
+   * "outline"]`. Pass `["outline"]` to hide the Blocks palette, or `[]` to
+   * disable both built-ins (useful when providing a fully custom left sidebar).
+   * User-supplied plugins with matching names still replace the built-ins.
+   */
+  builtinPlugins?: Array<"blocks" | "outline">;
 };
 
 const propsContext = createContext<Partial<PuckProps>>({});

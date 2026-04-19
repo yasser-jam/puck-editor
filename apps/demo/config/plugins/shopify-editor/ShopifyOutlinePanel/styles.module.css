@@ -1,0 +1,132 @@
+.ShopifyOutlinePanel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.ShopifyOutlinePanel-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0 8px;
+}
+
+.ShopifyOutlinePanel-group {
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.ShopifyOutlinePanel-groupHeader {
+  padding: 8px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+  background: #fafafa;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.ShopifyOutlinePanel-groupBody {
+  padding: 4px 0;
+}
+
+.ShopifyOutlinePanel-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #374151;
+  border-bottom: 1px solid transparent;
+}
+
+.ShopifyOutlinePanel-row--muted {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.ShopifyOutlinePanel-row--fixed {
+  color: #6b7280;
+}
+
+.ShopifyOutlinePanel-fixedIcon {
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.ShopifyOutlinePanel-fixedMeta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ShopifyOutlinePanel-fixedLabel {
+  font-size: 13px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.ShopifyOutlinePanel-fixedHint {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.ShopifyOutlinePanel-addSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: calc(100% - 16px);
+  margin: 8px;
+  padding: 10px 12px;
+  background: transparent;
+  color: #2563eb;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.12s ease;
+}
+
+.ShopifyOutlinePanel-addSection:hover {
+  background: #eff6ff;
+  border-color: #2563eb;
+  border-style: solid;
+}
+
+.ShopifyOutlinePanel-addSection--primary {
+  background: #111827;
+  color: #ffffff;
+  border-style: solid;
+  border-color: #111827;
+}
+
+.ShopifyOutlinePanel-addSection--primary:hover {
+  background: #000000;
+  border-color: #000000;
+}
+
+.ShopifyOutlinePanel-footer {
+  padding: 8px;
+  border-top: 1px solid #e5e7eb;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ShopifyOutlinePanel-emptyTemplate {
+  padding: 20px 16px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.ShopifyOutlinePanel-layerTreeWrap > :global(div) {
+  padding: 4px 8px;
+}

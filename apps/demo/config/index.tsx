@@ -29,58 +29,76 @@ import { ImageGallery } from "./blocks/ImageGallery";
 import { VideoEmbed } from "./blocks/VideoEmbed";
 import { ContentIcon } from "./blocks/ContentIcon";
 import { ContentHtml } from "./blocks/ContentHtml";
+import { OrderHistory } from "./blocks/OrderHistory";
+import { Wishlist } from "./blocks/Wishlist";
+import { Testimonials } from "./blocks/Testimonials";
+import { ContactForm } from "./blocks/ContactForm";
 
 import Root from "./root";
 import { UserConfig } from "./types";
 import { initialData } from "./initial-data";
 
-// We avoid the name config as next gets confused
+// Categories follow SRS § 4.2 taxonomy:
+//   - Sections   → DSN-003 page-level bands
+//   - Bound      → DSN-005 a–j data-bound blocks (commerce, customer)
+//   - Content    → DSN-004 a–j Generic blocks (data-agnostic)
+//   - Group      → DSN-006 / DSN-004k layout containers
+//   - Legacy     → kept hidden; preserved so old store_config.json still loads
+//
+// Block IDs in order roughly mirror the SRS sub-spec ordering so an AI agent
+// scanning the config can map to requirement IDs predictably.
 export const conf: UserConfig = {
   root: Root,
   categories: {
-    presets: {
-      title: "Presets",
+    sections: {
+      title: "Sections",
+      defaultExpanded: true,
+      components: ["Section"],
+    },
+    bound: {
+      title: "Store Blocks",
       defaultExpanded: true,
       components: [
-        "ProductCard",
+        // Commerce (DSN-005 a–f)
         "ProductsGrid",
+        "ProductCard",
+        "CategoryListMenu",
         "CartSection",
         "CheckoutForm",
         "ProductSearchMenu",
-        "CategoryListMenu",
+        // Customer (DSN-005 g–j)
+        "OrderHistory",
+        "Wishlist",
+        "Testimonials",
+        "ContactForm",
+        // Product detail page primitives
+        "ProductImage",
+        "ProductInfo",
       ],
-    },
-    sections: {
-      title: "Sections",
-      components: ["Section"],
     },
     content: {
       title: "Content",
       defaultExpanded: true,
       components: [
-        "ContentHeading",
-        "ContentParagraph",
-        "ContentImage",
-        "ContentButton",
-        "ContentDivider",
-        "Space",
-        "ImageGallery",
-        "VideoEmbed",
-        "ContentIcon",
-        "Group",
+        // DSN-004 a–j ordering
+        "ContentHeading",     // DSN-004a
+        "ContentParagraph",   // DSN-004b
+        "ContentImage",       // DSN-004c
+        "ContentButton",      // DSN-004d
+        "ContentDivider",     // DSN-004e
+        "Space",              // DSN-004f
+        "ImageGallery",       // DSN-004g
+        "VideoEmbed",         // DSN-004h
+        "ContentIcon",        // DSN-004i
+        "ContentHtml",        // DSN-004j
       ],
     },
-    products: {
-      title: "Product Blocks",
-      components: [
-        "ProductImage",
-        "ProductInfo",
-        "ProductSearchMenu",
-        "CategoryListMenu",
-      ],
+    group: {
+      title: "Layout",
+      components: ["Group"], // DSN-004k / DSN-006
     },
     legacy: {
-      title: "Legacy",
+      title: "Legacy (hidden)",
       visible: false,
       components: [
         "Heading",
@@ -98,8 +116,37 @@ export const conf: UserConfig = {
     },
   },
   components: {
+    // Sections
     Section,
+    // Group / Layout
     Group,
+    // Bound — commerce
+    ProductsGrid,
+    ProductCard,
+    CategoryListMenu,
+    CartSection,
+    CheckoutForm,
+    ProductSearchMenu,
+    ProductImage,
+    ProductInfo,
+    // Bound — customer (newly added: DSN-005 g/h/i/j)
+    OrderHistory,
+    Wishlist,
+    Testimonials,
+    ContactForm,
+    // Content (DSN-004 a–j)
+    ContentHeading,
+    ContentParagraph,
+    ContentImage,
+    ContentButton,
+    ContentDivider,
+    Space,
+    ImageGallery,
+    VideoEmbed,
+    ContentIcon,
+    ContentHtml,
+    // Legacy — kept registered so existing store_config.json can still render,
+    // but hidden from the picker (see categories.legacy.visible = false).
     Button,
     Card,
     Grid,
@@ -110,25 +157,7 @@ export const conf: UserConfig = {
     Stats,
     Template,
     Text,
-    Space,
     RichText,
-    ProductCard,
-    ProductsGrid,
-    CartSection,
-    CheckoutForm,
-    ProductSearchMenu,
-    CategoryListMenu,
-    ProductImage,
-    ProductInfo,
-    ContentHeading,
-    ContentParagraph,
-    ContentImage,
-    ContentButton,
-    ContentDivider,
-    ImageGallery,
-    VideoEmbed,
-    ContentIcon,
-    ContentHtml,
   },
 };
 

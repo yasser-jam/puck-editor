@@ -38,6 +38,14 @@ const columnOptions = [1, 2, 3, 4, 5, 6].map((n) => ({
 // ─── Types ─────────────────────────────────────────────────────────────────
 
 export type SectionProps = WithLayout<{
+  /**
+   * When false the section is hidden in the published renderer (web + mobile).
+   * In the editor it stays visible but dimmed so merchants can still edit it.
+   * This flag is persisted in `store_config.json` under the section's props —
+   * AI agents can flip it programmatically to A/B-test sections without
+   * mutating the section's inner content.
+   */
+  visible: boolean;
   paddingTop: string;
   paddingBottom: string;
   paddingHorizontal: string;
@@ -58,6 +66,16 @@ const SectionInner: ComponentConfig<SectionProps> = {
   label: "Section",
 
   fields: {
+    // ── Visibility ───────────────────────────────────────────────────────
+    visible: {
+      type: "radio",
+      label: "Visibility",
+      options: [
+        { label: "Visible", value: true },
+        { label: "Hidden", value: false },
+      ],
+    },
+
     // ── Spacing ──────────────────────────────────────────────────────────
     paddingTop: {
       type: "select",
@@ -116,6 +134,7 @@ const SectionInner: ComponentConfig<SectionProps> = {
   },
 
   defaultProps: {
+    visible: true,
     paddingTop: "80px",
     paddingBottom: "80px",
     paddingHorizontal: "24px",
@@ -128,6 +147,7 @@ const SectionInner: ComponentConfig<SectionProps> = {
   },
 
   render: ({
+    visible,
     paddingTop,
     paddingBottom,
     paddingHorizontal,
@@ -137,22 +157,59 @@ const SectionInner: ComponentConfig<SectionProps> = {
     columns,
     gridGap,
     content: Content,
+    puck,
   }) => {
     const cols = Math.max(
       1,
       Math.min(6, Number(columns ?? 1) || 1)
     );
     const gap = gridGap ?? "24px";
+
+    // Backward-compat: sections saved before the `visible` prop existed
+    // (i.e. `visible === undefined`) default to visible.
+    const isHidden = visible === false;
+
+    // Published renderer (web + mobile) strips hidden sections entirely.
+    // The editor keeps them interactive but visually demotes them so
+    // merchants can still select and re-enable them from the fields panel.
+    if (isHidden && !puck.isEditing) {
+      return null;
+    }
+
     return (
       <section
-        className={getClassName()}
+        className={getClassName({ hidden: isHidden })}
         style={{
           paddingTop,
           paddingBottom,
           backgroundColor,
           color: theme === "light" ? "#ffffff" : "inherit",
+          opacity: isHidden ? 0.35 : undefined,
+          position: "relative",
         }}
       >
+        {isHidden && puck.isEditing && (
+          <div
+            aria-hidden
+            style={{
+              position: "absolute",
+              top: 8,
+              insetInlineStart: 8,
+              padding: "2px 8px",
+              background: "#111827",
+              color: "#ffffff",
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+              borderRadius: 4,
+              zIndex: 1,
+              pointerEvents: "none",
+            }}
+          >
+            Hidden
+          </div>
+        )}
         <div
           className={getClassName("inner")}
           style={{

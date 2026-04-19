@@ -20,6 +20,10 @@ export function insertAction<UserData extends Data>(
       props: {
         ...(appStore.config.components[action.componentType].defaultProps ||
           {}),
+        // Caller-supplied initial props take precedence over defaults but
+        // are still overridden by `id` below, so the generated id is always
+        // the one the reducer uses.
+        ...(action.props || {}),
         id,
       },
     },

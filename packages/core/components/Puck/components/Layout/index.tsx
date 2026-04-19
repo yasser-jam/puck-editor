@@ -68,6 +68,7 @@ export const Layout = ({ children }: { children?: ReactNode }) => {
     initialHistory: _initialHistory,
     plugins,
     height,
+    builtinPlugins,
   } = usePropsContext();
 
   const iframe: IframeConfig = useMemo(
@@ -190,7 +191,10 @@ export const Layout = ({ children }: { children?: ReactNode }) => {
     const details: Record<string, MenuItem & { render: () => ReactElement }> =
       {};
 
-    const defaultPlugins: PluginInternal[] = [blocksPlugin(), outlinePlugin()];
+    const enabledBuiltins = builtinPlugins ?? ["blocks", "outline"];
+    const defaultPlugins: PluginInternal[] = enabledBuiltins.map((name) =>
+      name === "blocks" ? blocksPlugin() : outlinePlugin()
+    );
 
     const isLegacy = (plugin: PluginInternal) =>
       plugin.name === "legacy-side-bar" ? -1 : 0;
@@ -243,7 +247,7 @@ export const Layout = ({ children }: { children?: ReactNode }) => {
     });
 
     return details;
-  }, [plugins, currentPlugin, appStoreApi, leftSideBarVisible]);
+  }, [plugins, builtinPlugins, currentPlugin, appStoreApi, leftSideBarVisible]);
 
   useEffect(() => {
     if (!currentPlugin) {

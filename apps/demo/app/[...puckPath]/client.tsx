@@ -11,6 +11,7 @@ import { HtmlBlockPaletteSync } from "../../config/plugins/html-block-palette";
 import { ThemeInjector } from "../../config/plugins/settings/ThemeInjector";
 import { pagesPlugin } from "../../config/plugins/pages";
 import { themesPlugin } from "../../config/plugins/themes";
+import { shopifyOutlinePlugin } from "../../config/plugins/shopify-editor";
 
 export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
   const metadata = {
@@ -42,7 +43,18 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
           onPublish={async (data) => {
             localStorage.setItem(key, JSON.stringify(data));
           }}
-          plugins={[pagesPlugin, themesPlugin, headingAnalyzer, settingsPlugin]}
+          plugins={[
+            shopifyOutlinePlugin,
+            pagesPlugin,
+            themesPlugin,
+            headingAnalyzer,
+            settingsPlugin,
+          ]}
+          // Disable both built-in left-sidebar plugins ("blocks", "outline");
+          // our shopifyOutlinePlugin (registered under name "outline", first in
+          // the user list) owns the left sidebar end-to-end and launches the
+          // Add Section modal on demand — this mirrors Shopify's theme editor.
+          builtinPlugins={[]}
           headerPath={path}
           iframe={{
             enabled: params.get("disableIframe") === "true" ? false : true,

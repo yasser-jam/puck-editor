@@ -32,6 +32,10 @@ import { ImageGalleryProps } from "./blocks/ImageGallery";
 import { VideoEmbedProps } from "./blocks/VideoEmbed";
 import { ContentIconProps } from "./blocks/ContentIcon";
 import { ContentHtmlProps } from "./blocks/ContentHtml";
+import { OrderHistoryProps } from "./blocks/OrderHistory";
+import { WishlistProps } from "./blocks/Wishlist";
+import { TestimonialsProps } from "./blocks/Testimonials";
+import { ContactFormProps } from "./blocks/ContactForm";
 
 export type { RootProps } from "./root";
 
@@ -67,16 +71,20 @@ export type Components = {
   VideoEmbed: VideoEmbedProps;
   ContentIcon: ContentIconProps;
   ContentHtml: ContentHtmlProps;
+  OrderHistory: OrderHistoryProps;
+  Wishlist: WishlistProps;
+  Testimonials: TestimonialsProps;
+  ContactForm: ContactFormProps;
 };
 
 export type UserConfig = Config<{
   components: Components;
   root: RootProps;
   categories: [
-    "presets",
     "sections",
+    "bound",
     "content",
-    "products",
+    "group",
     "legacy",
   ];
   fields: {

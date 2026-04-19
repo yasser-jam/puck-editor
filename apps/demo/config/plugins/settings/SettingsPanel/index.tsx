@@ -139,9 +139,29 @@ function ColorCard({
 /** Root props stored in page data (theme + editor toggles not on FullThemeProps). */
 type SettingsRootProps = Partial<FullThemeProps> & {
   enableHtmlRichTextBlock?: boolean;
+  // SOOQ locale (DSN-001 / CUR module). Defaults: rtl / ar / SYP.
+  direction?: "rtl" | "ltr";
+  language?: "ar" | "en";
+  currency?: "SYP" | "USD" | "EUR";
 };
 
-type Tab = "fonts" | "colors" | "look" | "scales" | "editor";
+type Tab = "locale" | "fonts" | "colors" | "look" | "scales" | "editor";
+
+const DIRECTION_OPTIONS = [
+  { label: "RTL (Arabic)", value: "rtl" },
+  { label: "LTR", value: "ltr" },
+];
+
+const LANGUAGE_OPTIONS = [
+  { label: "العربية (Arabic)", value: "ar" },
+  { label: "English", value: "en" },
+];
+
+const CURRENCY_OPTIONS = [
+  { label: "Syrian Pound (SYP)", value: "SYP" },
+  { label: "US Dollar (USD)", value: "USD" },
+  { label: "Euro (EUR)", value: "EUR" },
+];
 
 const BADGE_SHAPE_OPTIONS = [
   { label: "Rounded", value: "rounded" },
@@ -166,7 +186,12 @@ export function SettingsPanel() {
   );
   const dispatch = useAppStore((s) => s.dispatch);
 
-  const [activeTab, setActiveTab] = useState<Tab>("fonts");
+  const [activeTab, setActiveTab] = useState<Tab>("locale");
+
+  // ── Locale values (DSN-001 / CUR module) ──
+  const direction = (rootProps?.direction ?? "rtl") as "rtl" | "ltr";
+  const language = (rootProps?.language ?? "ar") as "ar" | "en";
+  const currency = (rootProps?.currency ?? "SYP") as "SYP" | "USD" | "EUR";
 
   // ── Font values ──
   const bodyFont = (rootProps?.bodyFont ?? DEFAULT_THEME.bodyFont) as string;
@@ -216,6 +241,13 @@ export function SettingsPanel() {
       <div className={getClassName("tabs")}>
         <button
           type="button"
+          className={`${getClassName("tab")} ${activeTab === "locale" ? getClassName("tab--active") : ""}`}
+          onClick={() => setActiveTab("locale")}
+        >
+          Locale
+        </button>
+        <button
+          type="button"
           className={`${getClassName("tab")} ${activeTab === "fonts" ? getClassName("tab--active") : ""}`}
           onClick={() => setActiveTab("fonts")}
         >
@@ -252,6 +284,51 @@ export function SettingsPanel() {
       </div>
 
       <div className={getClassName("tabContent")}>
+        {/* ══ LOCALE TAB (DSN-001 / CUR module) ══ */}
+        {activeTab === "locale" && (
+          <div className={getClassName("section")}>
+            <div className={getClassName("sectionTitle")}>Locale & Currency</div>
+
+            <div className={getClassName("field")}>
+              <AutoField
+                field={{
+                  type: "radio",
+                  label: "Page direction (DSN-001)",
+                  options: DIRECTION_OPTIONS,
+                }}
+                value={direction}
+                onChange={(v) => updateProps({ direction: v as "rtl" | "ltr" })}
+              />
+            </div>
+
+            <div className={getClassName("field")}>
+              <AutoField
+                field={{
+                  type: "radio",
+                  label: "Default language",
+                  options: LANGUAGE_OPTIONS,
+                }}
+                value={language}
+                onChange={(v) => updateProps({ language: v as "ar" | "en" })}
+              />
+            </div>
+
+            <div className={getClassName("field")}>
+              <AutoField
+                field={{
+                  type: "select",
+                  label: "Display currency",
+                  options: CURRENCY_OPTIONS,
+                }}
+                value={currency}
+                onChange={(v) =>
+                  updateProps({ currency: v as "SYP" | "USD" | "EUR" })
+                }
+              />
+            </div>
+          </div>
+        )}
+
         {/* ══ FONTS TAB ══ */}
         {activeTab === "fonts" && (
           <div className={getClassName("section")}>
