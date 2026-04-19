@@ -198,12 +198,19 @@ export function TemplateSectionList({ onAddSection }: Props) {
   const rows: Row[] = useMemo(() => {
     return (content ?? []).map((item) => {
       const def = components?.[item.type];
-      const idFromProps =
-        (item.props as { id?: string } | undefined)?.id ?? item.type;
-      const visible =
-        (item.props as { visible?: boolean } | undefined)?.visible !== false;
+      const props = item.props as
+        | { id?: string; name?: string; visible?: boolean }
+        | undefined;
+      const idFromProps = props?.id ?? item.type;
+      const visible = props?.visible !== false;
+      // Prefer the merchant-supplied `name` (e.g. "Hero", "Testimonials")
+      // over the generic component label ("Section"). This makes the outline
+      // scannable even when the page has six Sections in a row.
+      const customName = (props?.name ?? "").trim();
       const label =
-        (def as { label?: string } | undefined)?.label ?? item.type;
+        customName ||
+        (def as { label?: string } | undefined)?.label ||
+        item.type;
       return { id: idFromProps, label, visible };
     });
   }, [content, components]);

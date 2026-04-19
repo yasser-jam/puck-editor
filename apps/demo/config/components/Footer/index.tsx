@@ -38,17 +38,109 @@ const FooterList = ({ children, title }: { children: ReactNode; title: string })
   );
 };
 
+export type FooterLinkData = {
+  label: string;
+  labelAr?: string;
+  href: string;
+};
+
+export type FooterColumn = {
+  title: string;
+  titleAr?: string;
+  links: FooterLinkData[];
+};
+
+export const DEFAULT_FOOTER_COLUMNS: FooterColumn[] = [
+  {
+    title: "Shop",
+    titleAr: "المتجر",
+    links: [
+      { label: "Home", labelAr: "الرئيسية", href: "/" },
+      { label: "Products", labelAr: "المنتجات", href: "/products/example-product" },
+      { label: "Cart", labelAr: "السلة", href: "/cart" },
+    ],
+  },
+  {
+    title: "Explore",
+    titleAr: "استكشف",
+    links: [
+      { label: "Themes", labelAr: "القوالب", href: "/themes" },
+      { label: "Pricing", labelAr: "الأسعار", href: "/pricing" },
+      { label: "About", labelAr: "من نحن", href: "/about" },
+    ],
+  },
+  {
+    title: "Support",
+    titleAr: "الدعم",
+    links: [
+      { label: "Shipping", labelAr: "الشحن", href: "#" },
+      { label: "Returns", labelAr: "الإرجاع", href: "#" },
+      { label: "Contact", labelAr: "اتصل بنا", href: "#" },
+    ],
+  },
+];
+
 export type FooterProps = {
-  children: ReactNode;
+  children?: ReactNode;
   variant?: ShellVariant;
   siteTitle?: string;
+  columns?: FooterColumn[];
+  language?: "ar" | "en";
+  visible?: boolean;
+  tagline?: string;
+  taglineAr?: string;
+};
+
+const pickText = (
+  en: string | undefined,
+  ar: string | undefined,
+  language: "ar" | "en"
+): string => {
+  if (language === "ar" && ar && ar.trim()) return ar;
+  return en || "";
 };
 
 const Footer = ({
   children,
   variant = "commerce",
   siteTitle = "Meridian",
+  columns,
+  language = "ar",
+  visible = true,
+  tagline,
+  taglineAr,
 }: FooterProps) => {
+  if (!visible) return null;
+
+  const resolvedColumns =
+    children == null
+      ? Array.isArray(columns) && columns.length > 0
+        ? columns
+        : DEFAULT_FOOTER_COLUMNS
+      : null;
+
+  const renderedChildren =
+    children ??
+    (resolvedColumns
+      ? resolvedColumns.map((col, ci) => (
+          <FooterList
+            key={`${col.title}-${ci}`}
+            title={pickText(col.title, col.titleAr, language) || col.title}
+          >
+            {col.links.map((lnk, li) => (
+              <FooterLink key={`${lnk.href}-${li}`} href={lnk.href}>
+                {pickText(lnk.label, lnk.labelAr, language) || lnk.label}
+              </FooterLink>
+            ))}
+          </FooterList>
+        ))
+      : null);
+
+  const resolvedTagline =
+    pickText(tagline, taglineAr, language) ||
+    (language === "ar"
+      ? "سلع مختارة بعناية — منسّقة وفق القوالب والإعدادات."
+      : "Curated goods — styled with your theme tokens and shell layout from Settings.");
   if (variant === "default") {
     return (
       <FooterVariantContext.Provider value="default">
@@ -56,7 +148,7 @@ const Footer = ({
           <h2 className={styles.visuallyHidden}>Footer</h2>
           <div className={styles.innerPadDefault}>
             <Section>
-              <div className={styles.gridDefault}>{children}</div>
+              <div className={styles.gridDefault}>{renderedChildren}</div>
             </Section>
           </div>
           <div className={styles.bottomBarDefault}>
@@ -82,11 +174,9 @@ const Footer = ({
           <div className={styles.gridCommerce}>
             <div className={styles.brandCol}>
               <span className={styles.brandName}>{siteTitle}</span>
-              <p className={styles.brandTagline}>
-                Curated goods — styled with your theme tokens and shell layout from Settings.
-              </p>
+              <p className={styles.brandTagline}>{resolvedTagline}</p>
             </div>
-            {children}
+            {renderedChildren}
           </div>
         </div>
         <div className={styles.bottomBarCommerce}>

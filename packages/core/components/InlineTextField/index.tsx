@@ -29,7 +29,21 @@ const InlineTextFieldInternal = ({
 
   useEffect(() => {
     const appStore = appStoreApi.getState();
-    const data = appStore.state.indexes.nodes[componentId].data;
+    // When the component is rendered as a drag-drop insert preview (i.e. the
+    // user hasn't actually dropped it yet), its synthetic id is NOT yet in
+    // `state.indexes.nodes`. Bail out cleanly instead of blowing up — the
+    // preview is ephemeral and read-only, so wiring up the input handler
+    // would be wrong anyway. The real InlineTextField will re-mount with a
+    // valid node the moment the drop commits.
+    const node = appStore.state.indexes.nodes[componentId];
+    if (!node) {
+      if (ref.current && value !== ref.current.innerText) {
+        ref.current.replaceChildren(value);
+      }
+      return;
+    }
+
+    const data = node.data;
     const componentConfig = appStore.getComponentConfig(data.type);
 
     if (!componentConfig) {
@@ -48,6 +62,11 @@ const InlineTextFieldInternal = ({
       const handleInput = async (e: any) => {
         const appStore = appStoreApi.getState();
         const node = appStore.state.indexes.nodes[componentId];
+
+        // Still guard: the node might be removed mid-edit (e.g. another
+        // plugin deleted the component). Skip the dispatch rather than
+        // crash the input handler.
+        if (!node) return;
 
         const zoneCompound = `${node.parentId}:${node.zone}`;
         const index =
@@ -84,7 +103,7 @@ const InlineTextFieldInternal = ({
         cleanupPortal?.();
       };
     }
-  }, [appStoreApi, ref.current, value, disableLineBreaks]);
+  }, [appStoreApi, ref.current, value, disableLineBreaks, componentId]);
 
   // We disable contentEditable when not hovering or already focused,
   // otherwise Safari focuses the element during drag. Related:

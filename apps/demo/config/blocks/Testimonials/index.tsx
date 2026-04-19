@@ -68,13 +68,17 @@ function TestimonialsRender({
             : ""
         }`.trim()}
       >
-        {items.map((t) => {
+        {items.map((t, idx) => {
           const text = language === "ar" && t.textAr ? t.textAr : t.text;
           const name = language === "ar" && t.nameAr ? t.nameAr : t.name;
           const role = language === "ar" && t.roleAr ? t.roleAr : t.role;
+          // `id` is merchant-editable and defaults to "" — two freshly-added
+          // items would collide on the React key. Prefer the stable id when
+          // present, otherwise fall back to the array index.
+          const key = t.id && t.id.trim() ? t.id : `item-${idx}`;
           return (
             <article
-              key={t.id}
+              key={key}
               className={`${getClassName("card")} ${
                 layoutVariant === "minimal"
                   ? getClassName("card--minimal")

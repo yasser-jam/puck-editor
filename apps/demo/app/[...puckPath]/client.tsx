@@ -12,6 +12,7 @@ import { ThemeInjector } from "../../config/plugins/settings/ThemeInjector";
 import { pagesPlugin } from "../../config/plugins/pages";
 import { themesPlugin } from "../../config/plugins/themes";
 import { shopifyOutlinePlugin } from "../../config/plugins/shopify-editor";
+import { canvasInteractionsPlugin } from "../../config/plugins/canvas-interactions";
 
 export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
   const metadata = {
@@ -49,6 +50,12 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
             themesPlugin,
             headingAnalyzer,
             settingsPlugin,
+            // Must be registered last so its `overrides.puck` wraps every
+            // other plugin's — that way the context menu + keyboard shortcuts
+            // sit at the outermost layer of the Puck tree and can't be
+            // short-circuited by a nested override that forgets to render
+            // `children`.
+            canvasInteractionsPlugin,
           ]}
           // Keep the built-in Blocks palette so merchants can still drag
           // individual components (Heading, Button, ProductCard, Sidebar,

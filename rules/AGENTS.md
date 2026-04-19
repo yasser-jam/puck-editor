@@ -58,8 +58,9 @@ React Web Storefront            Flutter Client App
 | **Block — Generic** (DSN-004 a–m) | Puck `components` entries with `fields` only, no data binding |
 | **Block — Bound** (DSN-005 a–j) | Puck `components` entries that read tenant data via `resolveData` / `external` fields / runtime context |
 | **Block — Group** (DSN-006, DSN-004k) | Puck `slot` field type — nested droppable region (depth ≤ 3) |
-| **Block — Sidebar** (DSN-004l) | `Sidebar` — vertical `slot` container, sticky option, mobile-collapsible |
+| **Block — Sidebar** (DSN-004l) | `Sidebar` — vertical `slot` container, `dock: inline \| left \| right` for page-level rails, sticky/offset options, mobile-collapsible |
 | **Block — NavMenu** (DSN-004m) | `NavMenu` — repeating list of `{ label, link }` items, powered by the shared `LinkValue` primitive |
+| **Block — SideDrawer** (DSN-004n) | `SideDrawer` — toggleable side panel (hamburger / filter / cart / announcement) with `side`, `animation`, `trigger`, `overlay`, `links[]`, and a free-form `items` slot. External togglers call `window.sooqDrawers.toggle("<name>")`, dispatch `sooq:drawer` CustomEvent, or use `data-sooq-drawer-toggle="<name>"` on any element |
 | **Navigation target** | `LinkValue` custom field — discriminated union `{ kind: "none" \| "page" \| "external" \| "anchor", … }` stored directly in `props.link` on any navigable block |
 | **Block styling** (DSN-008 a–h) | `fields` schema on each component (spacing/sizing/typography/colors/border/shadow/visibility) |
 | **Theme tokens** (DSN-010) | Puck `Config.root.fields` + custom override panel; tokens injected as CSS vars |
@@ -339,6 +340,13 @@ yarn smoke            # puppeteer smoke E2E
 - **Use the `LinkValue` primitive for every navigation target** (Button, menu item, product card CTA, …). Never hardcode an `href: "/cart"` string when the destination maps to a registered page — emit `{ kind: "page", pageId: "/cart" }` instead, so merchant-facing AI agents can rewire navigation without string parsing.
 - **Register every new route in `apps/demo/config/pages.ts`** before an AI agent can point a `LinkValue` at it. Unregistered paths become orphans on mobile where no router fallback exists.
 - **Compose Sidebar + NavMenu instead of bespoke layouts** when a block needs a vertical panel of nav/filter items. Their JSON contract is stable and the Flutter renderer already understands it.
+- **Choose the correct `Sidebar.dock` for the intent**: `"inline"` for a column next to main content (drop inside a 2-column Section), `"left"` / `"right"` for a global app rail pinned to the viewport edge (Shopify-admin style — Dashboard / Inventory / Customers / Marketing / Store Builder). When docked, set `dockOffsetTop` to the site header height so the rail starts below the header rather than under it. Docked sidebars use `position: fixed` and therefore do NOT push page content — if overlap is undesirable, add matching page padding via a wrapping Section's layout fields or via the root container.
+- **Any overlay-style block (drawer, modal, popover, toast) MUST portal to `ownerDocument.body`.** `position: fixed` alone is not enough inside the editor canvas: `@dnd-kit`'s sortable, Puck's zoom `transform: scale(...)` on the iframe container, and arbitrary ancestor `transform/filter/perspective/contain` all create CSS containing blocks that hijack fixed positioning, causing the element to anchor mid-canvas instead of the viewport edge. `SideDrawer` is the reference implementation — portal the overlay + panel with `createPortal(..., anchorRef.current?.ownerDocument.body)` so the same component works in both the live site and the editor iframe with zero special-casing.
+- **Use `SideDrawer` for transient side panels, never for always-visible rails.** `SideDrawer` is the dismissible, animated drawer (mobile hamburger, filter/facets panel, mini-cart peek, announcement drawer); `Sidebar` with `dock: "left" \| "right"` is the always-on rail. Never implement a drawer with a bespoke block — reuse `SideDrawer` and drive behaviour via its props. The `name` prop must be unique per drawer on a page so external triggers can target it: `window.sooqDrawers.toggle(name)`, `document.dispatchEvent(new CustomEvent("sooq:drawer", { detail: { name, action: "open" } }))`, or any element with `data-sooq-drawer-toggle="<name>"` (optional `data-sooq-drawer-action="open|close|toggle"`). When an AI agent adds a hamburger button to the Header, it should set that attribute rather than emit custom JS.
+- **Set `Section.name` on every top-level section you insert** so the Shopify-style outline labels it meaningfully ("Hero", "Featured products", "Testimonials"). The list uses `props.name` → falls back to the component label only when empty.
+- **Use `Section.anchorId` + `LinkValue.anchor` together** for in-page navigation. Setting `anchorId: "promo"` on a Section and `{ kind: "anchor", hash: "promo" }` on a NavMenu item is the ONLY supported way to do scroll-to-section — renderer attaches `<section id="promo">` automatically. Whitespace is auto-stripped, but stick to lowercase kebab-case (`featured-products`) so the same id works across web & Flutter.
+- **Prefer reducer actions over custom side effects** for clipboard-style flows. The `canvas-interactions` plugin's copy/paste uses a module-level ref (not persisted) plus a standard `insert` action with `props` — mirror this pattern for any future "template snippets" / "saved sections" feature so AI agents can reproduce the same result by calling `insert` directly.
+- **Drive the site shell from `root.props`, never from hardcoded React.** The header's brand, visibility, and nav links, plus the footer's columns/tagline/visibility, are all editable root fields (`title`, `headerVisible`, `headerBrandHref`, `headerLinks[]`, `footerVisible`, `footerTagline`, `footerTaglineAr`, `footerColumns[]`). `HeaderLink` / `FooterColumn` shapes live in `apps/demo/config/components/Header` and `…/Footer`; defaults come from `DEFAULT_HEADER_LINKS` / `DEFAULT_FOOTER_COLUMNS`. AI agents can set any of these to customise the whole-site shell in a single `replaceRoot` action — do NOT add a new block type for something that's inherently site-wide.
 
 ### Don't
 - Don't introduce a competing DnD library (stay on `@dnd-kit`).
@@ -378,8 +386,13 @@ yarn smoke            # puppeteer smoke E2E
 | `LinkValue` primitive + resolvers | `apps/demo/config/fields/LinkField/` |
 | Sidebar block (DSN-004l) | `apps/demo/config/blocks/Sidebar/` |
 | NavMenu block (DSN-004m) | `apps/demo/config/blocks/NavMenu/` |
+| SideDrawer block (DSN-004n) | `apps/demo/config/blocks/SideDrawer/` |
+| Editable site header (brand, nav, visibility) | `apps/demo/config/components/Header/index.tsx` + root fields in `apps/demo/config/root.tsx` |
+| Editable site footer (columns, tagline, visibility) | `apps/demo/config/components/Footer/index.tsx` + root fields in `apps/demo/config/root.tsx` |
 | Shopify-style outline + Add Section modal | `apps/demo/config/plugins/shopify-editor/` |
 | Section preset catalog | `apps/demo/config/plugins/shopify-editor/section-catalog.tsx` |
+| Canvas right-click menu + keyboard shortcuts | `apps/demo/config/plugins/canvas-interactions/` |
+| Real-size drop preview on insert | `packages/core/components/DropZone/index.tsx` (`DropZoneChild` — inserts render the real component with defaultProps, not a drawer chip; see `[data-puck-insert-preview]` styles) |
 | Smoke tests | `scripts/e2e/smoke.mjs` |
 | Shared tsup config | `packages/tsup-config/index.ts` |
 | Shared tsconfig | `packages/tsconfig/base.json` |

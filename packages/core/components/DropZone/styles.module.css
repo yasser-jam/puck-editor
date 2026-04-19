@@ -68,3 +68,22 @@
 body:has(.DropZone--isAnimating:empty) [data-puck-overlay] {
   opacity: 0 !important;
 }
+
+/* Real-size drop preview: while a new element is hovering above the canvas
+   we render the actual component at its true dimensions (defaultProps) so the
+   merchant sees exactly what will land. The ghost is tinted and outlined so
+   it's clearly distinguishable from already-placed elements.
+
+   Turbopack's CSS-module parser requires a "pure" (local-scoped) selector at
+   the top level, so we anchor the rule to the DropZone's local `.DropZone`
+   class and target the preview descendant via `:global(...)`. This keeps the
+   CSS module valid while still matching the dynamically-injected attribute. */
+.DropZone :global([data-puck-insert-preview="true"]) {
+  opacity: 0.6;
+  outline: 2px dashed var(--puck-color-azure-04);
+  outline-offset: -2px;
+  background: color-mix(in srgb, var(--puck-color-azure-09) 25%, transparent);
+  pointer-events: none;
+  border-radius: 2px;
+  transition: opacity 120ms ease-out;
+}

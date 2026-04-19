@@ -283,29 +283,27 @@ const DropZoneChild = ({
               : nodeProps.marginBottom
             : undefined;
 
+        // When inserting from the Drawer, `item.element` points to the tiny
+        // drawer-item chip, NOT the real component. Rendering `outerHTML` of
+        // that chip gives a drop preview that doesn't reflect the real size
+        // of what's about to land on the canvas. Instead we render the actual
+        // component (with its defaultProps already merged into transformedProps)
+        // so merchants see a true-to-scale preview at the drop position.
+        // Moves keep their source element via the `transformedProps` flow too.
         return (
           <div
             ref={dragRef}
+            data-puck-insert-preview={isInserting ? "true" : undefined}
             style={
               marginTop != null || marginBottom != null
                 ? { marginTop, marginBottom }
                 : undefined
             }
           >
-            {isInserting ? (
-              <InsertPreview
-                label={label}
-                override={overrides.componentItem ?? overrides.drawerItem}
-                element={
-                  "element" in item && item.element ? item.element : undefined
-                }
-              />
-            ) : (
-              <MemoizeComponent
-                Component={Render}
-                componentProps={transformedProps}
-              />
-            )}
+            <MemoizeComponent
+              Component={Render}
+              componentProps={transformedProps}
+            />
           </div>
         );
       }}

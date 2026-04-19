@@ -1,0 +1,130 @@
+/* Canvas interactions: right-click context menu */
+
+.CanvasContextMenu {
+  position: fixed;
+  z-index: 9999;
+  min-width: 220px;
+  max-width: 280px;
+  padding: 4px;
+  background: var(--puck-color-white, #ffffff);
+  border: 1px solid var(--puck-color-grey-09, #e5e7eb);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15),
+    0 2px 6px rgba(15, 23, 42, 0.08);
+  font-family: var(--puck-font-family, -apple-system, "Segoe UI", Roboto, sans-serif);
+  font-size: 13px;
+  color: var(--puck-color-grey-01, #111827);
+  user-select: none;
+  animation: CanvasContextMenu-fadeIn 80ms ease-out;
+}
+
+@keyframes CanvasContextMenu-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.CanvasContextMenu-header {
+  padding: 8px 10px 6px;
+  border-bottom: 1px solid var(--puck-color-grey-09, #f3f4f6);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--puck-color-grey-04, #6b7280);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.CanvasContextMenu-headerName {
+  color: var(--puck-color-grey-01, #111827);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12px;
+  font-weight: 600;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.CanvasContextMenu-group {
+  padding: 2px 0;
+}
+
+.CanvasContextMenu-group + .CanvasContextMenu-group {
+  border-top: 1px solid var(--puck-color-grey-09, #f3f4f6);
+  margin-top: 4px;
+  padding-top: 4px;
+}
+
+.CanvasContextMenu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 10px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.CanvasContextMenu-item:hover:not(:disabled),
+.CanvasContextMenu-item:focus-visible:not(:disabled) {
+  background: var(--puck-color-azure-10, #eff6ff);
+  color: var(--puck-color-azure-04, #1d4ed8);
+  outline: none;
+}
+
+.CanvasContextMenu-item:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.CanvasContextMenu-item--danger:hover:not(:disabled),
+.CanvasContextMenu-item--danger:focus-visible:not(:disabled) {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.CanvasContextMenu-itemIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  color: currentColor;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.CanvasContextMenu-itemLabel {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.CanvasContextMenu-shortcut {
+  color: var(--puck-color-grey-04, #9ca3af);
+  font-size: 11px;
+  font-family: var(--puck-font-family-mono, ui-monospace, SFMono-Regular, monospace);
+  flex-shrink: 0;
+}
+
+/* Subtle focus ring on the canvas element under the pointer when the menu is open.
+   Uses outline so it doesn't affect layout. Wrapped in :global because this
+   attribute is set on blocks inside the preview iframe — outside CSS Modules' scope. */
+:global([data-canvas-ctx-target="true"]) {
+  outline: 2px solid rgba(59, 130, 246, 0.55);
+  outline-offset: 2px;
+}
