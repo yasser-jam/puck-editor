@@ -14,3 +14,147 @@ body {
       Segoe UI Symbol;
   }
 }
+
+/* ══ Puck editor — visual tuning ══════════════════════════════════════════
+   These overrides sit on top of `packages/core/styles.css`. Puck reads its
+   UI colours, typography and spacing from CSS custom properties, so we can
+   reshape the look of every field, button, panel and sidebar without
+   forking the editor. The goal: a calmer, more modern surface that feels
+   closer to Shopify/Framer than the default bright Puck theme.
+   ══════════════════════════════════════════════════════════════════════ */
+:root {
+  /* A more pleasant blue for selection outlines, active tabs and accents. */
+  --puck-color-azure-01: #051436;
+  --puck-color-azure-02: #0b2363;
+  --puck-color-azure-03: #1e3a8a;
+  --puck-color-azure-04: #2563eb;
+  --puck-color-azure-05: #3b82f6;
+  --puck-color-azure-06: #60a5fa;
+  --puck-color-azure-07: #93c5fd;
+  --puck-color-azure-08: #bfdbfe;
+  --puck-color-azure-09: #dbeafe;
+  --puck-color-azure-10: #e0ebff;
+  --puck-color-azure-11: #eff6ff;
+  --puck-color-azure-12: #f5f9ff;
+
+  /* Neutral grey scale — slightly cooler than the default for better contrast. */
+  --puck-color-grey-01: #0f172a;
+  --puck-color-grey-02: #1e293b;
+  --puck-color-grey-03: #334155;
+  --puck-color-grey-04: #475569;
+  --puck-color-grey-05: #64748b;
+  --puck-color-grey-06: #94a3b8;
+  --puck-color-grey-07: #cbd5e1;
+  --puck-color-grey-08: #e2e8f0;
+  --puck-color-grey-09: #e8edf4;
+  --puck-color-grey-10: #eef2f7;
+  --puck-color-grey-11: #f4f7fb;
+  --puck-color-grey-12: #f8fafc;
+}
+
+/* Softer body background behind the editor canvas. */
+html,
+body {
+  background: var(--puck-color-grey-11);
+}
+
+/* ── Form controls ───────────────────────────────────────────────────── */
+/* Puck uses modular class names like `_Input-input_*` — we can't target
+   those safely by hash. Instead, we tune the visible appearance by hooking
+   into the fields it wraps with: every input/select/textarea inside the
+   side panel. The selectors below are intentionally tolerant. */
+
+[class*="_SidebarSection"] input[type="text"],
+[class*="_SidebarSection"] input[type="number"],
+[class*="_SidebarSection"] input[type="url"],
+[class*="_SidebarSection"] input[type="email"],
+[class*="_SidebarSection"] textarea,
+[class*="_SidebarSection"] select {
+  border-radius: 8px !important;
+  border-color: var(--puck-color-grey-09) !important;
+  background: #fff !important;
+  color: var(--puck-color-grey-02) !important;
+  padding: 10px 12px !important;
+  font-size: 13px !important;
+  transition: border-color 120ms ease, box-shadow 120ms ease !important;
+}
+
+[class*="_SidebarSection"] input[type="text"]:hover,
+[class*="_SidebarSection"] input[type="number"]:hover,
+[class*="_SidebarSection"] textarea:hover,
+[class*="_SidebarSection"] select:hover {
+  border-color: var(--puck-color-grey-07) !important;
+}
+
+[class*="_SidebarSection"] input[type="text"]:focus,
+[class*="_SidebarSection"] input[type="number"]:focus,
+[class*="_SidebarSection"] input[type="url"]:focus,
+[class*="_SidebarSection"] input[type="email"]:focus,
+[class*="_SidebarSection"] textarea:focus,
+[class*="_SidebarSection"] select:focus {
+  border-color: var(--puck-color-azure-05) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+  outline: none !important;
+}
+
+/* Field labels — a touch more hierarchy. */
+[class*="_Input-label"] {
+  color: var(--puck-color-grey-03) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+}
+
+/* ── Side panel chrome ────────────────────────────────────────────────── */
+/* Gentle border radius on sidebar section headers so the whole panel
+   feels less like a spreadsheet and more like a modern design tool. */
+[class*="_SidebarSection-title"] {
+  border-radius: 6px !important;
+}
+
+/* Buttons inside the property panel — softer & slightly bolder. */
+[class*="_SidebarSection"] button[class*="Button"] {
+  border-radius: 8px !important;
+  transition: background 120ms ease, color 120ms ease,
+    border-color 120ms ease, transform 80ms ease !important;
+}
+
+[class*="_SidebarSection"] button[class*="Button"]:hover {
+  transform: translateY(-1px);
+}
+
+/* ── Scrollbars inside the editor chrome ─────────────────────────────── */
+[class*="_SidePanel"] ::-webkit-scrollbar,
+[class*="_Sidebar"] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+[class*="_SidePanel"] ::-webkit-scrollbar-thumb,
+[class*="_Sidebar"] ::-webkit-scrollbar-thumb {
+  background: var(--puck-color-grey-08);
+  border-radius: 10px;
+  border: 2px solid var(--puck-color-grey-11);
+  background-clip: padding-box;
+}
+
+[class*="_SidePanel"] ::-webkit-scrollbar-thumb:hover,
+[class*="_Sidebar"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--puck-color-grey-07);
+}
+
+/* ── Array fields — nicer spacing around dragged items ─────────────────
+   Puck renders array items as stacked cards. The defaults are cramped;
+   a hair more breathing room goes a long way. */
+[class*="_ArrayField"] [class*="Item"] {
+  border-radius: 10px !important;
+}
+
+[class*="_ArrayField-addButton"] {
+  border-radius: 10px !important;
+}
+
+/* ── Selected component outline in the canvas ────────────────────────── */
+/* Match our refined azure palette so selection looks calmer. */
+[class*="_DraggableComponent--isSelected"] [class*="_DraggableComponent-overlay"] {
+  box-shadow: 0 0 0 2px var(--puck-color-azure-04) inset !important;
+}

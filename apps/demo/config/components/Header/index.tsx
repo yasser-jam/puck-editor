@@ -1,8 +1,23 @@
+import React, { CSSProperties } from "react";
 import classnames from "classnames";
+import { Menu, Filter, ShoppingCart, User } from "lucide-react";
 
 import type { ShellVariant } from "../../theme";
 
 import styles from "./styles.module.css";
+
+export type HeaderDrawerIcon = "menu" | "filter" | "cart" | "user" | "none";
+
+const DRAWER_ICON_MAP: Record<
+  HeaderDrawerIcon,
+  React.ComponentType<{ size?: number }> | null
+> = {
+  menu: Menu,
+  filter: Filter,
+  cart: ShoppingCart,
+  user: User,
+  none: null,
+};
 
 const normalizePath = (pathname: string) =>
   pathname.replace(/\/edit$/, "").replace(/\/$/, "") || "/";
@@ -76,6 +91,18 @@ export type HeaderProps = {
   visible?: boolean;
   /** Optional brand href; defaults to "/". */
   brandHref?: string;
+  /** CSS colour string (any valid CSS colour). Empty falls back to the theme. */
+  backgroundColor?: string;
+  textColor?: string;
+  /**
+   * When true, renders a hamburger/menu button on the start-edge of the
+   * header. Clicking it toggles the site-wide drawer via its
+   * `data-sooq-drawer-toggle` attribute — no JS wiring needed.
+   */
+  showDrawerButton?: boolean;
+  drawerButtonIcon?: HeaderDrawerIcon;
+  /** Which drawer name to toggle. Defaults to "site-drawer". */
+  drawerName?: string;
 };
 
 const pickLabel = (link: HeaderLink, language: "ar" | "en"): string => {
@@ -91,16 +118,43 @@ const Header = ({
   language = "ar",
   visible = true,
   brandHref = "/",
+  backgroundColor,
+  textColor,
+  showDrawerButton = false,
+  drawerButtonIcon = "menu",
+  drawerName = "site-drawer",
 }: HeaderProps) => {
   if (!visible) return null;
 
   const resolvedLinks =
     Array.isArray(links) && links.length > 0 ? links : DEFAULT_HEADER_LINKS;
 
+  // Inline-colour overrides. We only emit the style entry when a colour is
+  // provided so that the themed defaults (CSS variables on :root) still take
+  // effect when the merchant leaves the field empty.
+  const rootStyle: CSSProperties = {};
+  if (backgroundColor) rootStyle.background = backgroundColor;
+  if (textColor) rootStyle.color = textColor;
+
+  const DrawerIcon = DRAWER_ICON_MAP[drawerButtonIcon] ?? Menu;
+  const drawerButton =
+    showDrawerButton && DrawerIcon ? (
+      <button
+        type="button"
+        className={styles.drawerToggle}
+        data-sooq-drawer-toggle={drawerName}
+        data-sooq-drawer-action="toggle"
+        aria-label="Open menu"
+      >
+        <DrawerIcon size={20} />
+      </button>
+    ) : null;
+
   if (variant === "default") {
     return (
-      <div className={styles.root}>
+      <div className={styles.root} style={rootStyle}>
         <header className={styles.inner}>
+          {drawerButton}
           <a href={brandHref || "/"} className={styles.logo}>
             {siteTitle}
           </a>
@@ -120,8 +174,9 @@ const Header = ({
   }
 
   return (
-    <div className={styles.rootCommerce}>
+    <div className={styles.rootCommerce} style={rootStyle}>
       <header className={styles.innerCommerce}>
+        {drawerButton}
         <a href={brandHref || "/"} className={styles.brand}>
           {siteTitle}
         </a>

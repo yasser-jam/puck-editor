@@ -110,3 +110,27 @@
   color: #fff;
   border-bottom-color: var(--theme-color-primary, #2563eb);
 }
+/* ── Drawer toggle (hamburger) ─────────────────────────────────────── */
+.drawerToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-inline-end: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  cursor: pointer;
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+.drawerToggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.drawerToggle:active {
+  transform: translateY(1px);
+}
+

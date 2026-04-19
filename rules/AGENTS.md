@@ -60,7 +60,7 @@ React Web Storefront            Flutter Client App
 | **Block — Group** (DSN-006, DSN-004k) | Puck `slot` field type — nested droppable region (depth ≤ 3) |
 | **Block — Sidebar** (DSN-004l) | `Sidebar` — vertical `slot` container, `dock: inline \| left \| right` for page-level rails, sticky/offset options, mobile-collapsible |
 | **Block — NavMenu** (DSN-004m) | `NavMenu` — repeating list of `{ label, link }` items, powered by the shared `LinkValue` primitive |
-| **Block — SideDrawer** (DSN-004n) | `SideDrawer` — toggleable side panel (hamburger / filter / cart / announcement) with `side`, `animation`, `trigger`, `overlay`, `links[]`, and a free-form `items` slot. External togglers call `window.sooqDrawers.toggle("<name>")`, dispatch `sooq:drawer` CustomEvent, or use `data-sooq-drawer-toggle="<name>"` on any element |
+| **Site chrome — SiteDrawer** (DSN-004n) | Rendered from `root.tsx` (NOT a Puck block) — driven by the `drawer*` root fields (`drawerEnabled`, `drawerSide`, `drawerWidthPx`, `drawerAnimation`, `drawerLinks[]`, `drawerBackgroundColor`, etc.). Opened via the header menu button (`headerShowDrawerButton: true`), a floating trigger, auto-open, or ANY element with `data-sooq-drawer-toggle="site-drawer"`. The block in `apps/demo/config/blocks/SideDrawer/` is now legacy-only (hidden from the palette; kept registered so existing JSON still renders). |
 | **Navigation target** | `LinkValue` custom field — discriminated union `{ kind: "none" \| "page" \| "external" \| "anchor", … }` stored directly in `props.link` on any navigable block |
 | **Block styling** (DSN-008 a–h) | `fields` schema on each component (spacing/sizing/typography/colors/border/shadow/visibility) |
 | **Theme tokens** (DSN-010) | Puck `Config.root.fields` + custom override panel; tokens injected as CSS vars |
@@ -225,6 +225,23 @@ merchant editor and the mobile renderer deserialize them correctly.
   Blocks that carry navigation today: `Button`, `ContentButton`, each
   `NavMenu` item.
 
+- **`ColorField`** (`apps/demo/config/fields/ColorField/`) — a compact custom
+  field (swatch + native `<input type=color>` + hex text input + theme
+  swatches). Use the `colorField({ label, description })` helper when
+  declaring a field; the value is persisted as a raw CSS colour string
+  (`"#rrggbb"`, `"rgba(...)"` or empty for "inherit theme"). Agents
+  mutating colour props in `store_config.json` may emit any valid CSS
+  colour; an empty string explicitly means "fall back to the active
+  theme token".
+
+- **`SectionHeader`** (`apps/demo/config/fields/SectionHeader/`) — a
+  visual-only "field" used to divide long config panels (root, complex
+  blocks) into labelled groups with an accent stripe. Declare with
+  `sectionHeader({ title, description?, icon?, accent? })`. **It has no
+  persisted value** — it is purely chrome and its JSON property is always
+  `undefined`. Agents must never emit data for keys whose name starts
+  with `__` (the convention for these separator fields).
+
 ### Plugin system
 
 ```ts
@@ -341,6 +358,7 @@ yarn smoke            # puppeteer smoke E2E
 - **Register every new route in `apps/demo/config/pages.ts`** before an AI agent can point a `LinkValue` at it. Unregistered paths become orphans on mobile where no router fallback exists.
 - **Compose Sidebar + NavMenu instead of bespoke layouts** when a block needs a vertical panel of nav/filter items. Their JSON contract is stable and the Flutter renderer already understands it.
 - **Choose the correct `Sidebar.dock` for the intent**: `"inline"` for a column next to main content (drop inside a 2-column Section), `"left"` / `"right"` for a global app rail pinned to the viewport edge (Shopify-admin style — Dashboard / Inventory / Customers / Marketing / Store Builder). When docked, set `dockOffsetTop` to the site header height so the rail starts below the header rather than under it. Docked sidebars use `position: fixed` and therefore do NOT push page content — if overlap is undesirable, add matching page padding via a wrapping Section's layout fields or via the root container.
+- **Drive the site drawer from root fields, never from a block.** The drawer is part of the site shell (like the header/footer), not a per-page block. Configure it via the `drawer*` root fields and toggle it from any element with `data-sooq-drawer-toggle="site-drawer"` (e.g. the built-in header menu button enabled via `headerShowDrawerButton: true`). A single `replaceRoot` action can enable it, change its side, swap the animation, recolour the panel, and rewire the nav buttons — no block insertion/removal required.
 - **Any overlay-style block (drawer, modal, popover, toast) MUST portal to `ownerDocument.body`.** `position: fixed` alone is not enough inside the editor canvas: `@dnd-kit`'s sortable, Puck's zoom `transform: scale(...)` on the iframe container, and arbitrary ancestor `transform/filter/perspective/contain` all create CSS containing blocks that hijack fixed positioning, causing the element to anchor mid-canvas instead of the viewport edge. `SideDrawer` is the reference implementation — portal the overlay + panel with `createPortal(..., anchorRef.current?.ownerDocument.body)` so the same component works in both the live site and the editor iframe with zero special-casing.
 - **Use `SideDrawer` for transient side panels, never for always-visible rails.** `SideDrawer` is the dismissible, animated drawer (mobile hamburger, filter/facets panel, mini-cart peek, announcement drawer); `Sidebar` with `dock: "left" \| "right"` is the always-on rail. Never implement a drawer with a bespoke block — reuse `SideDrawer` and drive behaviour via its props. The `name` prop must be unique per drawer on a page so external triggers can target it: `window.sooqDrawers.toggle(name)`, `document.dispatchEvent(new CustomEvent("sooq:drawer", { detail: { name, action: "open" } }))`, or any element with `data-sooq-drawer-toggle="<name>"` (optional `data-sooq-drawer-action="open|close|toggle"`). When an AI agent adds a hamburger button to the Header, it should set that attribute rather than emit custom JS.
 - **Set `Section.name` on every top-level section you insert** so the Shopify-style outline labels it meaningfully ("Hero", "Featured products", "Testimonials"). The list uses `props.name` → falls back to the component label only when empty.
@@ -384,9 +402,15 @@ yarn smoke            # puppeteer smoke E2E
 | Demo page registry | `apps/demo/config/pages.ts` |
 | `BilingualString` primitive | `apps/demo/config/fields/BilingualText/` |
 | `LinkValue` primitive + resolvers | `apps/demo/config/fields/LinkField/` |
+| `ColorField` (swatch + picker) | `apps/demo/config/fields/ColorField/` |
+| `SectionHeader` (visual group divider) | `apps/demo/config/fields/SectionHeader/` |
+| Editor chrome overrides (CSS vars) | `apps/demo/app/styles.css` |
 | Sidebar block (DSN-004l) | `apps/demo/config/blocks/Sidebar/` |
 | NavMenu block (DSN-004m) | `apps/demo/config/blocks/NavMenu/` |
-| SideDrawer block (DSN-004n) | `apps/demo/config/blocks/SideDrawer/` |
+| SideDrawer block (legacy, DSN-004n) | `apps/demo/config/blocks/SideDrawer/` |
+| Site-wide SiteDrawer (DSN-004n) | `apps/demo/config/components/SiteDrawer/` + `drawer*` fields in `apps/demo/config/root.tsx` |
+| Editable header colours + drawer toggle button | `apps/demo/config/components/Header/index.tsx` + `headerBackgroundColor`/`headerTextColor`/`headerShowDrawerButton`/`headerDrawerButtonIcon` in `root.tsx` |
+| Editable footer colours | `apps/demo/config/components/Footer/index.tsx` + `footerBackgroundColor`/`footerTextColor` in `root.tsx` |
 | Editable site header (brand, nav, visibility) | `apps/demo/config/components/Header/index.tsx` + root fields in `apps/demo/config/root.tsx` |
 | Editable site footer (columns, tagline, visibility) | `apps/demo/config/components/Footer/index.tsx` + root fields in `apps/demo/config/root.tsx` |
 | Shopify-style outline + Add Section modal | `apps/demo/config/plugins/shopify-editor/` |

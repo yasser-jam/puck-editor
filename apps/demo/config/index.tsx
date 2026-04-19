@@ -100,16 +100,21 @@ export const conf: UserConfig = {
       title: "Layout",
       defaultExpanded: true,
       components: [
-        "Group",      // DSN-004k / DSN-006
-        "Sidebar",    // DSN-004l — vertical container for filters / nav / promos
-        "NavMenu",    // DSN-004m — repeating list of links (header, footer, nav)
-        "SideDrawer", // DSN-004n — toggleable side panel (hamburger/filter/cart)
+        "Group",   // DSN-004k / DSN-006
+        "Sidebar", // DSN-004l — vertical container for filters / nav / promos
+        "NavMenu", // DSN-004m — repeating list of links (header, footer, nav)
       ],
     },
     legacy: {
       title: "Legacy (hidden)",
       visible: false,
       components: [
+        // SideDrawer is now a site-wide root setting (see Settings → drawer*
+        // fields), not a per-page block. We keep the block registered so any
+        // existing store_config.json that instantiated it still renders, but
+        // it's hidden from the palette so merchants don't confuse themselves
+        // by dropping a second drawer on top of the root-level one.
+        "SideDrawer",
         "Heading",
         "Text",
         "RichText",

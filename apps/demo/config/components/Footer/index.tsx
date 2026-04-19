@@ -89,6 +89,9 @@ export type FooterProps = {
   visible?: boolean;
   tagline?: string;
   taglineAr?: string;
+  /** Any valid CSS colour. Empty falls back to the theme. */
+  backgroundColor?: string;
+  textColor?: string;
 };
 
 const pickText = (
@@ -109,8 +112,16 @@ const Footer = ({
   visible = true,
   tagline,
   taglineAr,
+  backgroundColor,
+  textColor,
 }: FooterProps) => {
   if (!visible) return null;
+
+  // Inline colour overrides. Only emit entries when the merchant provided a
+  // value, so the themed defaults still apply when the fields are empty.
+  const rootStyle: React.CSSProperties = {};
+  if (backgroundColor) rootStyle.background = backgroundColor;
+  if (textColor) rootStyle.color = textColor;
 
   const resolvedColumns =
     children == null
@@ -144,7 +155,7 @@ const Footer = ({
   if (variant === "default") {
     return (
       <FooterVariantContext.Provider value="default">
-        <footer className={styles.rootDefault}>
+        <footer className={styles.rootDefault} style={rootStyle}>
           <h2 className={styles.visuallyHidden}>Footer</h2>
           <div className={styles.innerPadDefault}>
             <Section>
@@ -169,7 +180,7 @@ const Footer = ({
 
   return (
     <FooterVariantContext.Provider value="commerce">
-      <footer className={styles.rootCommerce}>
+      <footer className={styles.rootCommerce} style={rootStyle}>
         <div className={styles.innerCommerce}>
           <div className={styles.gridCommerce}>
             <div className={styles.brandCol}>
