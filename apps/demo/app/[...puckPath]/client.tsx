@@ -50,11 +50,15 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
             headingAnalyzer,
             settingsPlugin,
           ]}
-          // Disable both built-in left-sidebar plugins ("blocks", "outline");
-          // our shopifyOutlinePlugin (registered under name "outline", first in
-          // the user list) owns the left sidebar end-to-end and launches the
-          // Add Section modal on demand — this mirrors Shopify's theme editor.
-          builtinPlugins={[]}
+          // Keep the built-in Blocks palette so merchants can still drag
+          // individual components (Heading, Button, ProductCard, Sidebar,
+          // NavMenu, …) onto a section on the canvas. Our shopifyOutlinePlugin
+          // is registered under name "outline", which by Puck's plugin-merge
+          // rule replaces the built-in outline plugin while leaving "blocks"
+          // untouched. Merchants now get both Shopify-style section picking
+          // (via our outline + Add Section modal) AND free-form drag-and-drop
+          // for leaf blocks.
+          builtinPlugins={["blocks"]}
           headerPath={path}
           iframe={{
             enabled: params.get("disableIframe") === "true" ? false : true,

@@ -7,11 +7,25 @@ import {
   buttonActionLabel,
 } from "../../content/button-actions";
 import { WithLayout, withLayout } from "../../components/Layout";
+import {
+  linkField,
+  resolveHrefLegacy,
+  resolveLinkTarget,
+  EMPTY_LINK,
+  type LinkValue,
+} from "../../fields/LinkField";
 
 export type ButtonProps = WithLayout<{
   label: string;
   buttonAction: ButtonAction;
-  href: string;
+  /**
+   * Structured navigation target. New blocks populate this; older blocks may
+   * still have only `href`. The render function prefers `link` when present
+   * and falls back to `href` for back-compat.
+   */
+  link: LinkValue;
+  /** @deprecated use `link`. Kept for backward compatibility with old JSON. */
+  href?: string;
   variant: "primary" | "secondary";
 }>;
 
@@ -26,7 +40,7 @@ const buttonFields = {
     label: "Action",
     options: BUTTON_ACTION_OPTIONS,
   },
-  href: { type: "text" as const, label: "Link URL" },
+  link: linkField({ label: "Destination" }),
   variant: {
     type: "radio" as const,
     options: [
@@ -42,7 +56,9 @@ function filterButtonHrefFields(
 ): Fields<ButtonProps> {
   const action = data.props?.buttonAction ?? "link";
   if (action === "link") return fields;
-  const { href: _h, ...rest } = fields as Record<string, unknown>;
+  // Hide the link field when the button performs an in-app action rather
+  // than navigation — the action handler runs instead of an href.
+  const { link: _l, ...rest } = fields as Record<string, unknown>;
   return rest as Fields<ButtonProps>;
 }
 
@@ -52,10 +68,17 @@ const ButtonInner: ComponentConfig<ButtonProps> = {
   defaultProps: {
     label: "Button",
     buttonAction: "link",
-    href: "#",
+    link: EMPTY_LINK,
     variant: "primary",
   },
-  render: ({ href, variant, label, buttonAction: actionProp, puck }) => {
+  render: ({
+    link,
+    href: legacyHref,
+    variant,
+    label,
+    buttonAction: actionProp,
+    puck,
+  }) => {
     const buttonAction = actionProp ?? "link";
     const onFunctionalClick = (e: MouseEvent) => {
       e.preventDefault();
@@ -81,13 +104,18 @@ const ButtonInner: ComponentConfig<ButtonProps> = {
       );
     }
 
+    // Prefer the new structured `link` prop; fall back to legacy string href.
+    const resolvedHref = resolveHrefLegacy(link, legacyHref) ?? "#";
+    const newTab = resolveLinkTarget(link) === "_blank";
+
     return (
       <div>
         <_Button
-          href={puck.isEditing ? "#" : href}
+          href={puck.isEditing ? "#" : resolvedHref}
           variant={variant}
           size="large"
           tabIndex={puck.isEditing ? -1 : undefined}
+          newTab={puck.isEditing ? false : newTab}
         >
           {label}
         </_Button>

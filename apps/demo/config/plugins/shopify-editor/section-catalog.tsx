@@ -13,6 +13,8 @@ import {
   Type as TypeIcon,
   Columns2,
   Rows2,
+  PanelLeft,
+  Menu as MenuIcon,
 } from "lucide-react";
 import type { Data } from "@/core";
 
@@ -141,6 +143,105 @@ export const sectionCatalog: SectionPreset[] = [
     icon: <Columns2 size={20} />,
     gradient: "linear-gradient(90deg, #eff6ff 0%, #eff6ff 50%, #f0fdf4 50%, #f0fdf4 100%)",
     build: () => section({ columns: 2, gridGap: "32px" }),
+  },
+  {
+    id: "content-with-sidebar",
+    label: "Content with Sidebar",
+    description:
+      "Two-column layout: main content on one side, a Sidebar for filters or nav on the other.",
+    category: "layout",
+    icon: <PanelLeft size={20} />,
+    gradient: "linear-gradient(90deg, #f3f4f6 0%, #f3f4f6 30%, #ffffff 30%, #ffffff 100%)",
+    build: () => ({
+      type: "Section",
+      props: {
+        ...SECTION_BASE_PROPS,
+        columns: 2,
+        gridGap: "32px",
+        // Sidebar (narrow column) + empty content slot (wide column) — the
+        // merchant fills in the right column with any blocks they want.
+        // AI agents can rewrite either column without touching the wrapper.
+        content: [
+          {
+            type: "Sidebar",
+            props: {
+              title: { ar: "القائمة الجانبية", en: "Sidebar" },
+              showTitle: true,
+              width: "narrow",
+              stickyTop: "16px",
+              borderStyle: "card",
+              backgroundColor: "surface",
+              showOnMobile: "collapse",
+              items: [
+                {
+                  type: "NavMenu",
+                  props: {
+                    orientation: "vertical",
+                    variant: "plain",
+                    activePath: "",
+                    items: [
+                      {
+                        label: { ar: "الرئيسية", en: "Home" },
+                        link: { kind: "page", pageId: "/" },
+                      },
+                      {
+                        label: { ar: "السلة", en: "Cart" },
+                        link: { kind: "page", pageId: "/cart" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            type: "ContentHeading",
+            props: {},
+          },
+        ],
+      },
+    }),
+  },
+  {
+    id: "site-nav-header",
+    label: "Site Navigation",
+    description:
+      "Horizontal NavMenu — ideal for a header band. Links to registered pages.",
+    category: "layout",
+    icon: <MenuIcon size={20} />,
+    gradient: "linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)",
+    build: () => ({
+      type: "Section",
+      props: {
+        ...SECTION_BASE_PROPS,
+        paddingTop: "16px",
+        paddingBottom: "16px",
+        content: [
+          {
+            type: "NavMenu",
+            props: {
+              orientation: "horizontal",
+              variant: "plain",
+              activePath: "",
+              items: [
+                {
+                  label: { ar: "الرئيسية", en: "Home" },
+                  link: { kind: "page", pageId: "/" },
+                },
+                {
+                  label: { ar: "المنتجات", en: "Products" },
+                  link: { kind: "page", pageId: "/products/example-product" },
+                },
+                {
+                  label: { ar: "السلة", en: "Cart" },
+                  link: { kind: "page", pageId: "/cart" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    }),
   },
 
   // ── Commerce (DSN-005 a-f) ──────────────────────────────────────────────

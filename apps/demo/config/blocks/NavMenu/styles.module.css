@@ -1,0 +1,55 @@
+.NavMenu {
+  display: flex;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.NavMenu--horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
+.NavMenu--vertical {
+  flex-direction: column;
+  gap: 4px;
+}
+
+.NavMenu-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--theme-color-text, #111827);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.15s ease, color 0.15s ease;
+  line-height: 1.2;
+}
+
+.NavMenu-item:hover {
+  background: var(--theme-color-muted, rgba(0, 0, 0, 0.04));
+  color: var(--theme-color-primary, #111827);
+}
+
+.NavMenu-item--active {
+  color: var(--theme-color-primary, #2563eb);
+  background: var(--theme-color-primaryMuted, rgba(37, 99, 235, 0.08));
+}
+
+.NavMenu-item--pill {
+  border: 1px solid var(--theme-color-border, #e5e7eb);
+}
+
+.NavMenu-item--button {
+  background: var(--theme-color-primary, #2563eb);
+  color: var(--theme-color-onPrimary, #ffffff);
+}
+
+.NavMenu-item--button:hover {
+  background: var(--theme-color-primaryHover, #1d4ed8);
+  color: var(--theme-color-onPrimary, #ffffff);
+}

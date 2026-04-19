@@ -36,6 +36,8 @@ import { OrderHistoryProps } from "./blocks/OrderHistory";
 import { WishlistProps } from "./blocks/Wishlist";
 import { TestimonialsProps } from "./blocks/Testimonials";
 import { ContactFormProps } from "./blocks/ContactForm";
+import { SidebarProps } from "./blocks/Sidebar";
+import { NavMenuProps } from "./blocks/NavMenu";
 
 export type { RootProps } from "./root";
 
@@ -75,6 +77,8 @@ export type Components = {
   Wishlist: WishlistProps;
   Testimonials: TestimonialsProps;
   ContactForm: ContactFormProps;
+  Sidebar: SidebarProps;
+  NavMenu: NavMenuProps;
 };
 
 export type UserConfig = Config<{

@@ -1,11 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Plus, PanelTop, PanelBottom } from "lucide-react";
-import { useShallow } from "zustand/react/shallow";
-import { LayerTree } from "@/core/components/LayerTree";
 import { useAppStore } from "@/core/store";
-import { findZonesForArea } from "@/core/lib/data/find-zones-for-area";
 import { getClassNameFactory } from "@/core/lib";
 import { AddSectionModal } from "../AddSectionModal";
+import { TemplateSectionList } from "./TemplateSectionList";
 import styles from "./styles.module.css";
 
 const getClassName = getClassNameFactory("ShopifyOutlinePanel", styles);
@@ -24,10 +22,6 @@ export function ShopifyOutlinePanel() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [insertIndex, setInsertIndex] = useState<number | undefined>(undefined);
 
-  const rootZones = useAppStore(
-    useShallow((s) => findZonesForArea(s.state, "root"))
-  );
-
   // Read content length for empty-state detection (avoid subscribing to the
   // entire content array — just its length changes are enough to flip the
   // empty-state render).
@@ -35,22 +29,12 @@ export function ShopifyOutlinePanel() {
     (s) => s.state.data.content?.length ?? 0
   );
 
-  const openModal = (index?: number) => {
+  const openModal = useCallback((index?: number) => {
     setInsertIndex(index);
     setModalOpen(true);
-  };
+  }, []);
 
-  const Zones = useMemo(
-    () =>
-      rootZones.map((zoneCompound) => (
-        <LayerTree
-          key={zoneCompound}
-          label={rootZones.length === 1 ? "" : zoneCompound.split(":")[1]}
-          zoneCompound={zoneCompound}
-        />
-      )),
-    [rootZones]
-  );
+  const closeModal = useCallback(() => setModalOpen(false), []);
 
   return (
     <div className={getClassName()}>
@@ -89,7 +73,7 @@ export function ShopifyOutlinePanel() {
                 Add your first section below.
               </div>
             ) : (
-              <div className={getClassName("layerTreeWrap")}>{Zones}</div>
+              <TemplateSectionList onAddSection={openModal} />
             )}
 
             <button
@@ -133,7 +117,7 @@ export function ShopifyOutlinePanel() {
 
       <AddSectionModal
         open={isModalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={closeModal}
         insertIndex={insertIndex}
       />
     </div>

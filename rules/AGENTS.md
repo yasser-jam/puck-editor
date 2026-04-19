@@ -55,9 +55,12 @@ React Web Storefront            Flutter Client App
 |---|---|
 | **Page** (DSN-012) | Top-level Puck `Data` document; one per route |
 | **Section** (DSN-003) | Puck root `zones` / top-level slot — reorderable container |
-| **Block — Generic** (DSN-004 a–k) | Puck `components` entries with `fields` only, no data binding |
+| **Block — Generic** (DSN-004 a–m) | Puck `components` entries with `fields` only, no data binding |
 | **Block — Bound** (DSN-005 a–j) | Puck `components` entries that read tenant data via `resolveData` / `external` fields / runtime context |
 | **Block — Group** (DSN-006, DSN-004k) | Puck `slot` field type — nested droppable region (depth ≤ 3) |
+| **Block — Sidebar** (DSN-004l) | `Sidebar` — vertical `slot` container, sticky option, mobile-collapsible |
+| **Block — NavMenu** (DSN-004m) | `NavMenu` — repeating list of `{ label, link }` items, powered by the shared `LinkValue` primitive |
+| **Navigation target** | `LinkValue` custom field — discriminated union `{ kind: "none" \| "page" \| "external" \| "anchor", … }` stored directly in `props.link` on any navigable block |
 | **Block styling** (DSN-008 a–h) | `fields` schema on each component (spacing/sizing/typography/colors/border/shadow/visibility) |
 | **Theme tokens** (DSN-010) | Puck `Config.root.fields` + custom override panel; tokens injected as CSS vars |
 | **Real-time preview** (DSN-011) | Puck's iframe preview + simulated mobile frame override |
@@ -189,6 +192,38 @@ Dispatched by `AutoField` (`components/AutoField/index.tsx`). Source: `packages/
 
 Users can extend field types via `overrides.fieldTypes`.
 
+### Shared demo-app field primitives (under `apps/demo/config/fields/`)
+
+These are not core-library features — they are conventions the demo app (and
+the tenant pages we ship) rely on. AI agents mutating `store_config.json`
+**MUST** emit these exact shapes when they appear in a block's props, so the
+merchant editor and the mobile renderer deserialize them correctly.
+
+- **`BilingualString`** — `{ ar: string, en: string }`. Used anywhere the SRS
+  asks for bilingual copy. Resolve with `pickLang(value, language)`; fallback
+  is `en → ar → ""`.
+
+- **`LinkValue`** — discriminated union for navigation targets:
+  ```ts
+  type LinkValue =
+    | { kind: "none" }
+    | { kind: "page"; pageId: string; newTab?: boolean }   // pageId = canonical path, e.g. "/cart"
+    | { kind: "external"; url: string; newTab?: boolean }
+    | { kind: "anchor"; hash: string };                    // stored without leading '#'
+  ```
+  - Registered pages live in `apps/demo/config/pages.ts` (`PAGES[]`). Their
+    `path` (or `examplePath` when dynamic) is the stable identifier used as
+    `pageId`.
+  - Renderers derive the final `href` via `resolveLinkHref(link)`, and the
+    `target` / `rel` attributes via `resolveLinkTarget` / `resolveLinkRel`.
+  - Prefer populating `link` in all new or refactored blocks. Legacy blocks
+    that still expose a raw `href: string` must read via
+    `resolveHrefLegacy(link, href)` so old `store_config.json` documents keep
+    working.
+
+  Blocks that carry navigation today: `Button`, `ContentButton`, each
+  `NavMenu` item.
+
 ### Plugin system
 
 ```ts
@@ -301,6 +336,9 @@ yarn smoke            # puppeteer smoke E2E
 - **Bilingual fields**: text blocks should support AR + EN values where the SRS calls for it (e.g., DSN-004a/b).
 - **Mirror Generic / Bound / Group taxonomy** from SRS §4.2 when adding components — categorize via Puck `Config.categories`.
 - **Cross-reference the SRS in PR descriptions**: cite the affected requirement IDs (e.g., "Implements DSN-008f shadow controls").
+- **Use the `LinkValue` primitive for every navigation target** (Button, menu item, product card CTA, …). Never hardcode an `href: "/cart"` string when the destination maps to a registered page — emit `{ kind: "page", pageId: "/cart" }` instead, so merchant-facing AI agents can rewire navigation without string parsing.
+- **Register every new route in `apps/demo/config/pages.ts`** before an AI agent can point a `LinkValue` at it. Unregistered paths become orphans on mobile where no router fallback exists.
+- **Compose Sidebar + NavMenu instead of bespoke layouts** when a block needs a vertical panel of nav/filter items. Their JSON contract is stable and the Flutter renderer already understands it.
 
 ### Don't
 - Don't introduce a competing DnD library (stay on `@dnd-kit`).
@@ -335,6 +373,13 @@ yarn smoke            # puppeteer smoke E2E
 | DnD context | `packages/core/components/DragDropContext/index.tsx` |
 | AutoField dispatch | `packages/core/components/AutoField/index.tsx` |
 | Demo config | `apps/demo/config/index.tsx` |
+| Demo page registry | `apps/demo/config/pages.ts` |
+| `BilingualString` primitive | `apps/demo/config/fields/BilingualText/` |
+| `LinkValue` primitive + resolvers | `apps/demo/config/fields/LinkField/` |
+| Sidebar block (DSN-004l) | `apps/demo/config/blocks/Sidebar/` |
+| NavMenu block (DSN-004m) | `apps/demo/config/blocks/NavMenu/` |
+| Shopify-style outline + Add Section modal | `apps/demo/config/plugins/shopify-editor/` |
+| Section preset catalog | `apps/demo/config/plugins/shopify-editor/section-catalog.tsx` |
 | Smoke tests | `scripts/e2e/smoke.mjs` |
 | Shared tsup config | `packages/tsup-config/index.ts` |
 | Shared tsconfig | `packages/tsconfig/base.json` |

@@ -14,14 +14,25 @@ import {
   BUTTON_ACTION_OPTIONS,
   buttonActionLabel,
 } from "../../content/button-actions";
+import {
+  linkField,
+  resolveHrefLegacy,
+  resolveLinkTarget,
+  resolveLinkRel,
+  EMPTY_LINK,
+  type LinkValue,
+} from "../../fields/LinkField";
 
 const COLOR_SELECT = COLOR_KEYS.map(({ key, label }) => ({ label, value: key }));
 
 export type ContentButtonProps = WithLayout<{
   label: string;
-  /** Stored in page JSON — `link` uses `href`; other values are functional jobs. */
+  /** Stored in page JSON — `link` uses the navigation target; other values are functional jobs. */
   buttonAction: ButtonAction;
-  href: string;
+  /** Structured navigation target (None / Page / External URL / Anchor). */
+  link: LinkValue;
+  /** @deprecated use `link`. Kept for backward compatibility with old JSON. */
+  href?: string;
   radiusMode: "theme" | "fixed";
   radiusTheme: "none" | "sm" | "md" | "lg" | "xl" | "full";
   radiusFixed: string;
@@ -48,7 +59,7 @@ const ContentButtonInner: ComponentConfig<ContentButtonProps> = {
       label: "Action",
       options: BUTTON_ACTION_OPTIONS,
     },
-    href: { type: "text", label: "Link URL" },
+    link: linkField({ label: "Destination" }),
     radiusMode: { type: "radio", label: "Border radius", options: [...MODE_OPTIONS] },
     radiusTheme: { type: "select", options: RADIUS_OPTIONS },
     radiusFixed: { type: "text", label: "Radius (fixed)" },
@@ -75,7 +86,7 @@ const ContentButtonInner: ComponentConfig<ContentButtonProps> = {
   defaultProps: {
     label: "Button",
     buttonAction: "link",
-    href: "#",
+    link: EMPTY_LINK,
     radiusMode: "theme",
     radiusTheme: "md",
     radiusFixed: "8px",
@@ -95,7 +106,8 @@ const ContentButtonInner: ComponentConfig<ContentButtonProps> = {
   render: ({
     label,
     buttonAction,
-    href,
+    link,
+    href: legacyHref,
     radiusMode,
     radiusTheme,
     radiusFixed,
@@ -168,9 +180,15 @@ const ContentButtonInner: ComponentConfig<ContentButtonProps> = {
       );
     }
 
+    const resolvedHref = resolveHrefLegacy(link, legacyHref) ?? "#";
+    const target = resolveLinkTarget(link);
+    const rel = resolveLinkRel(link);
+
     return (
       <a
-        href={puck.isEditing ? "#" : href}
+        href={puck.isEditing ? "#" : resolvedHref}
+        target={puck.isEditing ? undefined : target}
+        rel={puck.isEditing ? undefined : rel}
         onClick={puck.isEditing ? (e) => e.preventDefault() : undefined}
         style={sharedStyle}
       >
@@ -188,7 +206,8 @@ function omitHrefField(
 ): Fields<ContentButtonProps> {
   const action = data.props?.buttonAction ?? "link";
   if (action === "link") return fields as Fields<ContentButtonProps>;
-  const { href: _omit, ...rest } = fields;
+  // Hide the link field when the button runs an in-app action (cart, checkout…).
+  const { link: _omit, ...rest } = fields;
   return rest as Fields<ContentButtonProps>;
 }
 

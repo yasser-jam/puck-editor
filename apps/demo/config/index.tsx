@@ -33,6 +33,8 @@ import { OrderHistory } from "./blocks/OrderHistory";
 import { Wishlist } from "./blocks/Wishlist";
 import { Testimonials } from "./blocks/Testimonials";
 import { ContactForm } from "./blocks/ContactForm";
+import { Sidebar } from "./blocks/Sidebar";
+import { NavMenu } from "./blocks/NavMenu";
 
 import Root from "./root";
 import { UserConfig } from "./types";
@@ -95,7 +97,11 @@ export const conf: UserConfig = {
     },
     group: {
       title: "Layout",
-      components: ["Group"], // DSN-004k / DSN-006
+      components: [
+        "Group",   // DSN-004k / DSN-006
+        "Sidebar", // DSN-004l — vertical container for filters / nav / promos
+        "NavMenu", // DSN-004m — repeating list of links (header, footer, nav)
+      ],
     },
     legacy: {
       title: "Legacy (hidden)",
@@ -145,6 +151,9 @@ export const conf: UserConfig = {
     VideoEmbed,
     ContentIcon,
     ContentHtml,
+    // Layout containers (DSN-004k–m)
+    Sidebar,
+    NavMenu,
     // Legacy — kept registered so existing store_config.json can still render,
     // but hidden from the picker (see categories.legacy.visible = false).
     Button,
