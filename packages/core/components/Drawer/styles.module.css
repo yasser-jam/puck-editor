@@ -2,7 +2,11 @@
   display: flex;
   flex-direction: column;
   font-family: var(--puck-font-family);
-  gap: 12px;
+  gap: 10px;
+}
+
+.DrawerItem {
+  position: relative;
 }
 
 .Drawer-draggable {
@@ -20,16 +24,18 @@
 }
 
 .DrawerItem-draggable {
-  background: var(--puck-color-white);
+  background: linear-gradient(180deg, var(--puck-color-white), #fbfdff);
   cursor: grab;
   padding: 12px;
   display: flex;
   border: 1px var(--puck-color-grey-09) solid;
-  border-radius: 4px;
+  border-radius: 10px;
   font-size: var(--puck-font-size-xxs);
   justify-content: space-between;
   align-items: center;
-  transition: background-color 50ms ease-in, color 50ms ease-in;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+  transition: background-color 140ms ease, color 140ms ease,
+    border-color 140ms ease, box-shadow 140ms ease, transform 120ms ease;
 }
 
 .DrawerItem--disabled .DrawerItem-draggable {
@@ -45,7 +51,7 @@
 .Drawer:not(.Drawer--isDraggingFrom)
   .DrawerItem:focus-visible
   .DrawerItem-draggable {
-  border-radius: 4px;
+  border-radius: 10px;
   outline: 2px solid var(--puck-color-azure-05);
   outline-offset: 2px;
 }
@@ -55,13 +61,169 @@
     .DrawerItem:not(.DrawerItem--disabled)
     .DrawerItem-draggable:hover {
     background-color: var(--puck-color-azure-12);
+    border-color: var(--puck-color-azure-09);
+    box-shadow: 0 7px 20px rgba(15, 23, 42, 0.08);
     color: var(--puck-color-azure-04);
-    transition: none;
+    transform: translateY(-1px);
   }
+}
+
+.Drawer:not(.Drawer--isDraggingFrom)
+  .DrawerItem:not(.DrawerItem--disabled)
+  .DrawerItem-draggable:active {
+  transform: translateY(0) scale(0.995);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
 }
 
 .DrawerItem-name {
   overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.DrawerItem-preview {
+  position: absolute;
+  top: calc(100% - 8px);
+  left: 8px;
+  right: 8px;
+  display: grid;
+  gap: 7px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--puck-color-grey-09);
+  background: linear-gradient(180deg, var(--puck-color-white), #f8fbff);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px) scale(0.985);
+  transform-origin: top center;
+  transition: opacity 130ms ease, transform 130ms ease;
+  z-index: 3;
+}
+
+.DrawerItem-previewImage {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #dbe6f7;
+  display: block;
+  background: var(--puck-color-white);
+}
+
+.DrawerItem-previewSurface {
+  width: 100%;
+  height: 120px;
+  border-radius: 8px;
+  border: 1px solid #dbe6f7;
+  overflow: hidden;
+  background: var(--puck-color-white);
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.DrawerItem-previewStage {
+  --preview-scale: 0.62;
+  width: calc(100% / var(--preview-scale));
+  min-height: calc(120px / var(--preview-scale));
+  transform: scale(var(--preview-scale));
+  transform-origin: top left;
+  pointer-events: none;
+  color: #0f172a;
+  overflow: hidden;
+}
+
+.DrawerItem-previewStage > * {
+  width: 100%;
+}
+
+.DrawerItem-slotStub {
+  min-height: 64px;
+  background: repeating-linear-gradient(
+    135deg,
+    #eff6ff,
+    #eff6ff 12px,
+    #f8fbff 12px,
+    #f8fbff 24px
+  );
+  border: 1px dashed #bfdbfe;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  align-content: center;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.DrawerItem-slotChip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 999px;
+  border: 1px solid #93c5fd;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e3a8a;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.DrawerItem-slotEmpty {
+  color: #1e3a8a;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.DrawerItem-previewCaption {
+  color: var(--puck-color-grey-04);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.DrawerItem-previewSubCaption {
+  color: var(--puck-color-grey-05);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .Drawer:not(.Drawer--isDraggingFrom)
+    .DrawerItem:not(.DrawerItem--disabled):hover
+    > .DrawerItem-preview,
+  .Drawer:not(.Drawer--isDraggingFrom)
+    .DrawerItem:not(.DrawerItem--disabled):focus-within
+    > .DrawerItem-preview {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (pointer: coarse) {
+  .DrawerItem-preview {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .DrawerItem-draggable,
+  .DrawerItem-preview {
+    transition: none;
+  }
 }

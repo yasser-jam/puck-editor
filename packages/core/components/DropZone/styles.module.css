@@ -5,6 +5,8 @@
   height: 100%;
   min-height: var(--min-empty-height);
   outline-offset: -2px;
+  border-radius: 10px;
+  transition: background 120ms ease-out, outline-color 120ms ease-out;
   width: 100%;
 }
 
@@ -25,11 +27,30 @@
 .DropZone--hoveringOverArea:not(.DropZone--isRootZone) {
   background: color-mix(in srgb, var(--puck-color-azure-09) 30%, transparent);
   outline: 2px dashed var(--puck-color-azure-08);
+  border-radius: 10px;
 }
 
 .DropZone:empty {
   background: color-mix(in srgb, var(--puck-color-azure-09) 30%, transparent);
   outline: 2px dashed var(--puck-color-azure-08);
+  border-radius: 10px;
+}
+
+.DropZone:empty:not(.DropZone--isRootZone)::before {
+  content: "Drop components here";
+  position: absolute;
+  inset: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 999px;
+  color: var(--puck-color-azure-03);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: color-mix(in srgb, var(--puck-color-white) 86%, transparent);
+  pointer-events: none;
 }
 
 .DropZone--isDestination {
@@ -44,20 +65,35 @@
   ) !important;
 }
 
+.DropZone--isDestination:empty:not(.DropZone--isRootZone)::before {
+  content: "Release to place";
+  color: var(--puck-color-azure-02);
+  background: color-mix(in srgb, var(--puck-color-azure-09) 55%, white);
+}
+
 .DropZone-item {
   position: relative;
 }
 
 .DropZone-hitbox {
   position: absolute;
-  bottom: -12px;
-  height: 24px;
+  bottom: -16px;
+  height: 32px;
   width: 100%;
   z-index: 1;
 }
 
 [data-puck-dragging] .DropZone--isEnabled {
   outline: 2px dashed var(--puck-color-azure-06);
+  outline-offset: -2px;
+  background: color-mix(in srgb, var(--puck-color-azure-09) 16%, transparent);
+}
+
+@media (pointer: coarse) {
+  .DropZone-hitbox {
+    bottom: -20px;
+    height: 40px;
+  }
 }
 
 .DropZone > *:not([data-puck-component]) {

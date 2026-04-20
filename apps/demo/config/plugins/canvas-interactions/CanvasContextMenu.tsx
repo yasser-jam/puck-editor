@@ -1,5 +1,4 @@
 import React, {
-  startTransition,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -142,6 +141,7 @@ export function CanvasInteractions({
     typeof navigator !== "undefined" &&
     /Mac|iPhone|iPad/.test(navigator.platform);
   const modKeyLabel = isMac ? "⌘" : "Ctrl";
+  const deleteKeyLabel = isMac ? "⌫" : "Del";
 
   const [menu, setMenu] = useState<MenuState | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -192,13 +192,11 @@ export function CanvasInteractions({
     (id: string) => {
       const loc = resolveLocation(id);
       if (!loc) return;
-      startTransition(() => {
-        dispatch({
-          type: "duplicate",
-          sourceIndex: loc.index,
-          sourceZone: loc.zone,
-          recordHistory: true,
-        });
+      dispatch({
+        type: "duplicate",
+        sourceIndex: loc.index,
+        sourceZone: loc.zone,
+        recordHistory: true,
       });
     },
     [dispatch, resolveLocation]
@@ -208,13 +206,11 @@ export function CanvasInteractions({
     (id: string) => {
       const loc = resolveLocation(id);
       if (!loc) return;
-      startTransition(() => {
-        dispatch({
-          type: "remove",
-          index: loc.index,
-          zone: loc.zone,
-          recordHistory: true,
-        });
+      dispatch({
+        type: "remove",
+        index: loc.index,
+        zone: loc.zone,
+        recordHistory: true,
       });
     },
     [dispatch, resolveLocation]
@@ -227,20 +223,18 @@ export function CanvasInteractions({
       const currentlyVisible =
         (loc.data.props as { visible?: boolean } | undefined)?.visible !==
         false;
-      startTransition(() => {
-        dispatch({
-          type: "replace",
-          destinationIndex: loc.index,
-          destinationZone: loc.zone,
-          data: {
-            ...loc.data,
-            props: {
-              ...loc.data.props,
-              visible: !currentlyVisible,
-            },
+      dispatch({
+        type: "replace",
+        destinationIndex: loc.index,
+        destinationZone: loc.zone,
+        data: {
+          ...loc.data,
+          props: {
+            ...loc.data.props,
+            visible: !currentlyVisible,
           },
-          recordHistory: true,
-        });
+        },
+        recordHistory: true,
       });
     },
     [dispatch, resolveLocation]
@@ -252,15 +246,13 @@ export function CanvasInteractions({
       if (!loc) return;
       const destIndex = loc.index + delta;
       if (destIndex < 0 || destIndex >= loc.zoneLength) return;
-      startTransition(() => {
-        dispatch({
-          type: "move",
-          sourceIndex: loc.index,
-          sourceZone: loc.zone,
-          destinationIndex: destIndex,
-          destinationZone: loc.zone,
-          recordHistory: true,
-        });
+      dispatch({
+        type: "move",
+        sourceIndex: loc.index,
+        sourceZone: loc.zone,
+        destinationIndex: destIndex,
+        destinationZone: loc.zone,
+        recordHistory: true,
       });
     },
     [dispatch, resolveLocation]
@@ -297,17 +289,15 @@ export function CanvasInteractions({
         const content = storeApi.getState().state.data.content ?? [];
         destinationIndex = content.length;
       }
-      startTransition(() => {
-        dispatch({
-          type: "insert",
-          componentType: clipboardRef!.type,
-          destinationIndex,
-          destinationZone: zone,
-          // `insert` runs populateIds over nested slots, so children get fresh
-          // stable ids even though we're reusing a snapshot.
-          props: { ...clipboardRef!.props },
-          recordHistory: true,
-        });
+      dispatch({
+        type: "insert",
+        componentType: clipboardRef!.type,
+        destinationIndex,
+        destinationZone: zone,
+        // `insert` runs populateIds over nested slots, so children get fresh
+        // stable ids even though we're reusing a snapshot.
+        props: { ...clipboardRef!.props },
+        recordHistory: true,
       });
     },
     [dispatch, resolveLocation, storeApi]
@@ -577,10 +567,23 @@ export function CanvasInteractions({
     if (typeof document === "undefined") return;
 
     const onKey = (e: KeyboardEvent) => {
+      if (e.defaultPrevented) return;
+
+      const hasModalOpen =
+        document.querySelector(
+          "[role='dialog'][aria-modal='true'], [data-puck-no-shortcuts='true']"
+        ) !== null;
+
+      if (hasModalOpen) return;
+
       // Don't fight form fields. Text inputs, textareas, selects, and
       // contentEditable elements all keep their native behaviour.
       const t = e.target as HTMLElement | null;
       if (t) {
+        if (t.closest("[data-puck-no-shortcuts='true']")) {
+          return;
+        }
+
         const tag = t.tagName;
         if (
           tag === "INPUT" ||
@@ -759,7 +762,7 @@ export function CanvasInteractions({
           <MenuItem
             icon={<Trash2 size={14} />}
             label="Delete"
-            shortcut="⌫"
+            shortcut={deleteKeyLabel}
             danger
             onSelect={() => {
               doRemove(menu.targetId);
@@ -773,6 +776,7 @@ export function CanvasInteractions({
     menu,
     resolveLocation,
     modKeyLabel,
+    deleteKeyLabel,
     closeMenu,
     doSelect,
     doCopy,

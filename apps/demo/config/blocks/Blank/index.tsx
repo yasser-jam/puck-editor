@@ -5,12 +5,19 @@ import { getClassNameFactory } from "@/core/lib";
 
 const getClassName = getClassNameFactory("Blank", styles);
 
-export type BlankProps = {};
+export type BlankProps = {
+  message: string;
+};
 
 export const Blank: ComponentConfig<BlankProps> = {
-  fields: {},
-  defaultProps: {},
-  render: () => {
-    return <div className={getClassName()}></div>;
+  label: "Placeholder",
+  fields: {
+    message: { type: "text", label: "Message" },
+  },
+  defaultProps: {
+    message: "Placeholder block",
+  },
+  render: ({ message }) => {
+    return <div className={getClassName()}>{message}</div>;
   },
 };

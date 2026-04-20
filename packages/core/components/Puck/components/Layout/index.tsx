@@ -30,6 +30,16 @@ const getClassName = getClassNameFactory("Puck", styles);
 const getLayoutClassName = getClassNameFactory("PuckLayout", styles);
 const getPluginTabClassName = getClassNameFactory("PuckPluginTab", styles);
 
+const isTypingTarget = (target: EventTarget | null) => {
+  if (!(target instanceof HTMLElement)) return false;
+  if (target.isContentEditable) return true;
+
+  const tagName = target.tagName;
+  return (
+    tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "SELECT"
+  );
+};
+
 const FieldSideBar = () => {
   const title = useAppStore((s) =>
     s.selectedItem
@@ -263,6 +273,48 @@ export const Layout = ({ children }: { children?: ReactNode }) => {
   const mobilePanelExpanded = useAppStore(
     (s) => s.state.ui.mobilePanelExpanded ?? false
   );
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) return;
+      if (!event.ctrlKey && !event.metaKey) return;
+      if (isTypingTarget(event.target)) return;
+
+      if (event.key === "\\") {
+        event.preventDefault();
+        setUi({ leftSideBarVisible: !leftSideBarVisible });
+        return;
+      }
+
+      if (event.key !== "]" && event.key !== "[") return;
+
+      const pluginNames = Object.keys(pluginItems);
+      if (pluginNames.length === 0) return;
+
+      const currentIndex = Math.max(
+        0,
+        pluginNames.indexOf(currentPlugin ?? pluginNames[0])
+      );
+      const nextIndex =
+        event.key === "]"
+          ? (currentIndex + 1) % pluginNames.length
+          : (currentIndex - 1 + pluginNames.length) % pluginNames.length;
+
+      const nextPlugin = pluginNames[nextIndex];
+
+      event.preventDefault();
+      setUi({
+        plugin: { current: nextPlugin },
+        leftSideBarVisible: true,
+      });
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [currentPlugin, leftSideBarVisible, pluginItems, setUi]);
 
   return (
     <div

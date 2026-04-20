@@ -20,7 +20,7 @@ export const Components = () => {
 
   return (
     <Wrapper>
-      {componentList ? componentList : <ComponentList id="all" />}
+      {componentList ? componentList : <ComponentList id="all" searchable />}
     </Wrapper>
   );
 };

@@ -321,7 +321,7 @@ export const DropZoneEdit = forwardRef<HTMLDivElement, DropZoneProps>(
       disallow,
       style,
       className,
-      minEmptyHeight: userMinEmptyHeight = "128px",
+      minEmptyHeight: userMinEmptyHeight = "144px",
       collisionAxis,
       as,
     },

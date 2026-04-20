@@ -15,7 +15,7 @@ export const FONT_OPTIONS: FontEntry[] = [
     label: "System Default",
     value: "system",
     cssValue:
-      "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
   },
   {
     label: "Inter",
@@ -72,6 +72,18 @@ export const FONT_OPTIONS: FontEntry[] = [
     googleFont: "DM+Sans:wght@300;400;500;600;700",
   },
   {
+    label: "Manrope",
+    value: "manrope",
+    cssValue: "'Manrope', sans-serif",
+    googleFont: "Manrope:wght@300;400;500;600;700;800",
+  },
+  {
+    label: "Sora",
+    value: "sora",
+    cssValue: "'Sora', sans-serif",
+    googleFont: "Sora:wght@300;400;500;600;700;800",
+  },
+  {
     label: "Playfair Display",
     value: "playfair-display",
     cssValue: "'Playfair Display', Georgia, serif",
@@ -100,6 +112,12 @@ export const FONT_OPTIONS: FontEntry[] = [
     value: "geist",
     cssValue: "'Geist', sans-serif",
     googleFont: "Geist:wght@300;400;500;600;700",
+  },
+  {
+    label: "Fraunces",
+    value: "fraunces",
+    cssValue: "'Fraunces', serif",
+    googleFont: "Fraunces:opsz,wght@9..144,300..800",
   },
 ];
 
@@ -137,9 +155,9 @@ export type ThemeProps = {
 };
 
 export const DEFAULT_THEME: ThemeProps = {
-  bodyFont: "system",
-  fontOption1: "system",
-  fontOption2: "system",
+  bodyFont: "dm-sans",
+  fontOption1: "space-grotesk",
+  fontOption2: "fraunces",
 };
 
 // ─── Component font-family field ─────────────────────────────────────────────
@@ -184,19 +202,42 @@ export const COLOR_KEYS: { key: ColorKey; label: string; description: string }[]
 ];
 
 export const DEFAULT_COLORS: ColorTheme = {
-  primary: "#2563eb",
-  surface: "#f8fafc",
-  success: "#16a34a",
-  warning: "#d97706",
-  error: "#dc2626",
-  dark: "#0f172a",
-  text: "#0f172a",
-  neutral: "#64748b",
+  primary: "#0b78c5",
+  surface: "#f6f8fc",
+  success: "#0f9d73",
+  warning: "#c77a15",
+  error: "#c24133",
+  dark: "#10213a",
+  text: "#14243f",
+  neutral: "#6b7d93",
 };
 
 /** CSS custom property name for a given color key */
 export function colorVar(key: ColorKey): string {
   return `--theme-color-${key}`;
+}
+
+/**
+ * Derived semantic tokens used by blocks/components that need nuanced colors
+ * (muted surfaces, borders, hover states) without exposing every value as a
+ * top-level setting control.
+ */
+export function computeDerivedColorThemeVars(
+  colors: ColorTheme
+): Record<string, string> {
+  return {
+    "--theme-color-background": `color-mix(in srgb, ${colors.surface} 88%, white)`,
+    "--theme-color-surface": colors.surface,
+    "--theme-color-surface-elevated": `color-mix(in srgb, ${colors.surface} 78%, white)`,
+    "--theme-color-border": `color-mix(in srgb, ${colors.neutral} 34%, white)`,
+    "--theme-color-muted": `color-mix(in srgb, ${colors.surface} 72%, ${colors.neutral})`,
+    "--theme-color-text-muted": `color-mix(in srgb, ${colors.text} 58%, white)`,
+    "--theme-color-primaryMuted": `color-mix(in srgb, ${colors.primary} 15%, white)`,
+    "--theme-color-primaryHover": `color-mix(in srgb, ${colors.primary} 84%, black)`,
+    "--theme-color-on-primary": "#ffffff",
+    "--theme-color-onPrimary": "#ffffff",
+    "--theme-color-focusRing": `color-mix(in srgb, ${colors.primary} 26%, white)`,
+  };
 }
 
 // ─── Badge + shell (header/footer) ───────────────────────────────────────────
@@ -407,34 +448,34 @@ export const DEFAULT_SCALES: ScaleThemeProps = {
   textSizeXs: "0.75rem",
   textSizeSm: "0.875rem",
   textSizeMd: "1rem",
-  textSizeLg: "1.125rem",
-  textSizeXl: "1.25rem",
-  textSize2xl: "1.5rem",
+  textSizeLg: "1.1875rem",
+  textSizeXl: "1.375rem",
+  textSize2xl: "1.75rem",
   radiusNone: "0",
-  radiusSm: "4px",
-  radiusMd: "8px",
-  radiusLg: "12px",
-  radiusXl: "16px",
+  radiusSm: "8px",
+  radiusMd: "12px",
+  radiusLg: "18px",
+  radiusXl: "24px",
   radiusFull: "9999px",
-  buttonSmHeight: "32px",
-  buttonSmPaddingX: "12px",
+  buttonSmHeight: "34px",
+  buttonSmPaddingX: "14px",
   buttonSmPaddingY: "6px",
   buttonSmFontSize: "0.875rem",
-  buttonMdHeight: "40px",
-  buttonMdPaddingX: "16px",
-  buttonMdPaddingY: "8px",
+  buttonMdHeight: "44px",
+  buttonMdPaddingX: "18px",
+  buttonMdPaddingY: "9px",
   buttonMdFontSize: "1rem",
-  buttonLgHeight: "48px",
-  buttonLgPaddingX: "24px",
-  buttonLgPaddingY: "10px",
-  buttonLgFontSize: "1rem",
+  buttonLgHeight: "54px",
+  buttonLgPaddingX: "26px",
+  buttonLgPaddingY: "12px",
+  buttonLgFontSize: "1.0625rem",
   fontWeightNormal: "400",
-  fontWeightMedium: "500",
-  fontWeightSemibold: "600",
-  fontWeightBold: "700",
-  lineHeightTight: "1.25",
-  lineHeightNormal: "1.5",
-  lineHeightRelaxed: "1.75",
+  fontWeightMedium: "520",
+  fontWeightSemibold: "620",
+  fontWeightBold: "740",
+  lineHeightTight: "1.22",
+  lineHeightNormal: "1.58",
+  lineHeightRelaxed: "1.78",
 };
 
 /** CSS var for a theme text size step */

@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Globe, FileText, Hash, Link as LinkIcon } from "lucide-react";
 import { AutoField, FieldLabel, type CustomField } from "@/core";
 import { getClassNameFactory } from "@/core/lib";
-import { PAGES } from "../../pages";
+import {
+  PAGES_UPDATED_EVENT,
+  getAllPages,
+} from "../../pages";
 import styles from "./styles.module.css";
 
 const getClassName = getClassNameFactory("LinkField", styles);
@@ -94,18 +97,6 @@ export function resolveHrefLegacy(
   return trimmed;
 }
 
-// ─── Page registry snapshot ────────────────────────────────────────────────
-
-/**
- * The dropdown of pages shown in the field. Derived from `config/pages.ts` so
- * adding a new page anywhere in the site automatically makes it selectable as
- * a link target — no per-block wiring required.
- */
-const PAGE_OPTIONS = PAGES.map((p) => ({
-  label: p.label + (p.dynamic ? "  •  dynamic" : ""),
-  value: p.examplePath ?? p.path,
-}));
-
 // ─── Custom field component ────────────────────────────────────────────────
 
 type LinkFieldRenderProps = {
@@ -125,6 +116,57 @@ function LinkFieldRender({
 }: LinkFieldRenderProps) {
   const current: LinkValue = value ?? EMPTY_LINK;
 
+  const [pageOptions, setPageOptions] = useState(() =>
+    getAllPages().map((p) => ({
+      label: p.label + (p.dynamic ? "  •  dynamic" : ""),
+      value: p.examplePath ?? p.path,
+    }))
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const refreshPageOptions = () => {
+      setPageOptions(
+        getAllPages().map((p) => ({
+          label: p.label + (p.dynamic ? "  •  dynamic" : ""),
+          value: p.examplePath ?? p.path,
+        }))
+      );
+    };
+
+    refreshPageOptions();
+
+    window.addEventListener(PAGES_UPDATED_EVENT, refreshPageOptions);
+    window.addEventListener("storage", refreshPageOptions);
+
+    return () => {
+      window.removeEventListener(PAGES_UPDATED_EVENT, refreshPageOptions);
+      window.removeEventListener("storage", refreshPageOptions);
+    };
+  }, []);
+
+  const resolvedPageOptions = useMemo(() => {
+    const currentPageId = current.kind === "page" ? current.pageId : "";
+
+    if (current.kind !== "page") {
+      return pageOptions;
+    }
+
+    const hasCurrent = pageOptions.some((o) => o.value === currentPageId);
+    if (hasCurrent || !currentPageId) {
+      return pageOptions;
+    }
+
+    return [
+      {
+        label: `${currentPageId}  •  missing`,
+        value: currentPageId,
+      },
+      ...pageOptions,
+    ];
+  }, [current.kind, current, pageOptions]);
+
   const setKind = (kind: LinkValue["kind"]) => {
     if (kind === current.kind) return;
     switch (kind) {
@@ -132,7 +174,7 @@ function LinkFieldRender({
         onChange({ kind: "none" });
         break;
       case "page":
-        onChange({ kind: "page", pageId: PAGE_OPTIONS[0]?.value ?? "/" });
+        onChange({ kind: "page", pageId: pageOptions[0]?.value ?? "/" });
         break;
       case "external":
         onChange({ kind: "external", url: "" });
@@ -183,7 +225,7 @@ function LinkFieldRender({
               field={{
                 type: "select",
                 label: "Page",
-                options: PAGE_OPTIONS,
+                options: resolvedPageOptions,
               }}
               readOnly={readOnly}
               value={current.pageId}

@@ -27,6 +27,7 @@ const COLOR_SELECT = COLOR_KEYS.map(({ key, label }) => ({ label, value: key }))
 
 export type ContentButtonProps = WithLayout<{
   label: string;
+  align: "left" | "center" | "right";
   /** Stored in page JSON — `link` uses the navigation target; other values are functional jobs. */
   buttonAction: ButtonAction;
   /** Structured navigation target (None / Page / External URL / Anchor). */
@@ -54,6 +55,15 @@ const ContentButtonInner: ComponentConfig<ContentButtonProps> = {
   label: "Button",
   fields: {
     label: { type: "text", contentEditable: true },
+    align: {
+      type: "radio",
+      label: "Alignment",
+      options: [
+        { label: "Left", value: "left" },
+        { label: "Center", value: "center" },
+        { label: "Right", value: "right" },
+      ],
+    },
     buttonAction: {
       type: "select",
       label: "Action",
@@ -85,6 +95,7 @@ const ContentButtonInner: ComponentConfig<ContentButtonProps> = {
   },
   defaultProps: {
     label: "Button",
+    align: "center",
     buttonAction: "link",
     link: EMPTY_LINK,
     radiusMode: "theme",
@@ -105,6 +116,7 @@ const ContentButtonInner: ComponentConfig<ContentButtonProps> = {
   },
   render: ({
     label,
+    align,
     buttonAction,
     link,
     href: legacyHref,
@@ -164,6 +176,17 @@ const ContentButtonInner: ComponentConfig<ContentButtonProps> = {
       fontFamily: "inherit",
     };
 
+    const placementStyle: CSSProperties = {
+      display: "flex",
+      width: "100%",
+      justifyContent:
+        align === "left"
+          ? "flex-start"
+          : align === "right"
+          ? "flex-end"
+          : "center",
+    };
+
     const onFunctionalClick = (e: MouseEvent) => {
       e.preventDefault();
       if (puck.isEditing) return;
@@ -174,9 +197,11 @@ const ContentButtonInner: ComponentConfig<ContentButtonProps> = {
 
     if (action !== "link") {
       return (
-        <button type="button" onClick={onFunctionalClick} style={sharedStyle}>
-          {label}
-        </button>
+        <div style={placementStyle}>
+          <button type="button" onClick={onFunctionalClick} style={sharedStyle}>
+            {label}
+          </button>
+        </div>
       );
     }
 
@@ -185,15 +210,17 @@ const ContentButtonInner: ComponentConfig<ContentButtonProps> = {
     const rel = resolveLinkRel(link);
 
     return (
-      <a
-        href={puck.isEditing ? "#" : resolvedHref}
-        target={puck.isEditing ? undefined : target}
-        rel={puck.isEditing ? undefined : rel}
-        onClick={puck.isEditing ? (e) => e.preventDefault() : undefined}
-        style={sharedStyle}
-      >
-        {label}
-      </a>
+      <div style={placementStyle}>
+        <a
+          href={puck.isEditing ? "#" : resolvedHref}
+          target={puck.isEditing ? undefined : target}
+          rel={puck.isEditing ? undefined : rel}
+          onClick={puck.isEditing ? (e) => e.preventDefault() : undefined}
+          style={sharedStyle}
+        >
+          {label}
+        </a>
+      </div>
     );
   },
 };

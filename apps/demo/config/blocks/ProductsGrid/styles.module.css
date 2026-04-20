@@ -9,6 +9,7 @@
   width: 100%;
   min-width: 0;
   align-items: start;
+  gap: 18px;
 }
 
 .ProductsGrid-cell {
@@ -16,9 +17,16 @@
 }
 
 .ProductsGrid-empty {
-  padding: 1rem 1.25rem;
-  border: 1px dashed var(--puck-color-grey-05, #ccc);
-  border-radius: 8px;
-  color: var(--puck-color-grey-02, #666);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--theme-color-surface, #f6f8fc) 78%, white),
+      var(--theme-color-background, #ffffff)
+    );
+  border: 1px dashed var(--theme-color-border, #d6dde8);
+  border-radius: var(--theme-radius-lg, 18px);
+  color: var(--theme-color-text-muted, #5f6d84);
   font-size: 0.9rem;
+  font-style: italic;
+  padding: 1.15rem 1.3rem;
 }

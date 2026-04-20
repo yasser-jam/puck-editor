@@ -23,65 +23,94 @@
 
 /* ── Default (legacy) ─────────────────────────────────────────────────────── */
 .rootDefault {
-  background: var(--puck-color-grey-12, #f9fafb);
+  background:
+    radial-gradient(
+      120% 80% at 100% 0%,
+      color-mix(in srgb, var(--theme-color-primary, #0b78c5) 10%, transparent),
+      transparent 64%
+    ),
+    var(--theme-color-background, #f8fafc);
+  border-top: 1px solid var(--theme-color-border, #d6dde8);
 }
 
 .innerPadDefault {
-  padding: 32px;
+  padding: clamp(30px, 4vw, 54px) clamp(18px, 4vw, 36px);
 }
 
 .gridDefault {
   display: grid;
-  grid-gap: 24px;
+  grid-gap: 26px;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  padding-top: 24px;
-  padding-bottom: 24px;
+  padding-top: 18px;
+  padding-bottom: 10px;
 }
 
 .listTitleDefault {
+  color: var(--theme-color-text, #14243f);
+  font-family: var(--theme-font-1, "Space Grotesk", sans-serif);
+  font-size: 0.98rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
   margin: 0;
   padding: 0;
-  font-size: inherit;
-  font-weight: 600;
-  color: var(--puck-color-grey-03);
 }
 
 .linkDefault {
+  color: var(--theme-color-text-muted, #5d6c84);
+  display: inline-flex;
+  font-size: 0.9rem;
+  font-weight: 520;
   text-decoration: none;
-  font-size: 14px;
-  color: var(--puck-color-grey-05);
+  transition: color 160ms ease;
+}
+
+.linkDefault:hover {
+  color: var(--theme-color-primary, #0b78c5);
 }
 
 .bottomBarDefault {
-  padding: 64px;
+  border-top: 1px solid var(--theme-color-border, #d6dde8);
+  color: var(--theme-color-text-muted, #5d6c84);
+  font-size: 0.88rem;
+  padding: 20px 24px;
   text-align: center;
-  color: var(--puck-color-grey-03);
-  background: var(--puck-color-grey-11);
+  background: color-mix(in srgb, var(--theme-color-surface, #ffffff) 86%, white);
 }
 
 .bottomLinkDefault {
-  color: inherit;
+  color: var(--theme-color-primary, #0b78c5);
+  font-weight: 650;
   text-decoration: none;
-  font-weight: 600;
 }
 
 /* ── Commerce ───────────────────────────────────────────────────────────── */
 .rootCommerce {
-  background: var(--theme-color-dark, #0f172a);
+  background:
+    radial-gradient(
+      110% 120% at 0% 0%,
+      color-mix(in srgb, var(--theme-color-primary, #0b78c5) 18%, transparent),
+      transparent 56%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--theme-color-dark, #10213a) 92%, black),
+      var(--theme-color-dark, #10213a)
+    );
   color: rgba(255, 255, 255, 0.85);
-  border-top: 1px solid color-mix(in srgb, var(--theme-color-primary, #2563eb) 28%, transparent);
+  border-top: 1px solid
+    color-mix(in srgb, var(--theme-color-primary, #0b78c5) 34%, transparent);
 }
 
 .innerCommerce {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 48px 24px 32px;
+  padding: clamp(44px, 5vw, 72px) clamp(18px, 4vw, 34px) 30px;
 }
 
 .gridCommerce {
   display: grid;
   grid-template-columns: 1.2fr repeat(3, 1fr);
-  gap: 32px 40px;
+  gap: 34px 46px;
   align-items: start;
 }
 
@@ -103,39 +132,41 @@
 
 .brandName {
   font-family: var(--theme-font-1, inherit);
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.4rem;
+  font-weight: 720;
   color: #fff;
   display: block;
-  margin-bottom: 10px;
+  letter-spacing: -0.03em;
+  margin-bottom: 12px;
 }
 
 .brandTagline {
   margin: 0;
-  font-size: 13px;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.55);
-  max-width: 280px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.62);
+  max-width: 320px;
 }
 
 .listTitleCommerce {
   margin: 0;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .linkCommerce {
   text-decoration: none;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.92rem;
+  font-weight: 520;
+  color: rgba(255, 255, 255, 0.8);
   transition: color 0.15s;
 }
 
 .linkCommerce:hover {
-  color: var(--theme-color-primary, #60a5fa);
+  color: color-mix(in srgb, #ffffff 72%, var(--theme-color-primary, #0b78c5));
 }
 
 .bottomBarCommerce {
@@ -144,21 +175,23 @@
   align-items: center;
   justify-content: center;
   gap: 12px 20px;
-  padding: 20px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 20px 24px 24px;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.45);
-  background: color-mix(in srgb, #000 35%, transparent);
+  color: rgba(255, 255, 255, 0.5);
+  background: color-mix(in srgb, #000 40%, transparent);
 }
 
 .bottomSep {
-  opacity: 0.5;
+  opacity: 0.38;
 }
 
 .bottomLinkCommerce {
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 560;
   text-decoration: none;
 }
 
 .bottomLinkCommerce:hover {
-  color: var(--theme-color-primary, #93c5fd);
+  color: color-mix(in srgb, #ffffff 74%, var(--theme-color-primary, #0b78c5));
 }

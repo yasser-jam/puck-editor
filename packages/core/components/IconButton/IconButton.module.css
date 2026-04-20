@@ -1,14 +1,17 @@
 .IconButton {
   align-items: center;
   background: transparent;
-  border: none;
-  border-radius: 4px;
+  border: 1px solid transparent;
+  border-radius: 8px;
   color: currentColor;
   display: flex;
   font-family: var(--puck-font-family);
   justify-content: center;
+  min-height: 30px;
+  min-width: 30px;
   padding: 4px;
-  transition: background-color 50ms ease-in, color 50ms ease-in;
+  transition: background-color 120ms ease, color 120ms ease,
+    border-color 120ms ease, transform 100ms ease;
 }
 
 .IconButton--active {
@@ -22,16 +25,17 @@
 
 @media (hover: hover) and (pointer: fine) {
   .IconButton:hover:not(.IconButton--disabled) {
-    background: var(--puck-color-grey-10);
+    background: var(--puck-color-azure-11);
+    border-color: var(--puck-color-azure-09);
     color: var(--puck-color-azure-04);
     cursor: pointer;
-    transition: none;
+    transform: translateY(-1px);
   }
 }
 
 .IconButton:active {
   background: var(--puck-color-azure-11);
-  transition: none;
+  transform: translateY(0) scale(0.98);
 }
 
 .IconButton-title {
@@ -46,4 +50,10 @@
 
 .IconButton--disabled {
   color: var(--puck-color-grey-07);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .IconButton {
+    transition: none;
+  }
 }

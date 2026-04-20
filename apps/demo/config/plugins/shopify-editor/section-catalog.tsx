@@ -17,6 +17,10 @@ import {
   Menu as MenuIcon,
 } from "lucide-react";
 import type { Data } from "@/core";
+import {
+  DEFAULT_SECTION_NAME,
+  createSectionStarterContent,
+} from "../../blocks/Section/starter-data";
 
 /**
  * Shopify-style Section Catalog.
@@ -98,7 +102,8 @@ const section = (
   type: "Section",
   props: {
     ...SECTION_BASE_PROPS,
-    content: [],
+    name: DEFAULT_SECTION_NAME,
+    content: createSectionStarterContent(),
     ...overrides,
   },
 });
@@ -109,8 +114,8 @@ export const sectionCatalog: SectionPreset[] = [
   // ── Hero / Opener ────────────────────────────────────────────────────────
   {
     id: "empty-section",
-    label: "Empty Section",
-    description: "Start from scratch — add any blocks inside.",
+    label: "Starter Section",
+    description: "Starter section with heading, paragraph and CTA.",
     category: "layout",
     icon: <LayoutTemplate size={20} />,
     gradient: "linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)",

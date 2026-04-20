@@ -1,136 +1,191 @@
 /* ── Default (legacy) ─────────────────────────────────────────────────────── */
 .root {
-  background-color: white;
+  backdrop-filter: blur(10px);
+  background: color-mix(in srgb, var(--theme-color-surface-elevated, #ffffff) 88%, white);
+  border-bottom: 1px solid var(--theme-color-border, #d6dde8);
+  box-sizing: border-box;
+  left: 0;
   position: sticky;
+  right: 0;
   top: 0;
-  z-index: 2;
+  width: 100%;
+  z-index: 25;
 }
 
 .inner {
   align-items: center;
   display: flex;
+  gap: 14px;
   margin-inline-start: auto;
   margin-inline-end: auto;
-  max-width: 1280px;
-  padding: 24px 16px;
-}
-
-@media (min-width: 768px) {
-  .inner {
-    padding: 24px;
-  }
+  max-width: 1320px;
+  padding: 16px clamp(16px, 2.6vw, 30px);
 }
 
 .logo {
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: 1.4px;
-  opacity: 0.8;
+  color: var(--theme-color-text, #14243f);
+  font-family: var(--theme-font-1, "Space Grotesk", sans-serif);
+  font-size: clamp(1.2rem, 1.8vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
 .items {
+  align-items: center;
   display: flex;
-  gap: 24px;
+  flex-wrap: wrap;
+  gap: 8px 12px;
   margin-inline-start: auto;
 }
 
-@media (min-width: 1024px) {
-  .items {
-    gap: 32px;
-  }
+.navLink {
+  border-radius: var(--theme-radius-md, 12px);
+  color: var(--theme-color-text-muted, #56657d);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 9px 12px;
+  text-decoration: none;
+  transition: background-color 150ms ease, color 150ms ease, transform 150ms ease;
 }
 
-.navLink {
-  text-decoration: none;
-  color: var(--puck-color-grey-06);
-  font-weight: 400;
-  font-size: 15px;
+.navLink:hover {
+  background: var(--theme-color-primaryMuted, rgba(11, 120, 197, 0.12));
+  color: var(--theme-color-primary, #0b78c5);
 }
 
 .navLinkActive {
-  color: var(--puck-color-grey-02);
-  font-weight: 600;
+  background: var(--theme-color-primaryMuted, rgba(11, 120, 197, 0.14));
+  color: var(--theme-color-primary, #0b78c5);
 }
 
 /* ── Commerce ─────────────────────────────────────────────────────────────── */
 .rootCommerce {
-  background: var(--theme-color-dark, #0f172a);
-  border-bottom: 1px solid color-mix(in srgb, var(--theme-color-primary, #2563eb) 35%, transparent);
+  backdrop-filter: blur(10px);
+  background:
+    radial-gradient(
+      120% 90% at 0% 0%,
+      color-mix(in srgb, var(--theme-color-primary, #0b78c5) 16%, transparent),
+      transparent 58%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--theme-color-dark, #10213a) 92%, black),
+      var(--theme-color-dark, #10213a)
+    );
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--theme-color-primary, #0b78c5) 32%, transparent);
+  box-sizing: border-box;
+  left: 0;
   position: sticky;
+  right: 0;
   top: 0;
-  z-index: 20;
+  width: 100%;
+  z-index: 30;
 }
 
 .innerCommerce {
-  display: flex;
   align-items: center;
+  display: flex;
+  gap: 14px;
   justify-content: space-between;
-  gap: 24px;
-  max-width: 1400px;
   margin: 0 auto;
-  padding: 16px 20px;
+  max-width: 1400px;
+  padding: 14px clamp(16px, 2.6vw, 32px);
 }
 
 .brand {
-  font-family: var(--theme-font-1, inherit);
-  font-size: 1.35rem;
+  color: #ffffff;
+  font-family: var(--theme-font-1, "Space Grotesk", sans-serif);
+  font-size: clamp(1.15rem, 1.7vw, 1.4rem);
   font-weight: 700;
-  letter-spacing: -0.02em;
-  color: #fff;
+  letter-spacing: -0.03em;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .brand:hover {
-  color: color-mix(in srgb, #fff 88%, var(--theme-color-primary, #2563eb));
+  color: color-mix(in srgb, #ffffff 86%, var(--theme-color-primary, #0b78c5));
 }
 
 .navCommerce {
+  align-items: center;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 20px;
-  align-items: center;
+  gap: 8px;
   justify-content: flex-end;
+  min-width: 0;
 }
 
 .navLinkCommerce {
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 14px;
-  font-weight: 500;
+  border-radius: var(--theme-radius-md, 12px);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 9px 12px;
   text-decoration: none;
-  padding: 6px 0;
-  border-bottom: 2px solid transparent;
-  transition: color 0.15s, border-color 0.15s;
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
 .navLinkCommerce:hover {
-  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
 
 .navLinkCommerceActive {
-  color: #fff;
-  border-bottom-color: var(--theme-color-primary, #2563eb);
+  background: color-mix(in srgb, var(--theme-color-primary, #0b78c5) 20%, transparent);
+  color: #ffffff;
 }
+
 /* ── Drawer toggle (hamburger) ─────────────────────────────────────── */
 .drawerToggle {
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  margin-inline-end: 12px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--theme-color-surface-elevated, #ffffff) 18%, transparent);
+  border: 1px solid color-mix(in srgb, #ffffff 16%, transparent);
+  border-radius: var(--theme-radius-md, 12px);
   color: inherit;
   cursor: pointer;
-  transition: background 120ms ease, transform 120ms ease;
+  display: inline-flex;
+  height: 38px;
+  justify-content: center;
+  margin-inline-end: 2px;
+  width: 38px;
 }
 
 .drawerToggle:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, var(--theme-color-primary, #0b78c5) 18%, transparent);
 }
 
 .drawerToggle:active {
   transform: translateY(1px);
+}
+
+@media (max-width: 860px) {
+  .inner,
+  .innerCommerce {
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+
+  .items,
+  .navCommerce {
+    flex-wrap: nowrap;
+    margin-inline-start: auto;
+    max-width: calc(100% - 120px);
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: thin;
+    width: auto;
+  }
+
+  .navLink,
+  .navLinkCommerce {
+    white-space: nowrap;
+  }
 }
 

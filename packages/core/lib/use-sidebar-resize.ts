@@ -12,6 +12,17 @@ export function useSidebarResize(
   position: "left" | "right",
   dispatch: (action: PuckAction) => void
 ) {
+  const clampWidth = useCallback((candidate: number) => {
+    const min = 192;
+
+    if (typeof window === "undefined") {
+      return Math.max(min, Math.min(520, Math.round(candidate)));
+    }
+
+    const max = Math.max(min, Math.min(window.innerWidth - 180, 520));
+    return Math.max(min, Math.min(max, Math.round(candidate)));
+  }, []);
+
   const [width, setWidth] = useState<number | null>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
@@ -23,7 +34,7 @@ export function useSidebarResize(
 
   // Load saved widths from localStorage on mount
   useEffect(() => {
-    if (typeof window !== "undefined" && !storeWidth) {
+    if (typeof window !== "undefined" && storeWidth == null) {
       try {
         const savedWidths = localStorage.getItem("puck-sidebar-widths");
         if (savedWidths) {
@@ -32,11 +43,11 @@ export function useSidebarResize(
           const key =
             position === "left" ? "leftSideBarWidth" : "rightSideBarWidth";
 
-          if (savedWidth) {
+          if (typeof savedWidth === "number" && Number.isFinite(savedWidth)) {
             dispatch({
               type: "setUi",
               ui: {
-                [key]: savedWidth,
+                [key]: clampWidth(savedWidth),
               },
             });
           }
@@ -48,43 +59,47 @@ export function useSidebarResize(
         );
       }
     }
-  }, [dispatch, position, storeWidth]);
+  }, [dispatch, position, storeWidth, clampWidth]);
 
   useEffect(() => {
-    if (storeWidth !== undefined) {
-      setWidth(storeWidth);
+    if (typeof storeWidth === "number" && Number.isFinite(storeWidth)) {
+      setWidth(clampWidth(storeWidth));
+      return;
     }
-  }, [storeWidth]);
+
+    setWidth(null);
+  }, [storeWidth, clampWidth]);
 
   const handleResizeEnd = useCallback(
     (width: number) => {
+      const nextWidth = clampWidth(width);
+
       // Update store
       dispatch({
         type: "setUi",
         ui: {
           [position === "left" ? "leftSideBarWidth" : "rightSideBarWidth"]:
-            width,
+            nextWidth,
         },
       });
 
       // Save to localStorage
       let widths = {};
-      try {
-        const savedWidths = localStorage.getItem("puck-sidebar-widths");
-        widths = savedWidths ? JSON.parse(savedWidths) : {};
-      } catch (error) {
-        console.error(
-          `Failed to save ${position} sidebar width to localStorage`,
-          error
-        );
-      } finally {
-        localStorage.setItem(
-          "puck-sidebar-widths",
-          JSON.stringify({
-            ...widths,
-            [position]: width,
-          })
-        );
+      if (typeof window !== "undefined") {
+        try {
+          const savedWidths = localStorage.getItem("puck-sidebar-widths");
+          widths = savedWidths ? JSON.parse(savedWidths) : {};
+        } catch {
+          widths = {};
+        } finally {
+          localStorage.setItem(
+            "puck-sidebar-widths",
+            JSON.stringify({
+              ...widths,
+              [position]: nextWidth,
+            })
+          );
+        }
       }
 
       // Trigger auto zoom
@@ -95,7 +110,7 @@ export function useSidebarResize(
         })
       );
     },
-    [dispatch, position]
+    [dispatch, position, clampWidth]
   );
 
   return {

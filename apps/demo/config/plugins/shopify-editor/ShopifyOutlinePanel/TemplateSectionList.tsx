@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Eye,
   EyeOff,
@@ -7,6 +7,7 @@ import {
   Plus,
   GripVertical,
   LayoutTemplate,
+  Search,
 } from "lucide-react";
 import type { ComponentData } from "@/core/types";
 import { useAppStore, useAppStoreApi } from "@/core/store";
@@ -222,6 +223,9 @@ type Props = {
  */
 export function TemplateSectionList({ onAddSection }: Props) {
   const storeApi = useAppStoreApi();
+  const [search, setSearch] = useState("");
+  const normalizedSearch = search.trim().toLowerCase();
+  const hasActiveSearch = normalizedSearch.length > 0;
 
   const selectedIndex = useAppStore((s) => {
     const sel = s.state.ui.itemSelector;
@@ -267,9 +271,26 @@ export function TemplateSectionList({ onAddSection }: Props) {
     });
   }, [content, components]);
 
+  const visibleRowsCount = useMemo(
+    () => rows.reduce((count, row) => count + (row.visible ? 1 : 0), 0),
+    [rows]
+  );
+
+  const filteredRows = useMemo(() => {
+    const indexedRows = rows.map((row, index) => ({ row, index }));
+    if (!hasActiveSearch) return indexedRows;
+
+    return indexedRows.filter(({ row }) => {
+      return (
+        row.label.toLowerCase().includes(normalizedSearch) ||
+        row.id.toLowerCase().includes(normalizedSearch)
+      );
+    });
+  }, [rows, hasActiveSearch, normalizedSearch]);
+
   const list = useMemo(
     () =>
-      rows.map((row, index) => (
+      filteredRows.map(({ row, index }) => (
         <React.Fragment key={`${row.id}-${index}`}>
           <SectionRow
             index={index}
@@ -280,7 +301,7 @@ export function TemplateSectionList({ onAddSection }: Props) {
             rowCount={rows.length}
           />
           {/* Inline "add section" gap between rows. Visible on list hover. */}
-          {index < rows.length - 1 && (
+          {!hasActiveSearch && index < rows.length - 1 && (
             <button
               type="button"
               className={getClassName("inlineAdd")}
@@ -294,8 +315,47 @@ export function TemplateSectionList({ onAddSection }: Props) {
           )}
         </React.Fragment>
       )),
-    [rows, selectedIndex, onAddSection]
+    [filteredRows, hasActiveSearch, rows.length, selectedIndex, onAddSection]
   );
 
-  return <div className={getClassName("sectionsList")}>{list}</div>;
+  return (
+    <div className={getClassName("sectionsList")}>
+      <div className={getClassName("sectionsToolbar")}>
+        <div className={getClassName("sectionsStats")}>
+          <span className={getClassName("sectionsStat")}>{rows.length} total</span>
+          <span className={getClassName("sectionsStat")}>
+            {visibleRowsCount} visible
+          </span>
+        </div>
+
+        <label className={getClassName("sectionsSearch")}>
+          <Search size={12} aria-hidden />
+          <input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Find component"
+            aria-label="Find component in page"
+          />
+        </label>
+      </div>
+
+      {filteredRows.length > 0 ? (
+        list
+      ) : hasActiveSearch ? (
+        <div className={getClassName("sectionsNoResults")}>
+          <p className={getClassName("sectionsNoResultsTitle")}>
+            No components match "{search.trim()}"
+          </p>
+          <button
+            type="button"
+            className={getClassName("sectionsNoResultsClear")}
+            onClick={() => setSearch("")}
+          >
+            Clear search
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
 }

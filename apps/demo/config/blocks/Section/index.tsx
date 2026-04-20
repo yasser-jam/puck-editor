@@ -3,6 +3,10 @@ import { ComponentConfig, Slot } from "@/core/types";
 import { getClassNameFactory } from "@/core/lib";
 import { spacingOptions } from "../../options";
 import { WithLayout, withLayout } from "../../components/Layout";
+import {
+  DEFAULT_SECTION_NAME,
+  createSectionStarterContent,
+} from "./starter-data";
 import styles from "./styles.module.css";
 
 const getClassName = getClassNameFactory("Section", styles);
@@ -160,7 +164,7 @@ const SectionInner: ComponentConfig<SectionProps> = {
   },
 
   defaultProps: {
-    name: "",
+    name: DEFAULT_SECTION_NAME,
     anchorId: "",
     visible: true,
     paddingTop: "80px",
@@ -171,7 +175,7 @@ const SectionInner: ComponentConfig<SectionProps> = {
     maxWidth: "1280px",
     columns: 1,
     gridGap: "24px",
-    content: [],
+    content: createSectionStarterContent(),
   },
 
   render: ({

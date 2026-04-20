@@ -25,6 +25,16 @@ export type GroupProps = WithLayout<{
   content: Slot;
 }>;
 
+const createGroupStarterContent = (): Slot => [
+  {
+    type: "ContentParagraph",
+    props: {
+      text: "Group starter content",
+      textAlign: "left",
+    },
+  },
+];
+
 // ─── Config ────────────────────────────────────────────────────────────────
 
 const GroupInternal: ComponentConfig<GroupProps> = {
@@ -88,7 +98,7 @@ const GroupInternal: ComponentConfig<GroupProps> = {
     alignItems: "stretch",
     justifyContent: "flex-start",
     wrap: "nowrap",
-    content: [],
+    content: createGroupStarterContent(),
   },
 
   /**

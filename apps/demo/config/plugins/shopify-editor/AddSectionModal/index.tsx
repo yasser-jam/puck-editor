@@ -11,12 +11,17 @@ import { getClassNameFactory } from "@/core/lib";
 import { rootDroppableId } from "@/core/lib/root-droppable-id";
 import { useAppStore, useAppStoreApi } from "@/core/store";
 import {
+  assertSerializable,
   sectionCatalog,
   CATEGORY_LABELS,
   CATEGORY_ORDER,
   type SectionPreset,
   type SectionCategory,
 } from "../section-catalog";
+import {
+  DEFAULT_SECTION_NAME,
+  createSectionStarterContent,
+} from "../../../blocks/Section/starter-data";
 import styles from "./styles.module.css";
 
 const getClassName = getClassNameFactory("AddSectionModal", styles);
@@ -29,6 +34,32 @@ type Props = {
 };
 
 type TabFilter = "all" | SectionCategory;
+
+function ensureSectionStarterPayload(
+  payload: ReturnType<SectionPreset["build"]>
+): ReturnType<SectionPreset["build"]> {
+  if (payload.type !== "Section") return payload;
+
+  const props = payload.props as Record<string, unknown>;
+  const rawName = props.name;
+  const rawContent = props.content;
+
+  const hasName = typeof rawName === "string" && rawName.trim().length > 0;
+  const hasContent = Array.isArray(rawContent) && rawContent.length > 0;
+
+  if (hasName && hasContent) {
+    return payload;
+  }
+
+  return {
+    ...payload,
+    props: {
+      ...props,
+      name: hasName ? rawName : DEFAULT_SECTION_NAME,
+      content: hasContent ? rawContent : createSectionStarterContent(),
+    },
+  };
+}
 
 /**
  * Shopify-style Add Section modal.
@@ -116,7 +147,11 @@ export function AddSectionModal({ open, onClose, insertIndex }: Props) {
       if (isInsertingRef.current) return; // swallow double-fire
       isInsertingRef.current = true;
 
-      const payload = preset.build();
+      if (process.env.NODE_ENV !== "production") {
+        assertSerializable(preset);
+      }
+
+      const payload = ensureSectionStarterPayload(preset.build());
       const currentLength = storeApi.getState().state.data.content?.length ?? 0;
       const idx =
         typeof insertIndex === "number"

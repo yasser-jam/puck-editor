@@ -11,6 +11,7 @@ import {
   FullThemeProps,
   colorVar,
   computeBadgeThemeVars,
+  computeDerivedColorThemeVars,
   computeScaleThemeVars,
   buildResponsiveLayoutCss,
   normalizeBreakpoints,
@@ -64,8 +65,13 @@ export function ThemeInjector({ children, document: iframeDoc }: ThemeInjectorPr
     colors.success,
     colors.neutral
   );
+  const derivedColorVars = computeDerivedColorThemeVars(colors);
 
   const badgeVarLines = Object.entries(badgeVars)
+    .map(([k, v]) => `        ${k}: ${v};`)
+    .join("\n");
+
+  const derivedColorVarLines = Object.entries(derivedColorVars)
     .map(([k, v]) => `        ${k}: ${v};`)
     .join("\n");
 
@@ -108,6 +114,9 @@ export function ThemeInjector({ children, document: iframeDoc }: ThemeInjectorPr
         /* ── Colors ── */
 ${colorVarLines}
 
+        /* ── Derived color semantics ── */
+      ${derivedColorVarLines}
+
         /* ── Badges (discount / stock) ── */
 ${badgeVarLines}
 
@@ -121,6 +130,7 @@ ${scaleVarLines}
       body {
         font-family: var(--theme-body-font);
         color: var(--theme-color-text);
+        background: var(--theme-color-background);
       }
     `;
 
@@ -168,6 +178,7 @@ ${scaleVarLines}
     font1Css,
     font2Css,
     googleFontsUrl,
+    derivedColorVarLines,
     badgeVarLines,
     // spread colors into deps
     colors.primary,

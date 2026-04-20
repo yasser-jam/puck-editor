@@ -2,7 +2,7 @@
   appearance: none;
   background: none;
   border: 1px solid transparent;
-  border-radius: 4px;
+  border-radius: 8px;
   color: var(--puck-color-white);
   display: inline-flex;
   align-items: center;
@@ -15,15 +15,11 @@
   line-height: 1;
   text-align: center;
   text-decoration: none;
-  transition: background-color 50ms ease-in;
+  transition: background-color 130ms ease, color 130ms ease,
+    border-color 130ms ease, box-shadow 130ms ease, transform 100ms ease;
   cursor: pointer;
   white-space: nowrap;
   margin: 0;
-}
-
-.Button:hover,
-.Button:active {
-  transition: none;
 }
 
 .Button--medium {
@@ -47,6 +43,7 @@
 
 .Button--primary {
   background: var(--puck-color-azure-04);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.14);
 }
 
 .Button:focus-visible {
@@ -57,28 +54,35 @@
 @media (hover: hover) and (pointer: fine) {
   .Button--primary:hover {
     background-color: var(--puck-color-azure-03);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.26);
   }
 }
 
 .Button--primary:active {
   background-color: var(--puck-color-azure-02);
+  transform: translateY(0) scale(0.99);
 }
 
 .Button--secondary {
   border: 1px solid currentColor;
   color: currentColor;
+  background: rgba(255, 255, 255, 0.88);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .Button--secondary:hover {
     background-color: var(--puck-color-azure-12);
+    border-color: var(--puck-color-azure-08);
     color: var(--puck-color-black);
+    transform: translateY(-1px);
   }
 }
 
 .Button--secondary:active {
   background-color: var(--puck-color-azure-11);
   color: var(--puck-color-black);
+  transform: translateY(0) scale(0.99);
 }
 
 .Button--flush {
@@ -99,4 +103,10 @@
 
 .Button-spinner {
   padding-inline-start: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Button {
+    transition: none;
+  }
 }

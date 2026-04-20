@@ -13,6 +13,88 @@
   color: var(--puck-color-grey-05, #6b7280);
 }
 
+/* ── Create form ───────────────────────────────────────────────────────────── */
+.PagesPanel-create {
+  display: grid;
+  gap: 8px;
+  margin: 0 12px 12px;
+  padding: 12px;
+  border: 1px solid var(--puck-color-grey-09, #d1d5db);
+  border-radius: 10px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--puck-color-azure-11, #eff6ff) 36%, #ffffff),
+    #ffffff
+  );
+}
+
+.PagesPanel-createHeader {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--puck-color-grey-05, #6b7280);
+}
+
+.PagesPanel-fieldLabel {
+  display: grid;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--puck-color-grey-04, #4b5563);
+}
+
+.PagesPanel-fieldLabel input {
+  border: 1px solid var(--puck-color-grey-09, #d1d5db);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--puck-color-grey-02, #111827);
+  font-size: 12px;
+  font-family: inherit;
+  padding: 7px 9px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.PagesPanel-fieldLabel input:focus-visible {
+  border-color: var(--puck-color-azure-06, #3b82f6);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--puck-color-azure-09, #bfdbfe) 50%, transparent);
+  outline: none;
+}
+
+.PagesPanel-error {
+  margin: 0;
+  color: #b91c1c;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.PagesPanel-createButton {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--puck-color-azure-07, #93c5fd);
+  background: var(--puck-color-azure-11, #eff6ff);
+  color: var(--puck-color-azure-03, #1d4ed8);
+  border-radius: 8px;
+  min-height: 32px;
+  padding: 0 10px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.PagesPanel-createButton:hover {
+  background: var(--puck-color-azure-10, #dbeafe);
+}
+
+.PagesPanel-createButton:focus-visible {
+  outline: 2px solid var(--puck-color-azure-05, #60a5fa);
+  outline-offset: 1px;
+}
+
 /* ── Page list ──────────────────────────────────────────────────────────────── */
 .PagesPanel-list {
   display: flex;
@@ -125,6 +207,19 @@
   color: var(--puck-color-azure-04, #2563eb);
   background: var(--puck-color-azure-11, #eff6ff);
   border: 1px solid var(--puck-color-azure-09, #bfdbfe);
+  border-radius: 4px;
+  padding: 1px 5px;
+  flex-shrink: 0;
+}
+
+.PagesPanel-customBadge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #0f766e;
+  background: #ccfbf1;
+  border: 1px solid #99f6e4;
   border-radius: 4px;
   padding: 1px 5px;
   flex-shrink: 0;

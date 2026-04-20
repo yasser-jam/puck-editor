@@ -28,6 +28,16 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
   const startX = useRef(0);
   const startWidth = useRef(0);
 
+  const clampWidth = useCallback((candidate: number) => {
+    const min = 192;
+    const max =
+      typeof window === "undefined"
+        ? 520
+        : Math.max(min, Math.min(window.innerWidth - 180, 520));
+
+    return Math.max(min, Math.min(max, Math.round(candidate)));
+  }, []);
+
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       if (!isDragging.current) return;
@@ -38,11 +48,11 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
           ? startWidth.current + delta
           : startWidth.current - delta;
 
-      const width = Math.max(192, newWidth);
+      const width = clampWidth(newWidth);
       onResize(width);
       e.preventDefault();
     },
-    [onResize, position]
+    [onResize, position, clampWidth]
   );
 
   const handleMouseUp = useCallback(() => {
@@ -61,11 +71,24 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);
 
-    const finalWidth = sidebarRef.current?.getBoundingClientRect().width || 0;
+    const finalWidth = clampWidth(
+      sidebarRef.current?.getBoundingClientRect().width || 0
+    );
     onResizeEnd(finalWidth);
 
     resetAutoZoom();
-  }, [onResizeEnd]);
+  }, [onResizeEnd, clampWidth]);
+
+  const handleDoubleClick = useCallback(() => {
+    const baseWidth =
+      typeof window === "undefined"
+        ? 280
+        : Math.max(220, Math.min(window.innerWidth * 0.24, 320));
+    const width = clampWidth(baseWidth);
+
+    onResize(width);
+    onResizeEnd(width);
+  }, [clampWidth, onResize, onResizeEnd]);
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -97,6 +120,8 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
       ref={handleRef}
       className={getClassName({ [position]: true })}
       onMouseDown={handleMouseDown}
+      onDoubleClick={handleDoubleClick}
+      title="Drag to resize sidebar (double-click to reset)"
     />
   );
 };

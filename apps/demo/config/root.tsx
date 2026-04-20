@@ -38,6 +38,7 @@ import {
   buildResponsiveLayoutCss,
   normalizeBreakpoints,
   computeBadgeThemeVars,
+  computeDerivedColorThemeVars,
   computeScaleThemeVars,
   getThemeRootClassNames,
   type BadgeShape,
@@ -240,6 +241,7 @@ export const Root: RootConfig<{
       colors.success,
       colors.neutral
     );
+    const derivedColorVars = computeDerivedColorThemeVars(colors);
 
     const scaleVars = computeScaleThemeVars(
       p as Partial<typeof DEFAULT_SCALES>
@@ -257,10 +259,12 @@ export const Root: RootConfig<{
       "--theme-font-2": font2Css,
       fontFamily: "var(--theme-body-font)",
       color: "var(--theme-color-text)",
+      backgroundColor: "var(--theme-color-background)",
       display: "flex",
       flexDirection: "column",
       minHeight: "100vh",
       ...badgeVars,
+      ...derivedColorVars,
       ...scaleVars,
     };
     COLOR_KEYS.forEach(({ key }) => {
