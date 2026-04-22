@@ -167,7 +167,7 @@ export const PuckPreview = ({
 
   return (
     <Puck config={{}} data={{}} {...puckProps} iframe={{ enabled: false }}>
-      <PreviewStoreContext value={store}>
+      <PreviewStoreContext.Provider value={store}>
         <PreviewFrame
           label={label}
           style={style}
@@ -177,7 +177,7 @@ export const PuckPreview = ({
         >
           {children}
         </PreviewFrame>
-      </PreviewStoreContext>
+      </PreviewStoreContext.Provider>
     </Puck>
   );
 };

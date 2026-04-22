@@ -11,12 +11,19 @@ import {
   User,
   PanelRightOpen,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import {
   resolveHrefLegacy,
   resolveLinkRel,
   resolveLinkTarget,
-  type LinkValue,
 } from "../../fields/LinkField";
+import {
+  type SiteDrawerAnimation,
+  type SiteDrawerIcon,
+  type SiteDrawerLink,
+  type SiteDrawerSide,
+  type SiteDrawerTrigger,
+} from "./shared";
 
 import styles from "./styles.module.css";
 
@@ -39,25 +46,6 @@ import styles from "./styles.module.css";
  *     panel anchor to the iframe viewport in the editor and to the real
  *     viewport on the live site.
  */
-
-export type SiteDrawerLink = {
-  label: string;
-  labelAr?: string;
-  link?: LinkValue;
-  /** Legacy field kept for older persisted JSON payloads. */
-  href?: string;
-};
-
-export type SiteDrawerSide = "left" | "right";
-export type SiteDrawerAnimation = "slide" | "fade" | "scale" | "none";
-export type SiteDrawerIcon =
-  | "menu"
-  | "filter"
-  | "cart"
-  | "user"
-  | "panel"
-  | "none";
-export type SiteDrawerTrigger = "floating" | "auto" | "external" | "none";
 
 export type SiteDrawerProps = {
   id?: string;
@@ -111,7 +99,7 @@ export type SiteDrawerProps = {
 
 const ICON_MAP: Record<
   SiteDrawerIcon,
-  React.ComponentType<{ size?: number }> | null
+  LucideIcon | null
 > = {
   menu: Menu,
   filter: Filter,

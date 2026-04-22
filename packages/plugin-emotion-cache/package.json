@@ -15,8 +15,8 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint \"**/*.ts*\"",
-    "build": "rm -rf dist && tsup index.tsx",
-    "prepare": "yarn build"
+    "build": "node -e \"require('fs').rmSync('dist',{ recursive: true, force: true })\" && tsup index.tsx",
+    "prepare": "npm run build"
   },
   "files": [
     "dist"
@@ -25,17 +25,17 @@
     "@emotion/react": "^11.13.3",
     "@puckeditor/core": "^0.21.1",
     "@types/minimatch": "3.0.5",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.0.2",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
     "eslint": "^7.32.0",
-    "eslint-config-custom": "*",
-    "tsconfig": "*",
+    "eslint-config-custom": "0.0.0",
+    "tsconfig": "0.0.0",
     "tsup": "^8.2.4",
-    "tsup-config": "*",
+    "tsup-config": "0.0.0",
     "typescript": "^5.5.4"
   },
   "peerDependencies": {
     "@emotion/react": "^11.0.0",
-    "react": "^17.0.0 || ^18.0.0 || ^19.0.0"
+    "react": "18.2.0"
   }
 }

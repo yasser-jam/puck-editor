@@ -1,164 +1,49 @@
-import { Button } from "./blocks/Button";
-import { Card } from "./blocks/Card";
 import { Grid } from "./blocks/Grid";
 import { Hero } from "./blocks/Hero/server";
 import { Heading } from "./blocks/Heading";
-import { Flex } from "./blocks/Flex";
-import { Logos } from "./blocks/Logos";
-import { Stats } from "./blocks/Stats";
-import { Template } from "./blocks/Template/server";
 import { Text } from "./blocks/Text";
 import { Space } from "./blocks/Space";
-import { RichText } from "./blocks/RichText";
 import { ProductCard } from "./blocks/ProductCard";
-import { ProductsGrid } from "./blocks/ProductsGrid";
-import { CartSection } from "./blocks/CartSection";
-import { CheckoutForm } from "./blocks/CheckoutForm";
-import { ProductSearchMenu } from "./blocks/ProductSearchMenu";
-import { CategoryListMenu } from "./blocks/CategoryListMenu";
 import { ProductImage } from "./blocks/ProductImage";
-import { ProductInfo } from "./blocks/ProductInfo";
 import { Section } from "./blocks/Section";
 import { Group } from "./blocks/Group";
-import { ContentHeading } from "./blocks/ContentHeading";
-import { ContentParagraph } from "./blocks/ContentParagraph";
-import { Accordion } from "./blocks/Accordion";
-import { ContentImage } from "./blocks/ContentImage";
-import { ContentButton } from "./blocks/ContentButton";
-import { ContentDivider } from "./blocks/ContentDivider";
-import { ImageGallery } from "./blocks/ImageGallery";
-import { VideoEmbed } from "./blocks/VideoEmbed";
-import { ContentIcon } from "./blocks/ContentIcon";
-import { ContentHtml } from "./blocks/ContentHtml";
-import { OrderHistory } from "./blocks/OrderHistory";
-import { Wishlist } from "./blocks/Wishlist";
-import { Testimonials } from "./blocks/Testimonials";
-import { ContactForm } from "./blocks/ContactForm";
-import { Sidebar } from "./blocks/Sidebar";
-import { NavMenu } from "./blocks/NavMenu";
-import { SideDrawer } from "./blocks/SideDrawer";
-import { SiteHeader } from "./blocks/SiteHeader";
-import { SiteDrawerShell } from "./blocks/SiteDrawerShell";
-import { SiteFooter } from "./blocks/SiteFooter";
-import Root from "./root";
+import Root from "./root.server";
 import { UserConfig } from "./types";
 
-const conf: UserConfig = {
+const conf = {
   root: Root,
   categories: {
-    shell: {
-      title: "Shell",
-      defaultExpanded: true,
-      components: ["SiteHeader", "SiteDrawerShell", "SiteFooter"],
-    },
     sections: {
       title: "Sections",
       defaultExpanded: true,
       components: ["Section"],
     },
-    bound: {
-      title: "Store Blocks",
-      defaultExpanded: true,
-      components: [
-        "ProductsGrid",
-        "ProductCard",
-        "CategoryListMenu",
-        "CartSection",
-        "CheckoutForm",
-        "ProductSearchMenu",
-        "OrderHistory",
-        "Wishlist",
-        "Testimonials",
-        "ContactForm",
-        "ProductImage",
-        "ProductInfo",
-      ],
-    },
     content: {
       title: "Content",
       defaultExpanded: true,
       components: [
-        "ContentHeading",
-        "ContentParagraph",
-        "Accordion",
-        "ContentImage",
-        "ContentButton",
-        "ContentDivider",
-        "Space",
-        "ImageGallery",
-        "VideoEmbed",
-        "ContentIcon",
-        "ContentHtml",
-      ],
-    },
-    group: {
-      title: "Layout",
-      defaultExpanded: true,
-      components: ["Group", "Sidebar", "NavMenu"],
-    },
-    legacy: {
-      title: "Legacy (hidden)",
-      visible: false,
-      components: [
-        "SideDrawer",
+        "Hero",
         "Heading",
         "Text",
-        "RichText",
-        "Button",
-        "Card",
+        "Space",
         "Grid",
-        "Flex",
-        "Hero",
-        "Logos",
-        "Stats",
-        "Template",
+        "Group",
+        "ProductCard",
+        "ProductImage",
       ],
     },
   },
   components: {
-    SiteHeader,
-    SiteDrawerShell,
-    SiteFooter,
     Section,
     Group,
-    Button,
-    Card,
     Grid,
     Hero,
     Heading,
-    Flex,
-    Logos,
-    Stats,
-    Template,
     Text,
     Space,
-    RichText,
     ProductCard,
-    ProductsGrid,
-    CartSection,
-    CheckoutForm,
-    ProductSearchMenu,
-    CategoryListMenu,
     ProductImage,
-    ProductInfo,
-    ContentHeading,
-    ContentParagraph,
-    Accordion,
-    ContentImage,
-    ContentButton,
-    ContentDivider,
-    ImageGallery,
-    VideoEmbed,
-    ContentIcon,
-    ContentHtml,
-    OrderHistory,
-    Wishlist,
-    Testimonials,
-    ContactForm,
-    Sidebar,
-    NavMenu,
-    SideDrawer,
   },
-};
+} as unknown as UserConfig;
 
 export default conf;

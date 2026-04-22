@@ -20,7 +20,7 @@ import {
   type SiteDrawerAnimation,
   type SiteDrawerIcon,
   type SiteDrawerTrigger,
-} from "./components/SiteDrawer";
+} from "./components/SiteDrawer/shared";
 import {
   getFontCssValue,
   getGoogleFontsUrl,

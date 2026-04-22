@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -9,6 +11,7 @@ import {
   PanelRightOpen,
   PanelLeftOpen,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { ComponentConfig, Slot } from "@/core/types";
 import { getClassNameFactory } from "@/core/lib";
 import { WithLayout, withLayout } from "../../components/Layout";
@@ -124,7 +127,7 @@ const WIDTH_PX: Record<SideDrawerProps["width"], string> = {
 
 const ICON_MAP: Record<
   SideDrawerProps["triggerIcon"],
-  React.ComponentType<{ size?: number }> | null
+  LucideIcon | null
 > = {
   menu: Menu,
   filter: Filter,

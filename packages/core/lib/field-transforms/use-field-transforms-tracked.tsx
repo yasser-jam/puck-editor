@@ -16,7 +16,7 @@ export function useFieldTransformsTracked<
   readOnly?: T["readOnly"],
   forceReadOnly?: boolean
 ): T["props"] {
-  const prevProps = useRef<Record<string, any>>(null);
+  const prevProps = useRef<Record<string, any> | null>(null);
   const prevResult = useRef<Record<string, any>>(item.props);
 
   const mappers = useMemo<Mappers>(

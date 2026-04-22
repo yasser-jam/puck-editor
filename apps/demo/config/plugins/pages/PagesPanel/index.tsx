@@ -18,9 +18,10 @@ import {
   readCustomPages,
   writeCustomPages,
 } from "../../../pages";
+import type { Content } from "@/core/types";
 import { componentKey } from "../../../index";
 import { normalizeEditorData } from "../../../../lib/normalize-editor-data";
-import type { UserData } from "../../../types";
+import type { Components, UserData } from "../../../types";
 import {
   DEFAULT_SECTION_NAME,
   createSectionStarterContent,
@@ -51,15 +52,30 @@ const toPathLabel = (path: string) => {
 
 const createStorageKey = (path: string) => `puck-demo:${componentKey}:${path}`;
 
+const SECTION_BASE_PROPS = {
+  anchorId: "",
+  visible: true,
+  paddingTop: "80px",
+  paddingBottom: "80px",
+  paddingHorizontal: "24px",
+  backgroundColor: "#ffffff",
+  theme: "dark" as const,
+  maxWidth: "1280px",
+  columns: 1,
+  gridGap: "24px",
+};
+
 const createStarterPageData = (title: string): UserData => {
   const nonce = Date.now().toString(36);
-  const starterContent = createSectionStarterContent().map((item, index) => ({
-    ...item,
-    props: {
-      ...(item.props ?? {}),
-      id: `${item.type}-${nonce}-${index}`,
-    },
-  }));
+  const starterContent: Content<Components> = createSectionStarterContent().map(
+    (item, index) => ({
+      ...item,
+      props: {
+        ...(item.props ?? {}),
+        id: `${item.type}-${nonce}-${index}`,
+      },
+    })
+  ) as Content<Components>;
 
   return {
     root: {
@@ -72,6 +88,7 @@ const createStarterPageData = (title: string): UserData => {
       {
         type: "Section",
         props: {
+          ...SECTION_BASE_PROPS,
           id: `Section-${nonce}`,
           name: DEFAULT_SECTION_NAME,
           content: starterContent,

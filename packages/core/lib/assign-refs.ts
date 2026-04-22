@@ -10,7 +10,7 @@ export function assignRef<ElementType = HTMLElement>(
   if (typeof ref === "function") {
     ref(node);
   } else if (ref && typeof ref === "object" && "current" in ref) {
-    ref.current = node;
+    (ref as React.MutableRefObject<ElementType | null>).current = node;
   }
 }
 

@@ -89,7 +89,7 @@ type DragDropContextProps = {
  * @returns a function that temporarily disables the collision
  */
 const useTempDisableFallback = (timeout: number) => {
-  const lastFallbackDisable = useRef<string>(null);
+  const lastFallbackDisable = useRef<string | null>(null);
 
   return useCallback((manager: DragDropManager) => {
     collisionStore.setState({ fallbackEnabled: false });

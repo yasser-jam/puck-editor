@@ -1,6 +1,7 @@
 import React, { CSSProperties } from "react";
 import classnames from "classnames";
 import { Menu, Filter, ShoppingCart, User } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 import type { ShellVariant } from "../../theme";
 import {
@@ -16,7 +17,7 @@ export type HeaderDrawerIcon = "menu" | "filter" | "cart" | "user" | "none";
 
 const DRAWER_ICON_MAP: Record<
   HeaderDrawerIcon,
-  React.ComponentType<{ size?: number }> | null
+  LucideIcon | null
 > = {
   menu: Menu,
   filter: Filter,

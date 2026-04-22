@@ -3,13 +3,15 @@ import { ComponentConfig } from "@/core/types";
 import { colorField } from "../../fields/ColorField";
 import { EMPTY_LINK, linkField } from "../../fields/LinkField";
 import {
-  SiteDrawer,
   DEFAULT_DRAWER_LINKS,
   type SiteDrawerAnimation,
   type SiteDrawerIcon,
   type SiteDrawerLink,
   type SiteDrawerSide,
   type SiteDrawerTrigger,
+} from "../../components/SiteDrawer/shared";
+import {
+  SiteDrawer,
 } from "../../components/SiteDrawer";
 
 export type SiteDrawerShellProps = {

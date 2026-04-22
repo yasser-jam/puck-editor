@@ -31,7 +31,7 @@ export function useSyncedEditor({
 
   const syncingRef = useRef(false);
   const lastSyncedRef = useRef("");
-  const editTimer = useRef<NodeJS.Timeout>(null);
+  const editTimer = useRef<NodeJS.Timeout | null>(null);
   const isPending = !!editTimer.current;
   const isFocused = useAppStore((s) => s.state.ui.field.focus === name);
 

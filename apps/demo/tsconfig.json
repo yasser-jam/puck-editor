@@ -3,10 +3,17 @@
   "compilerOptions": {
     "strict": true,
     "plugins": [{ "name": "next" }],
+    "ignoreDeprecations": "5.0",
+    "baseUrl": ".",
     "paths": {
+      "@/*": ["./*"],
+      "@/lib/*": ["lib/*"],
+      "@/components/*": ["components/*"],
       "@/core": ["../../packages/core"],
       "@/core/*": ["../../packages/core/*"],
       "@puckeditor/core": ["../../packages/core"],
+      "@workspace/ui": ["../../packages/ui"],
+      "@workspace/ui/*": ["../../packages/ui/src/*"],
       "@/plugin-heading-analyzer": ["../../packages/plugin-heading-analyzer"],
       "@/plugin-heading-analyzer/*": [
         "../../packages/plugin-heading-analyzer/*"

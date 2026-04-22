@@ -693,3 +693,32 @@ body {
     transition: none !important;
   }
 }
+
+.container {
+  margin-inline: auto;
+  max-width: 80rem;
+  padding-inline: 1rem;
+}
+
+.page-title {
+  color: hsl(var(--muted-foreground));
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 2.25rem;
+}
+
+.onboarding-step-footer {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: none;
+  }
+}

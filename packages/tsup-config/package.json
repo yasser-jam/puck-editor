@@ -9,7 +9,7 @@
   "dependencies": {
     "postcss": "^8.4.24",
     "postcss-modules": "^6.0.0",
-    "tsconfig": "*",
+    "tsconfig": "0.0.0",
     "tsup": "^8.2.4",
     "typescript": "^5.5.4"
   }

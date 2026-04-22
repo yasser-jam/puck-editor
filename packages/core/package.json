@@ -64,10 +64,10 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint \"**/*.ts*\"",
-    "build": "rm -rf dist && tsup bundle/index.ts bundle/rsc.tsx bundle/no-external.ts bundle/internal.ts",
+    "build": "rimraf dist && tsup bundle/index.ts bundle/rsc.tsx bundle/no-external.ts bundle/internal.ts",
     "test": "jest",
-    "prepare": "cp ../../README.md . && yarn build",
-    "postpublish": "rm README.md"
+    "prepare": "node -e \"const fs = require('fs'); fs.copyFileSync('../../README.md', './README.md');\" && npm run build",
+    "postpublish": "rimraf README.md"
   },
   "files": [
     "dist"
@@ -80,20 +80,20 @@
     "@types/flat": "^5.0.5",
     "@types/jest": "^29.5.14",
     "@types/object-hash": "^3.0.6",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
     "@types/uuid": "^10.0.0",
     "css-box-model": "^1.2.1",
     "eslint": "^7.32.0",
-    "eslint-config-custom": "*",
+    "eslint-config-custom": "0.0.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^30.0.0-beta.3",
     "lucide-react": "^0.468.0",
     "ts-jest": "^29.3.4",
-    "tsconfig": "*",
+    "tsconfig": "0.0.0",
     "tsup": "^8.2.4",
-    "tsup-config": "*",
+    "tsup-config": "0.0.0",
     "typescript": "^5.5.4"
   },
   "dependencies": {
@@ -131,6 +131,6 @@
     "zustand": "^5.0.3"
   },
   "peerDependencies": {
-    "react": "^18.0.0 || ^19.0.0"
+    "react": "18.2.0"
   }
 }

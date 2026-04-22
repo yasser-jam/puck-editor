@@ -246,7 +246,7 @@ export const DraggableComponent = ({
 
   const [, setRerender] = useState(0);
 
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLElement | null>(null);
 
   const refSetter = useCallback(
     (el: HTMLElement | null) => {
