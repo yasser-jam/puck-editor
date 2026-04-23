@@ -1,0 +1,32 @@
+
+> remix-ai-recipe@1.0.0 build
+> remix build
+
+[7m[34m info [39m[27m building...[90m (NODE_ENV=production)[39m
+[7m[33m warn [39m[27m Fetcher persistence behavior is changing in React Router v7
+[33m┃[39m [90mYou can use the `v3_fetcherPersist` future flag to opt-in early.[39m
+[33m┃[39m [90m-> https://remix.run/docs/en/2.13.1/start/future-flags#v3_fetcherPersist[39m
+[33m┗[39m
+[7m[33m warn [39m[27m Route discovery/manifest behavior is changing in React Router v7
+[33m┃[39m [90mYou can use the `v3_lazyRouteDiscovery` future flag to opt-in early.[39m
+[33m┃[39m [90m-> https://remix.run/docs/en/2.13.1/start/future-flags#v3_lazyRouteDiscovery[39m
+[33m┗[39m
+[7m[33m warn [39m[27m Relative routing behavior for splat routes is changing in React Router v7
+[33m┃[39m [90mYou can use the `v3_relativeSplatPath` future flag to opt-in early.[39m
+[33m┃[39m [90m-> https://remix.run/docs/en/2.13.1/start/future-flags#v3_relativeSplatPath[39m
+[33m┗[39m
+[7m[33m warn [39m[27m Data fetching is changing to a single fetch in React Router v7
+[33m┃[39m [90mYou can use the `v3_singleFetch` future flag to opt-in early.[39m
+[33m┃[39m [90m-> https://remix.run/docs/en/2.13.1/start/future-flags#v3_singleFetch[39m
+[33m┗[39m
+[7m[33m warn [39m[27m The format of errors thrown on aborted requests is changing in React Router v7
+[33m┃[39m [90mYou can use the `v3_throwAbortReason` future flag to opt-in early.[39m
+[33m┃[39m [90m-> https://remix.run/docs/en/2.13.1/start/future-flags#v3_throwAbortReason[39m
+[33m┗[39m
+▲ [WARNING] Expected identifier but found "." [css-syntax-error]
+
+    ../../node_modules/@puckeditor/plugin-ai/dist/index.css:961:2:
+      961 │   ._Tag-sprite_1baze_35 {
+          ╵   ^
+
+[7m[34m info [39m[27m built[90m (4.1s)[39m

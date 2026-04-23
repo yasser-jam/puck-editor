@@ -1,0 +1,28 @@
+
+> docs@0.21.1 build
+> next build
+
+  ▲ Next.js 14.2.35
+
+   Linting and checking validity of types ...
+ ⨯ ESLint: Cannot read config file: C:\Users\Golden\Documents\Graduation_project\puck-editor\packages\eslint-config-custom\index.js Error: Cannot read properties of undefined (reading 'extends') Referenced from: C:\Users\Golden\Documents\Graduation_project\puck-editor\apps\docs\.eslintrc.js
+Failed to compile.
+
+./components/Preview/index.tsx:170:8
+Type error: JSX element type 'PreviewStoreContext' does not have any construct or call signatures.
+
+[0m [90m 168 |[39m   [36mreturn[39m ([0m
+[0m [90m 169 |[39m     [33m<[39m[33mPuck[39m config[33m=[39m{{}} data[33m=[39m{{}} {[33m...[39mpuckProps} iframe[33m=[39m{{ enabled[33m:[39m [36mfalse[39m }}[33m>[39m[0m
+[0m[31m[1m>[22m[39m[90m 170 |[39m       [33m<[39m[33mPreviewStoreContext[39m value[33m=[39m{store}[33m>[39m[0m
+[0m [90m     |[39m        [31m[1m^[22m[39m[0m
+[0m [90m 171 |[39m         [33m<[39m[33mPreviewFrame[39m[0m
+[0m [90m 172 |[39m           label[33m=[39m{label}[0m
+[0m [90m 173 |[39m           style[33m=[39m{style}[0m
+Next.js build worker exited with code: 1 and signal: null
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path C:\Users\Golden\Documents\Graduation_project\puck-editor\apps\docs
+npm error workspace docs@0.21.1
+npm error location C:\Users\Golden\Documents\Graduation_project\puck-editor\apps\docs
+npm error command failed
+npm error command C:\Windows\system32\cmd.exe /d /s /c next build

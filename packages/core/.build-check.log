@@ -1,0 +1,68 @@
+
+> @puckeditor/core@0.21.1 build
+> rimraf dist && tsup bundle/index.ts bundle/rsc.tsx bundle/no-external.ts bundle/internal.ts
+
+[34mCLI[39m Building entry: bundle/index.ts, bundle/internal.ts, bundle/no-external.ts, bundle/rsc.tsx
+[34mCLI[39m Using tsconfig: tsconfig.json
+[34mCLI[39m tsup v8.5.1
+[34mCLI[39m Using tsup config: C:\Users\Golden\Documents\Graduation_project\puck-editor\packages\core\tsup.config.ts
+[34mCLI[39m Target: es6
+[34mCJS[39m Build start
+[34mESM[39m Build start
+[34mDTS[39m Build start
+[32mCJS[39m [1mdist\internal.js     [22m[32m28.53 KB[39m
+[32mCJS[39m [1mdist\index.css       [22m[32m82.22 KB[39m
+[32mCJS[39m [1mdist\no-external.css [22m[32m82.25 KB[39m
+[32mCJS[39m [1mdist\rsc.css         [22m[32m2.93 KB[39m
+[32mCJS[39m [1mdist\rsc.js          [22m[32m49.40 KB[39m
+[32mCJS[39m [1mdist\index.js        [22m[32m536.70 KB[39m
+[32mCJS[39m [1mdist\no-external.js  [22m[32m536.77 KB[39m
+[32mCJS[39m ⚡️ Build success in 2786ms
+[32mESM[39m [1mdist\Render-B4QFJNU3.mjs [22m[32m1.67 KB[39m
+[32mESM[39m [1mdist\Editor-HLV37D6W.mjs [22m[32m5.50 KB[39m
+[32mESM[39m [1mdist\index.mjs           [22m[32m1.25 KB[39m
+[32mESM[39m [1mdist\chunk-2CNEFIQP.mjs  [22m[32m3.45 KB[39m
+[32mESM[39m [1mdist\chunk-PBSGV2LV.mjs  [22m[32m3.08 KB[39m
+[32mESM[39m [1mdist\no-external.mjs     [22m[32m1.33 KB[39m
+[32mESM[39m [1mdist\chunk-VYXU5CXO.mjs  [22m[32m313.36 KB[39m
+[32mESM[39m [1mdist\internal.mjs        [22m[32m219.00 B[39m
+[32mESM[39m [1mdist\rsc.mjs             [22m[32m3.25 KB[39m
+[32mESM[39m [1mdist\chunk-IHCALD3S.mjs  [22m[32m589.00 B[39m
+[32mESM[39m [1mdist\loaded-Y3Q4EEVQ.mjs [22m[32m1.69 KB[39m
+[32mESM[39m [1mdist\chunk-HFTMQ5JO.mjs  [22m[32m15.26 KB[39m
+[32mESM[39m [1mdist\loaded-YPORUIBM.mjs [22m[32m1.65 KB[39m
+[32mESM[39m [1mdist\full-YKVHWGNW.mjs   [22m[32m3.78 KB[39m
+[32mESM[39m [1mdist\chunk-ZUCMLCQC.mjs  [22m[32m21.31 KB[39m
+[32mESM[39m [1mdist\loaded-YLCOP3SH.mjs [22m[32m1.59 KB[39m
+[32mESM[39m [1mdist\chunk-RBCBOQ5W.mjs  [22m[32m1.86 KB[39m
+[32mESM[39m [1mdist\chunk-GS7EAOGG.mjs  [22m[32m1.58 KB[39m
+[32mESM[39m [1mdist\chunk-MDUBGHWF.mjs  [22m[32m4.71 KB[39m
+[32mESM[39m [1mdist\chunk-Y2EFNT5P.mjs  [22m[32m3.05 KB[39m
+[32mESM[39m [1mdist\chunk-SVZK5NYR.mjs  [22m[32m15.51 KB[39m
+[32mESM[39m [1mdist\chunk-PMXRXC2B.mjs  [22m[32m12.49 KB[39m
+[32mESM[39m [1mdist\chunk-SFB2XLQO.mjs  [22m[32m60.89 KB[39m
+[32mESM[39m [1mdist\Editor-7NGBIHTR.css [22m[32m11.06 KB[39m
+[32mESM[39m [1mdist\chunk-M6W7YEVX.mjs  [22m[32m3.37 KB[39m
+[32mESM[39m [1mdist\index.css           [22m[32m82.22 KB[39m
+[32mESM[39m [1mdist\Render-OUQZCD6E.css [22m[32m2.93 KB[39m
+[32mESM[39m [1mdist\loaded-C3OROMNV.css [22m[32m2.25 KB[39m
+[32mESM[39m [1mdist\rsc.css             [22m[32m2.93 KB[39m
+[32mESM[39m [1mdist\full-KJLMGEHR.css   [22m[32m8.13 KB[39m
+[32mESM[39m [1mdist\no-external.css     [22m[32m82.25 KB[39m
+[32mESM[39m [1mdist\chunk-FCL3H66D.mjs  [22m[32m752.00 B[39m
+[32mESM[39m ⚡️ Build success in 2792ms
+[32mDTS[39m ⚡️ Build success in 18666ms
+[32mDTS[39m [1mdist\internal.d.ts            [22m[32m1.07 KB[39m
+[32mDTS[39m [1mdist\rsc.d.ts                 [22m[32m1.07 KB[39m
+[32mDTS[39m [1mdist\index.d.ts               [22m[32m13.51 KB[39m
+[32mDTS[39m [1mdist\no-external.d.ts         [22m[32m2.60 KB[39m
+[32mDTS[39m [1mdist\walk-tree-B0daLMTo.d.ts  [22m[32m2.07 KB[39m
+[32mDTS[39m [1mdist\index-ChzC2dWL.d.ts      [22m[32m4.50 KB[39m
+[32mDTS[39m [1mdist\actions-DoHgjmRJ.d.ts    [22m[32m32.50 KB[39m
+[32mDTS[39m [1mdist\internal.d.mts           [22m[32m1.08 KB[39m
+[32mDTS[39m [1mdist\rsc.d.mts                [22m[32m1.07 KB[39m
+[32mDTS[39m [1mdist\index.d.mts              [22m[32m13.52 KB[39m
+[32mDTS[39m [1mdist\no-external.d.mts        [22m[32m2.61 KB[39m
+[32mDTS[39m [1mdist\walk-tree-BesD_kP_.d.mts [22m[32m2.07 KB[39m
+[32mDTS[39m [1mdist\index-nWVw-nlO.d.mts     [22m[32m4.50 KB[39m
+[32mDTS[39m [1mdist\actions-DoHgjmRJ.d.mts   [22m[32m32.50 KB[39m

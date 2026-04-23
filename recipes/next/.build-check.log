@@ -1,0 +1,35 @@
+
+> next-recipe@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+ ⨯ ESLint: Cannot read config file: C:\Users\Golden\Documents\Graduation_project\puck-editor\packages\eslint-config-custom\index.js Error: Cannot read properties of undefined (reading 'extends') Referenced from: C:\Users\Golden\Documents\Graduation_project\puck-editor\recipes\next\.eslintrc.js
+   Collecting page data ...
+   Generating static pages (0/7) ...
+   Generating static pages (1/7) 
+   Generating static pages (3/7) 
+   Generating static pages (5/7) 
+ ✓ Generating static pages (7/7)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    278 B           215 kB
+├ ○ /_not-found                          873 B          88.4 kB
+├ ○ /[...puckPath]                       278 B           215 kB
+├ ƒ /puck                                377 B           215 kB
+├ ƒ /puck/[...puckPath]                  377 B           215 kB
+└ ƒ /puck/api                            0 B                0 B
++ First Load JS shared by all            87.5 kB
+  ├ chunks/1dd3208c-5b4738d3d4623d4b.js  53.6 kB
+  ├ chunks/528-27b1d01611c4a3f9.js       31.7 kB
+  └ other shared chunks (total)          2.13 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

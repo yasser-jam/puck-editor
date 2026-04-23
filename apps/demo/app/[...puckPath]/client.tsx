@@ -5,7 +5,14 @@ import headingAnalyzer from "@/plugin-heading-analyzer/src/HeadingAnalyzer";
 import config from "../../config";
 import { useDemoData } from "../../lib/use-demo-data";
 import { useEffect, useMemo, useState } from "react";
-import { CircleHelp, Keyboard, MousePointer2, Type, X } from "lucide-react";
+import {
+  ArrowLeft,
+  CircleHelp,
+  Keyboard,
+  MousePointer2,
+  Type,
+  X,
+} from "lucide-react";
 import { settingsPlugin } from "../../config/plugins/settings";
 import { HtmlBlockPaletteSync } from "../../config/plugins/html-block-palette";
 import { ThemeInjector } from "../../config/plugins/settings/ThemeInjector";
@@ -85,7 +92,20 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
     }
   };
 
-  if (!isClient) return null;
+  if (!isClient) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          height: "100vh",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <p>Loading editor...</p>
+      </div>
+    );
+  }
 
   const params = new URL(window.location.href).searchParams;
 
@@ -357,6 +377,14 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
       <div>
         <h1>404</h1>
         <p>Page does not exist in session storage</p>
+        <div style={{ marginTop: 16, display: "flex", gap: 8 }}>
+          <Button href="/" icon={<ArrowLeft size={14} />}>
+            Back to dashboard
+          </Button>
+          <Button href="/edit" variant="secondary">
+            Open design studio
+          </Button>
+        </div>
       </div>
     </div>
   );
