@@ -221,16 +221,90 @@ body {
   box-shadow: 0 0 0 2px var(--puck-color-azure-04) inset !important;
 }
 
+.EditorHeaderBar {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .EditorHeaderActions {
+  background: linear-gradient(180deg, #0b2348, #0a1f3f);
+  border: 1px solid #1f3f72;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(10, 31, 63, 0.24);
   display: flex;
   align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+  margin-inline-start: 8px;
+  min-height: 48px;
+  padding: 7px 9px;
+  flex-shrink: 0;
+}
+
+.EditorHeaderMain {
+  align-items: center;
+  display: flex;
   gap: 8px;
+  min-width: 0;
+}
+
+.EditorHeaderBadge {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  color: #f8fafc;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 700;
+  gap: 6px;
+  height: 30px;
+  letter-spacing: 0.01em;
+  padding: 0 10px;
+}
+
+.EditorHeaderButtons {
+  align-items: center;
+  display: inline-flex;
+  gap: 8px;
+}
+
+.EditorHeaderButton {
+  border-radius: 10px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  height: 34px !important;
+  padding: 0 12px !important;
+}
+
+.EditorHeaderButton-ghost {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  color: #f8fafc !important;
+}
+
+.EditorHeaderButton-ghost:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.EditorHeaderButton-primary {
+  background: #ffffff !important;
+  border: 1px solid #d3e2fb !important;
+  color: #0f2b57 !important;
+}
+
+.EditorHeaderButton-primary:hover {
+  background: #eef5ff !important;
 }
 
 .EditorHeaderContext {
   align-items: center;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), #f8fbff);
-  border: 1px solid #dbe4f4;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #d3e2fb;
   border-radius: 999px;
   color: #334155;
   display: inline-flex;
@@ -635,6 +709,18 @@ body {
 }
 
 @media (max-width: 980px) {
+  .EditorHeaderBar {
+    gap: 6px;
+  }
+
+  .EditorHeaderActions {
+    margin-inline-start: 0;
+  }
+
+  .EditorHeaderBadge {
+    display: none;
+  }
+
   .EditorHeaderContext {
     display: none;
   }
@@ -645,6 +731,24 @@ body {
 }
 
 @media (max-width: 760px) {
+  .EditorHeaderBar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .EditorHeaderActions {
+    margin-inline-start: 0;
+    width: 100%;
+  }
+
+  .EditorHeaderButtons {
+    width: 100%;
+  }
+
+  .EditorHeaderButtons > * {
+    flex: 1 1 0;
+  }
+
   .EditorShortcutOverlay {
     padding: 10px;
   }

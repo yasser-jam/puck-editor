@@ -10,6 +10,7 @@ import {
   CircleHelp,
   Keyboard,
   MousePointer2,
+  Sparkles,
   Type,
   X,
 } from "lucide-react";
@@ -329,29 +330,33 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
               ),
             },
             headerActions: ({ children }) => (
-              <>
+              <div className="EditorHeaderBar">
+                {children}
                 <div className="EditorHeaderActions">
-                  <div className="EditorHeaderContext" title={`Editing ${path}`}>
-                    <span className="EditorHeaderContextLabel">Editing</span>
-                    <code className="EditorHeaderContextPath">{path}</code>
+                  <div className="EditorHeaderMain">
+                    <div className="EditorHeaderBadge">
+                      <Sparkles size={12} />
+                      Design studio
+                    </div>
+                    <div className="EditorHeaderContext" title={`Editing ${path}`}>
+                      <span className="EditorHeaderContextLabel">Editing</span>
+                      <code className="EditorHeaderContextPath">{path}</code>
+                    </div>
                   </div>
 
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => setShortcutDialogOpen(true)}
-                    icon={<CircleHelp size={14} />}
-                  >
-                    Shortcuts
-                  </Button>
-
-                  <Button href={path} newTab variant="secondary">
-                    View page
-                  </Button>
+                  <div className="EditorHeaderButtons">
+                    <Button
+                      type="button"
+                      className="EditorHeaderButton EditorHeaderButton-ghost"
+                      variant="secondary"
+                      onClick={() => setShortcutDialogOpen(true)}
+                      icon={<CircleHelp size={14} />}
+                    >
+                      Shortcuts
+                    </Button>
+                  </div>
                 </div>
-
-                {children}
-              </>
+              </div>
             ),
           }}
           metadata={metadata}
