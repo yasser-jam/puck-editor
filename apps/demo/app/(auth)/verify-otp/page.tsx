@@ -24,6 +24,7 @@ import { ArrowLeftIcon, ShieldCheckIcon } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import type { FormEvent } from "react"
 import { Suspense, useEffect, useRef, useState } from "react"
+import { addCookie } from "@/lib/cookies"
 
 function VerifyOtpForm() {
   const router = useRouter()
@@ -47,7 +48,8 @@ function VerifyOtpForm() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!phoneNumber) return
-    router.push("/")
+    addCookie("sooq-access-token", "mock-token")
+    router.push("/dashboard")
   }
 
   if (!phoneNumber) {

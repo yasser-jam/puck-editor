@@ -84,16 +84,22 @@ function Button({
       )}
       {...props}
     >
-      {showSpinner && (
-        <Loader2Icon
-          className={cn(
-            spinnerSizeClass[size ?? "default"],
-            "shrink-0 animate-spin"
+      {asChild ? (
+        children
+      ) : (
+        <>
+          {showSpinner && (
+            <Loader2Icon
+              className={cn(
+                spinnerSizeClass[size ?? "default"],
+                "shrink-0 animate-spin"
+              )}
+              aria-hidden
+            />
           )}
-          aria-hidden
-        />
+          {children}
+        </>
       )}
-      <>{children}</>
     </Comp>
   )
 }

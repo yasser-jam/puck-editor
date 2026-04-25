@@ -1,6 +1,7 @@
 import resolvePuckPath from "../../lib/resolve-puck-path";
 import { Metadata } from "next";
 import Client from "./client";
+import "@puckeditor/core/puck.css";
 export async function generateMetadata({
   params,
 }: {
