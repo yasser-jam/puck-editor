@@ -221,6 +221,53 @@ const getPreviewInitials = (value: string) => {
   return `${parts[0][0] ?? ""}${parts[1][0] ?? ""}`.toUpperCase();
 };
 
+const PREVIEW_DESCRIPTIONS: Partial<Record<PreviewKind, string>> = {
+  heading: "Adds a clear title or section heading.",
+  paragraph: "Adds supporting copy for shoppers to read.",
+  richText: "Adds formatted content with links and emphasis.",
+  button: "Adds a call-to-action link or button.",
+  image: "Adds one visual with simple sizing controls.",
+  imageGallery: "Adds a gallery for lookbooks or product details.",
+  video: "Embeds a video from a public URL.",
+  accordion: "Adds expandable FAQs or policy answers.",
+  section: "Adds a page band that can hold other blocks.",
+  layoutGrid: "Arranges blocks in columns.",
+  layoutFlex: "Arranges blocks in a flexible row or stack.",
+  sidebar: "Adds a side area for menus, filters, or promos.",
+  nav: "Adds a menu of links.",
+  productsGrid: "Shows products from a collection.",
+  productCard: "Shows one product with price and action.",
+  cart: "Shows cart items and checkout summary.",
+  checkout: "Shows checkout fields and order hints.",
+  searchMenu: "Adds a product search drawer.",
+  categoryMenu: "Adds a category browser.",
+  productInfo: "Shows product title, price, and stock details.",
+  orderHistory: "Shows customer orders.",
+  wishlist: "Shows saved products.",
+  testimonials: "Shows customer reviews.",
+  contactForm: "Collects customer questions.",
+  header: "Adds top navigation and brand controls.",
+  footer: "Adds bottom navigation and store links.",
+  drawerShell: "Adds a slide-out menu area.",
+  hero: "Adds a large opening promotion.",
+  stats: "Shows key numbers or trust signals.",
+  logos: "Shows partner or press logos.",
+  template: "Adds a reusable content template.",
+  space: "Adds controlled blank space.",
+};
+
+const getPreviewDescription = (
+  kind: PreviewKind,
+  metadata?: Record<string, unknown>
+) => {
+  const description =
+    metadata?.previewDescription ?? metadata?.description ?? metadata?.helpText;
+
+  return typeof description === "string" && description.trim()
+    ? description.trim()
+    : PREVIEW_DESCRIPTIONS[kind] ?? "Adds a ready-to-edit block.";
+};
+
 const createPreviewBody = (
   kind: PreviewKind,
   palette: PreviewPalette,
@@ -768,6 +815,14 @@ export const DrawerItemInner = ({
     | undefined;
 
   const previewKind = useMemo(() => getPreviewKind(name), [name]);
+  const previewDescription = useMemo(
+    () =>
+      getPreviewDescription(
+        previewKind,
+        componentConfig?.metadata as Record<string, unknown> | undefined
+      ),
+    [componentConfig?.metadata, previewKind]
+  );
 
   const livePreviewProps = useMemo(() => {
     if (!componentConfig) return null;
@@ -830,9 +885,12 @@ export const DrawerItemInner = ({
           </DrawerPreviewBoundary>
 
           <div className={getClassNameItem("previewCaption")}>
-            <span>{label ?? name}</span>
+            <span>
+              <strong>{label ?? name}</strong>
+              <small>{previewDescription}</small>
+            </span>
             <span className={getClassNameItem("previewSubCaption")}>
-              {showLivePreview ? "Live" : "Template"}
+              {showLivePreview ? "Real example" : "Example"}
             </span>
           </div>
         </div>

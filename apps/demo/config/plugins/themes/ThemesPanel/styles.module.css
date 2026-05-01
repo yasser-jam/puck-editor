@@ -11,6 +11,13 @@
   color: var(--puck-color-grey-05, #6b7280);
 }
 
+.ThemesPanel-intro {
+  margin: -4px 16px 12px;
+  color: var(--puck-color-grey-05, #6b7280);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .ThemesPanel-gallery {
   padding: 0 8px 12px;
 }
@@ -64,11 +71,12 @@
 }
 
 .ThemesPanel-swatch {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   flex-shrink: 0;
   border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0 0 0 8px rgba(255, 255, 255, 0.34);
 }
 
 .ThemesPanel-text {

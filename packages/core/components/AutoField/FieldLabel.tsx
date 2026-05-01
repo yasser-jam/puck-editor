@@ -12,6 +12,7 @@ export const FieldLabel = ({
   children,
   icon,
   label,
+  metadata,
   el = "label",
   readOnly,
   className,
@@ -19,11 +20,16 @@ export const FieldLabel = ({
   children?: ReactNode;
   icon?: ReactNode;
   label: string;
+  metadata?: Record<string, any>;
   el?: "label" | "div";
   readOnly?: boolean;
   className?: string;
 }) => {
   const El = el;
+  const helpText =
+    metadata?.helpText ?? metadata?.description ?? metadata?.helperText;
+  const example = metadata?.example;
+
   return (
     <El className={className}>
       <div className={getClassName("label")}>
@@ -36,6 +42,12 @@ export const FieldLabel = ({
           </div>
         )}
       </div>
+      {typeof helpText === "string" && helpText.trim() ? (
+        <div className={getClassName("help")}>{helpText.trim()}</div>
+      ) : null}
+      {typeof example === "string" && example.trim() ? (
+        <div className={getClassName("example")}>Example: {example.trim()}</div>
+      ) : null}
       {children}
     </El>
   );
@@ -45,6 +57,7 @@ export type FieldLabelPropsInternal = {
   children?: ReactNode;
   icon?: ReactNode;
   label?: string;
+  metadata?: Record<string, any>;
   el?: "label" | "div";
   readOnly?: boolean;
 };
@@ -53,6 +66,7 @@ export const FieldLabelInternal = ({
   children,
   icon,
   label,
+  metadata,
   el = "label",
   readOnly,
 }: FieldLabelPropsInternal) => {
@@ -71,6 +85,7 @@ export const FieldLabelInternal = ({
     <Wrapper
       label={label}
       icon={icon}
+      metadata={metadata}
       className={getClassName({ readOnly })}
       readOnly={readOnly}
       el={el}

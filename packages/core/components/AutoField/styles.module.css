@@ -23,6 +23,24 @@
   margin-inline-start: auto;
 }
 
+.Input-help {
+  color: var(--puck-color-grey-05);
+  font-size: 11px;
+  line-height: 1.45;
+  margin: -6px 0 10px;
+}
+
+.Input-example {
+  background: var(--puck-color-grey-12);
+  border: 1px solid var(--puck-color-grey-10);
+  border-radius: 6px;
+  color: var(--puck-color-grey-04);
+  font-size: 11px;
+  line-height: 1.4;
+  margin: -4px 0 10px;
+  padding: 6px 8px;
+}
+
 .Input-input {
   background: var(--puck-color-white);
   border-width: 1px;

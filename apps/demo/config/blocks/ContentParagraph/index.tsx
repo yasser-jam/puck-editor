@@ -33,7 +33,16 @@ export type ContentParagraphProps = WithLayout<{
 const ContentParagraphInner: ComponentConfig<ContentParagraphProps> = {
   label: "Paragraph",
   fields: {
-    text: { type: "textarea", contentEditable: true, label: "Text" },
+    text: {
+      type: "textarea",
+      contentEditable: true,
+      label: "Paragraph text",
+      metadata: {
+        helpText:
+          "Write the supporting message. One or two short sentences usually work best.",
+        example: "Discover pieces selected for comfort, quality, and everyday style.",
+      },
+    },
     textAlign: {
       type: "radio",
       label: "Text align",
@@ -74,7 +83,15 @@ const ContentParagraphInner: ComponentConfig<ContentParagraphProps> = {
         { label: "Capitalize", value: "capitalize" },
       ],
     },
-    maxWidth: { type: "text", label: "Max width (CSS)" },
+    maxWidth: {
+      type: "text",
+      label: "Text width",
+      metadata: {
+        helpText:
+          "Limit line length for easier reading. Use 'none' to let the text fill the space.",
+        example: "640px",
+      },
+    },
   },
   defaultProps: {
     text: "Paragraph text",

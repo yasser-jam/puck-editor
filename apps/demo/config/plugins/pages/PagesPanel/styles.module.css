@@ -13,6 +13,13 @@
   color: var(--puck-color-grey-05, #6b7280);
 }
 
+.PagesPanel-intro {
+  margin: -4px 16px 12px;
+  color: var(--puck-color-grey-05, #6b7280);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 /* ── Create form ───────────────────────────────────────────────────────────── */
 .PagesPanel-create {
   display: grid;

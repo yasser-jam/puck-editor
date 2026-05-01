@@ -340,6 +340,14 @@ export function ShopifyOutlinePanel() {
   return (
     <div className={getClassName()}>
       <div className={getClassName("scroll")}>
+        <div className={getClassName("guide")}>
+          <strong>Build your page in sections</strong>
+          <span>
+            Add a section, then drag content or store blocks inside it. Select
+            any row below to edit its settings.
+          </span>
+        </div>
+
         {(leftDrawerIndex >= 0 || rightDrawerIndex >= 0) && (
           <div className={getClassName("group")}>
             <div className={getClassName("groupHeader")}>Side Rails</div>

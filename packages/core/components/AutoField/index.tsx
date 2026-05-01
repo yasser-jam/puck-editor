@@ -60,6 +60,26 @@ const defaultFields = {
   richtext: RichtextField,
 };
 
+const DEFAULT_FIELD_HELP: Partial<Record<Field["type"], string>> = {
+  text: "Edit the visible text or value for this block.",
+  textarea: "Add longer copy. Keep it short if shoppers need to scan quickly.",
+  number: "Use a simple number. Changes update the preview immediately.",
+  select: "Choose one option from the list.",
+  radio: "Pick the option that best matches the layout you want.",
+  array: "Add, remove, duplicate, or reorder items in this list.",
+  object: "Edit this grouped set of related settings.",
+  external: "Search and choose content from the connected source.",
+  richtext: "Format text with headings, links, and emphasis.",
+  custom: "Use this custom control to adjust the block.",
+};
+
+const getFieldMetadata = (field: Field<any>) => {
+  if (field.metadata) return field.metadata as Record<string, any>;
+
+  const helpText = DEFAULT_FIELD_HELP[field.type];
+  return helpText ? { helpText } : undefined;
+};
+
 function AutoFieldInternal<
   ValueType = any,
   FieldType extends FieldNoLabel<ValueType> = FieldNoLabel<ValueType>
@@ -78,6 +98,7 @@ function AutoFieldInternal<
   const field = props.field as Field<ValueType>;
   const label = field.label;
   const labelIcon = field.labelIcon;
+  const metadata = getFieldMetadata(field);
 
   const defaultId = useSafeId();
   const resolvedId = id || defaultId;
@@ -106,17 +127,32 @@ function AutoFieldInternal<
     }
   });
 
+  const LabelWithMetadata = useCallback(
+    (labelProps: FieldLabelPropsInternal) => (
+      <Label {...labelProps} metadata={labelProps.metadata ?? metadata} />
+    ),
+    [Label, metadata]
+  );
+
   const mergedProps = useMemo(
     () => ({
       ...props,
       field,
       label,
       labelIcon,
-      Label,
+      Label: LabelWithMetadata,
       id: resolvedId,
       value: fieldValue,
     }),
-    [props, field, label, labelIcon, Label, resolvedId, fieldValue]
+    [
+      props,
+      field,
+      label,
+      labelIcon,
+      LabelWithMetadata,
+      resolvedId,
+      fieldValue,
+    ]
   );
 
   const onFocus = useCallback(

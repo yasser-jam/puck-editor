@@ -42,10 +42,23 @@ const Tag = ["h1", "h2", "h3", "h4", "h5", "h6"] as const;
 const ContentHeadingInner: ComponentConfig<ContentHeadingProps> = {
   label: "Heading",
   fields: {
-    text: { type: "textarea", contentEditable: true, label: "Text" },
+    text: {
+      type: "textarea",
+      contentEditable: true,
+      label: "Heading text",
+      metadata: {
+        helpText:
+          "Use a short, clear line that tells shoppers what this section is about.",
+        example: "New arrivals just landed",
+      },
+    },
     level: {
       type: "select",
-      label: "Level",
+      label: "Heading importance",
+      metadata: {
+        helpText:
+          "Use H1 for the main page title, H2 for major sections, and H3-H6 for smaller sub-sections.",
+      },
       options: [
         { label: "H1", value: "1" },
         { label: "H2", value: "2" },
@@ -58,6 +71,9 @@ const ContentHeadingInner: ComponentConfig<ContentHeadingProps> = {
     textAlign: {
       type: "radio",
       label: "Text align",
+      metadata: {
+        helpText: "Choose how the heading sits inside its section.",
+      },
       options: [
         { label: "Left", value: "left" },
         { label: "Center", value: "center" },

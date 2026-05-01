@@ -19,6 +19,8 @@ import {
 import type { Data } from "@/core";
 import {
   DEFAULT_SECTION_NAME,
+  createStarterHeadingBlock,
+  createStarterTextBlock,
   createSectionStarterContent,
 } from "../../blocks/Section/starter-data";
 
@@ -105,6 +107,69 @@ const section = (
     name: DEFAULT_SECTION_NAME,
     content: createSectionStarterContent(),
     ...overrides,
+  },
+});
+
+const productGridBlock = () => ({
+  type: "ProductsGrid",
+  props: {
+    collection: "Featured",
+    columns: "3",
+    maxRows: "2",
+    gap: "md",
+    cardVariant: "vertical",
+  },
+});
+
+const categoryMenuBlock = () => ({
+  type: "CategoryListMenu",
+  props: {
+    buttonLabel: "Browse categories",
+    categoriesMenuTitle: "Shop by category",
+    backLabel: "Back to categories",
+    maxProducts: 24,
+  },
+});
+
+const orderHistoryBlock = () => ({
+  type: "OrderHistory",
+  props: {
+    limit: 5,
+    currency: "SYP",
+    statusFilter: "all",
+    showThumbnails: true,
+    emptyStateText: "You have no orders yet.",
+  },
+});
+
+const wishlistBlock = () => ({
+  type: "Wishlist",
+  props: {
+    columns: 3,
+    gap: "md",
+    currency: "SYP",
+    showAddToCart: true,
+    ctaLabel: "Add to cart",
+    emptyStateText: "Your wishlist is empty.",
+  },
+});
+
+const contactFormBlock = () => ({
+  type: "ContactForm",
+  props: {
+    title: { ar: "تواصل معنا", en: "Get in touch" },
+    subtitle: {
+      ar: "سنرد خلال يوم عمل واحد.",
+      en: "We'll reply within one business day.",
+    },
+    language: "ar",
+    showPhone: true,
+    requirePhone: false,
+    showSubject: true,
+    submitLabel: "إرسال",
+    successMessage: "شكراً — تم إرسال رسالتك.",
+    enableCaptcha: true,
+    submitWidth: "auto",
   },
 });
 
@@ -212,10 +277,7 @@ export const sectionCatalog: SectionPreset[] = [
               ],
             },
           },
-          {
-            type: "ContentHeading",
-            props: {},
-          },
+          createStarterHeadingBlock("Sidebar content area"),
         ],
       },
     }),
@@ -277,10 +339,7 @@ export const sectionCatalog: SectionPreset[] = [
         paddingTop: "48px",
         paddingBottom: "48px",
         content: [
-          {
-            type: "ProductsGrid",
-            props: {},
-          },
+          productGridBlock(),
         ],
       },
     }),
@@ -297,10 +356,7 @@ export const sectionCatalog: SectionPreset[] = [
       props: {
         ...SECTION_BASE_PROPS,
         content: [
-          {
-            type: "CategoryListMenu",
-            props: {},
-          },
+          categoryMenuBlock(),
         ],
       },
     }),
@@ -320,10 +376,7 @@ export const sectionCatalog: SectionPreset[] = [
         ...SECTION_BASE_PROPS,
         maxWidth: "960px",
         content: [
-          {
-            type: "OrderHistory",
-            props: {},
-          },
+          orderHistoryBlock(),
         ],
       },
     }),
@@ -340,10 +393,7 @@ export const sectionCatalog: SectionPreset[] = [
       props: {
         ...SECTION_BASE_PROPS,
         content: [
-          {
-            type: "Wishlist",
-            props: {},
-          },
+          wishlistBlock(),
         ],
       },
     }),
@@ -365,7 +415,15 @@ export const sectionCatalog: SectionPreset[] = [
         content: [
           {
             type: "Testimonials",
-            props: {},
+            props: {
+              source: "inline",
+              layoutVariant: "grid",
+              columns: 3,
+              language: "ar",
+              showRating: true,
+              showAvatars: true,
+              itemCount: 3,
+            },
           },
         ],
       },
@@ -384,10 +442,7 @@ export const sectionCatalog: SectionPreset[] = [
         ...SECTION_BASE_PROPS,
         maxWidth: "768px",
         content: [
-          {
-            type: "ContactForm",
-            props: {},
-          },
+          contactFormBlock(),
         ],
       },
     }),
@@ -409,14 +464,10 @@ export const sectionCatalog: SectionPreset[] = [
         paddingTop: "48px",
         paddingBottom: "48px",
         content: [
-          {
-            type: "ContentHeading",
-            props: {},
-          },
-          {
-            type: "ContentParagraph",
-            props: {},
-          },
+          createStarterHeadingBlock("Tell your brand story"),
+          createStarterTextBlock(
+            "Use this section for shipping notes, brand values, product care, or a short campaign message."
+          ),
         ],
       },
     }),
@@ -437,7 +488,24 @@ export const sectionCatalog: SectionPreset[] = [
         content: [
           {
             type: "Accordion",
-            props: {},
+            props: {
+              heading: "Frequently asked questions",
+              description:
+                "Answer the questions shoppers ask before they buy.",
+              variant: "soft",
+              items: [
+                {
+                  title: "How long does delivery take?",
+                  body: "Most orders are prepared quickly and delivered according to the shipping method selected at checkout.",
+                  open: true,
+                },
+                {
+                  title: "Can I return an item?",
+                  body: "Yes. Explain your return window and any product conditions here.",
+                  open: false,
+                },
+              ],
+            },
           },
         ],
       },
@@ -457,7 +525,25 @@ export const sectionCatalog: SectionPreset[] = [
         content: [
           {
             type: "ImageGallery",
-            props: {},
+            props: {
+              images: [
+                {
+                  src: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&q=80",
+                  alt: "Store display",
+                },
+                {
+                  src: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80",
+                  alt: "Styled product look",
+                },
+                {
+                  src: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80",
+                  alt: "Lifestyle detail",
+                },
+              ],
+              columns: 3,
+              gap: "16px",
+              radius: "16px",
+            },
           },
         ],
       },

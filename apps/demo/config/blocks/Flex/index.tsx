@@ -4,6 +4,7 @@ import styles from "./styles.module.css";
 import { getClassNameFactory } from "@/core/lib";
 import { Section } from "../../components/Section";
 import { WithLayout, withLayout } from "../../components/Layout";
+import { createLayoutStarterContent } from "../Section/starter-data";
 
 const getClassName = getClassNameFactory("Flex", styles);
 
@@ -59,7 +60,7 @@ const FlexInternal: ComponentConfig<FlexProps> = {
     layout: {
       grow: true,
     },
-    items: [],
+    items: createLayoutStarterContent(),
   },
   render: ({ justifyContent, direction, gap, wrap, items: Items }) => {
     return (

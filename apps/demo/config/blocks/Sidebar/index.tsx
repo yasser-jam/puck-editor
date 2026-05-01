@@ -7,6 +7,7 @@ import {
   pickLang,
   type BilingualString,
 } from "../../fields/BilingualText";
+import { createSidebarStarterContent } from "../Section/starter-data";
 import styles from "./styles.module.css";
 
 const getClassName = getClassNameFactory("Sidebar", styles);
@@ -161,7 +162,7 @@ const SidebarInternal: ComponentConfig<SidebarProps> = {
       // The sidebar is a column, not a full-width band.
       grow: false,
     },
-    items: [],
+    items: createSidebarStarterContent(),
   },
   render: ({
     title,

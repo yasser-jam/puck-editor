@@ -4,6 +4,7 @@ import styles from "./styles.module.css";
 import { getClassNameFactory } from "@/core/lib";
 import { Section } from "../../components/Section";
 import { withLayout } from "../../components/Layout";
+import { createLayoutStarterContent } from "../Section/starter-data";
 
 const getClassName = getClassNameFactory("Grid", styles);
 
@@ -37,7 +38,7 @@ export const GridInternal: ComponentConfig<GridProps> = {
   defaultProps: {
     numColumns: 4,
     gap: 24,
-    items: [],
+    items: createLayoutStarterContent(),
   },
   render: ({ gap, numColumns, items: Items }) => {
     return (

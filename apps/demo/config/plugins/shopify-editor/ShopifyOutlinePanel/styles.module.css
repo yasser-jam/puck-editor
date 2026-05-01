@@ -17,6 +17,24 @@
   padding: 6px 0 10px;
 }
 
+.ShopifyOutlinePanel-guide {
+  display: grid;
+  gap: 4px;
+  margin: 8px;
+  padding: 12px;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #eff6ff, #ffffff);
+  color: #1e3a8a;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ShopifyOutlinePanel-guide strong {
+  color: #172554;
+  font-size: 13px;
+}
+
 .ShopifyOutlinePanel-group {
   border-bottom: 1px solid #f3f4f6;
 }

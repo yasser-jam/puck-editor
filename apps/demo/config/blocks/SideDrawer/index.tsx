@@ -25,6 +25,7 @@ import {
   EMPTY_LINK,
   type LinkValue,
 } from "../../fields/LinkField";
+import { createStarterTextBlock } from "../Section/starter-data";
 import styles from "./styles.module.css";
 
 const getClassName = getClassNameFactory("SideDrawer", styles);
@@ -336,7 +337,11 @@ const SideDrawerInternal: ComponentConfig<SideDrawerProps> = {
         link: { kind: "page", pageId: "/cart" } as LinkValue,
       },
     ],
-    items: [],
+    items: [
+      createStarterTextBlock(
+        "Add menu links, a short promotion, or account actions inside this drawer."
+      ),
+    ],
   },
   render: ({
     name,

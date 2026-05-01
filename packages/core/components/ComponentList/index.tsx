@@ -171,8 +171,8 @@ const ComponentList = ({
                 clearSearch();
               }
             }}
-            placeholder="Find block by name or type"
-            aria-label="Find block"
+            placeholder="Search blocks, e.g. product, heading, image"
+            aria-label="Search blocks"
           />
 
           {query ? (
@@ -190,7 +190,11 @@ const ComponentList = ({
       ) : null}
 
       {canSearch ? (
-        <div className={getClassName("meta")}>{`${matchedCount} of ${totalCount} blocks`}</div>
+        <div className={getClassName("meta")}>
+          {query
+            ? `${matchedCount} matching block${matchedCount === 1 ? "" : "s"}`
+            : `${totalCount} ready-to-use blocks`}
+        </div>
       ) : null}
 
       <div className={getClassName("content")}>
@@ -210,7 +214,7 @@ const ComponentList = ({
         {canSearch && componentEntries.length === 0 ? (
           <div className={getClassName("empty")}>
             {query
-              ? `No blocks match "${query.trim()}".`
+              ? `No blocks match "${query.trim()}". Try words like product, image, text, or section.`
               : "No blocks match your search."}
           </div>
         ) : null}

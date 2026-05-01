@@ -105,6 +105,9 @@ const ProductsGridInner: ComponentConfig<ProductsGridProps> = {
     collection: {
       type: "select",
       label: "Collection",
+      metadata: {
+        helpText: "Choose which product group should appear in this grid.",
+      },
       options: allCollections.map((name) => ({ label: name, value: name })),
     },
     columns: {
@@ -115,6 +118,10 @@ const ProductsGridInner: ComponentConfig<ProductsGridProps> = {
     maxRows: {
       type: "select",
       label: "Rows",
+      metadata: {
+        helpText:
+          "Limit the grid height. Use all rows for collection pages and fewer rows for home page sections.",
+      },
       options: rowOptions,
     },
     gap: {

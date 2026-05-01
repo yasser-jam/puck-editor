@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useMemo, useState } from "react";
 
 import styles from "./HeadingAnalyzer.module.css";
 
@@ -105,6 +105,24 @@ const usePuck = createUsePuck();
 export const HeadingAnalyzer = () => {
   const data = usePuck((s) => s.appState.data);
   const [hierarchy, setHierarchy] = useState<Block[]>([]);
+  const summary = useMemo(() => {
+    const flattened: Block[] = [];
+    const visit = (blocks: Block[]) => {
+      blocks.forEach((block) => {
+        flattened.push(block);
+        if (block.children) visit(block.children);
+      });
+    };
+
+    visit(hierarchy);
+
+    return {
+      headingCount: flattened.filter((block) => !block.missing).length,
+      missingCount: flattened.filter((block) => block.missing).length,
+      h1Count: flattened.filter((block) => !block.missing && block.rank === 1)
+        .length,
+    };
+  }, [hierarchy]);
 
   // Re-render when content changes
   useEffect(() => {
@@ -168,7 +186,32 @@ export const HeadingAnalyzer = () => {
         .
       </small>
 
-      {hierarchy.length === 0 && <div>No headings.</div>}
+      <div className={getClassName("intro")}>
+        <strong>Heading audit</strong>
+        <span>
+          Use one H1 for the page title, then H2 and H3 headings to organize
+          sections. Click any heading below to highlight it on the canvas.
+        </span>
+      </div>
+
+      <div className={getClassName("summary")}>
+        <span>{summary.headingCount} headings</span>
+        <span>{summary.h1Count === 1 ? "1 H1" : `${summary.h1Count} H1s`}</span>
+        <span>
+          {summary.missingCount === 0
+            ? "No gaps"
+            : `${summary.missingCount} level gap${
+                summary.missingCount === 1 ? "" : "s"
+              }`}
+        </span>
+      </div>
+
+      {hierarchy.length === 0 && (
+        <div className={getClassName("empty")}>
+          No headings yet. Add a Heading block so visitors and search engines
+          understand the page.
+        </div>
+      )}
 
       <OutlineList>
         <ReactFromJSON<{

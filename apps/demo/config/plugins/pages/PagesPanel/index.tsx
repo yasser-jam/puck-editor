@@ -74,7 +74,17 @@ const createStarterPageData = (title: string): UserData => {
         props: {
           id: `Section-${nonce}`,
           name: DEFAULT_SECTION_NAME,
-          content: starterContent,
+          anchorId: "",
+          visible: true,
+          paddingTop: "80px",
+          paddingBottom: "80px",
+          paddingHorizontal: "24px",
+          backgroundColor: "#ffffff",
+          theme: "dark",
+          maxWidth: "1280px",
+          columns: 1,
+          gridGap: "24px",
+          content: starterContent as any,
         },
       },
     ],
@@ -206,9 +216,13 @@ export function PagesPanel() {
   return (
     <div className={getClassName()}>
       <div className={getClassName("header")}>Pages</div>
+      <p className={getClassName("intro")}>
+        Manage the pages shoppers can visit. New pages start with a ready-made
+        section so you never land on a blank canvas.
+      </p>
 
       <form className={getClassName("create")} onSubmit={handleCreatePage}>
-        <div className={getClassName("createHeader")}>Add page</div>
+        <div className={getClassName("createHeader")}>Add a page</div>
 
         <label className={getClassName("fieldLabel")}>
           <span>Label</span>

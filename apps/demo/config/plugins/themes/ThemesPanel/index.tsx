@@ -17,6 +17,10 @@ export function ThemesPanel() {
   return (
     <div className={getClassName()}>
       <div className={getClassName("header")}>Themes</div>
+      <p className={getClassName("intro")}>
+        Try a complete visual direction. Open a preset, then adjust fonts and
+        colors in Settings if you want a custom finish.
+      </p>
 
       <div className={getClassName("gallery")}>
         <a href="/themes/edit" className={getClassName("galleryLink")}>

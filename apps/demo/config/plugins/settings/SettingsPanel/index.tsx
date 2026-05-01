@@ -237,6 +237,14 @@ export function SettingsPanel() {
 
   return (
     <div className={getClassName()}>
+      <div className={getClassName("intro")}>
+        <strong>Store design settings</strong>
+        <span>
+          These choices update the whole preview. Start with language, fonts,
+          and colors, then fine-tune spacing only when needed.
+        </span>
+      </div>
+
       {/* ── Tab bar ── */}
       <div className={getClassName("tabs")}>
         <button

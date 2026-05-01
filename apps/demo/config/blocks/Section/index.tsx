@@ -90,6 +90,11 @@ const SectionInner: ComponentConfig<SectionProps> = {
       type: "text",
       label: "Section name (shown in outline)",
       placeholder: "e.g. Hero, Featured products",
+      metadata: {
+        helpText:
+          "A friendly name helps you find this section quickly in the left outline.",
+        example: "Featured products",
+      },
     },
     anchorId: {
       type: "text",
@@ -100,6 +105,10 @@ const SectionInner: ComponentConfig<SectionProps> = {
     visible: {
       type: "radio",
       label: "Visibility",
+      metadata: {
+        helpText:
+          "Hide a section when you want to keep working on it without publishing it.",
+      },
       options: [
         { label: "Visible", value: true },
         { label: "Hidden", value: false },
@@ -109,17 +118,26 @@ const SectionInner: ComponentConfig<SectionProps> = {
     // ── Spacing ──────────────────────────────────────────────────────────
     paddingTop: {
       type: "select",
-      label: "Padding Top",
+      label: "Space above",
+      metadata: {
+        helpText: "Controls the breathing room at the top of this section.",
+      },
       options: [{ label: "0px", value: "0px" }, ...spacingOptions],
     },
     paddingBottom: {
       type: "select",
-      label: "Padding Bottom",
+      label: "Space below",
+      metadata: {
+        helpText: "Controls the breathing room below this section.",
+      },
       options: [{ label: "0px", value: "0px" }, ...spacingOptions],
     },
     paddingHorizontal: {
       type: "select",
-      label: "Padding Horizontal",
+      label: "Side spacing",
+      metadata: {
+        helpText: "Adds room on the left and right, useful on mobile screens.",
+      },
       options: [{ label: "0px", value: "0px" }, ...spacingOptions],
     },
 
@@ -148,6 +166,9 @@ const SectionInner: ComponentConfig<SectionProps> = {
     columns: {
       type: "select",
       label: "Grid columns",
+      metadata: {
+        helpText: "Split section content into simple columns.",
+      },
       options: columnOptions,
     },
     gridGap: {
