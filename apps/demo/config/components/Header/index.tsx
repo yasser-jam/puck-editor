@@ -1,3 +1,4 @@
+"use client";
 import React, { CSSProperties } from "react";
 import classnames from "classnames";
 import { Menu, Filter, ShoppingCart, User } from "lucide-react";

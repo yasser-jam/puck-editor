@@ -1,7 +1,7 @@
+"use client";
 import { RefObject, useCallback, useEffect, useState } from "react";
 import { DragAxis } from "../../../types";
 import { useAppStore } from "../../../store";
-
 const GRID_DRAG_AXIS: DragAxis = "dynamic";
 const FLEX_ROW_DRAG_AXIS: DragAxis = "x";
 const DEFAULT_DRAG_AXIS: DragAxis = "y";

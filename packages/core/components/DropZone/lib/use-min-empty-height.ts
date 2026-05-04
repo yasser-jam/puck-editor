@@ -1,9 +1,9 @@
+"use client";
 import { CSSProperties, RefObject, useEffect, useRef, useState } from "react";
 import { ZoneStoreContext } from "./../context";
 import { useContextStore } from "../../../lib/use-context-store";
 import { AppStoreApi, useAppStoreApi } from "../../../store";
 import { useOnDragFinished } from "../../../lib/dnd/use-on-drag-finished";
-
 const getNumItems = (appStore: AppStoreApi, zoneCompound: string) =>
   appStore.getState().state.indexes.zones[zoneCompound].contentIds.length;
 
@@ -16,6 +16,7 @@ export const useMinEmptyHeight = ({
   userMinEmptyHeight: CSSProperties["minHeight"] | number;
   ref: RefObject<HTMLDivElement | null>;
 }) => {
+  'use client';
   const appStore = useAppStoreApi();
   const [prevHeight, setPrevHeight] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);

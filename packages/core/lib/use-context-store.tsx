@@ -1,3 +1,4 @@
+"use client";
 import { Context, createContext, ReactNode, useContext, useState } from "react";
 import { createStore, StoreApi, useStore } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";

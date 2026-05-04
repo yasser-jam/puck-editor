@@ -1,3 +1,4 @@
+"use client";
 import styles from "./styles.module.css";
 import getClassNameFactory from "../../lib/get-class-name-factory";
 import { DragIcon } from "../DragIcon";
@@ -18,7 +19,6 @@ import { useSafeId } from "../../lib/use-safe-id";
 import { useDraggable, useDroppable } from "@dnd-kit/react";
 import { useAppStore } from "../../store";
 import type { Field, PuckContext } from "../../types";
-
 const getClassName = getClassNameFactory("Drawer", styles);
 const getClassNameItem = getClassNameFactory("DrawerItem", styles);
 

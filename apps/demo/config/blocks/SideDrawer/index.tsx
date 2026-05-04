@@ -1,3 +1,4 @@
+"use client";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -27,7 +28,6 @@ import {
 } from "../../fields/LinkField";
 import { createStarterTextBlock } from "../Section/starter-data";
 import styles from "./styles.module.css";
-
 const getClassName = getClassNameFactory("SideDrawer", styles);
 
 /**

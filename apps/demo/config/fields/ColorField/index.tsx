@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useMemo } from "react";
 import { FieldLabel } from "@/core";
 import { Palette, RotateCcw } from "lucide-react";

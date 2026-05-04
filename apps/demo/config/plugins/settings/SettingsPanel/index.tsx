@@ -1,3 +1,4 @@
+"use client";
 import React, { useRef, useState } from "react";
 import { AutoField } from "@/core";
 import { useAppStore } from "@/core/store";

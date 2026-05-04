@@ -1,3 +1,4 @@
+"use client";
 import { Preview } from "./../context";
 import { useContext, useEffect, useState } from "react";
 import { useRenderedCallback } from "../../../lib/dnd/use-rendered-callback";
@@ -5,7 +6,6 @@ import { insert } from "../../../lib/data/insert";
 import { ZoneStoreContext } from "../context";
 import { useContextStore } from "../../../lib/use-context-store";
 import { useAppStore } from "../../../store";
-
 export const useContentIdsWithPreview = (
   contentIds: string[],
   zoneCompound: string

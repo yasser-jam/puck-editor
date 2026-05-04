@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useMemo, useState } from "react";
 import { Globe, FileText, Hash, Link as LinkIcon } from "lucide-react";
 import { AutoField, FieldLabel, type CustomField } from "@/core";
@@ -7,7 +8,6 @@ import {
   getAllPages,
 } from "../../pages";
 import styles from "./styles.module.css";
-
 const getClassName = getClassNameFactory("LinkField", styles);
 
 // ─── Types ──────────────────────────────────────────────────────────────────

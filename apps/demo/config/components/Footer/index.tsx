@@ -1,5 +1,4 @@
 "use client";
-
 import React, { ReactNode, createContext, useContext } from "react";
 import { Section } from "../Section";
 import type { ShellVariant } from "../../theme";

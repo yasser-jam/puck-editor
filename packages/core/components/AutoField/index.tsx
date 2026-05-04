@@ -1,3 +1,4 @@
+"use client";
 import getClassNameFactory from "../../lib/get-class-name-factory";
 import { Field, FieldProps } from "../../types";
 

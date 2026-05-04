@@ -1,3 +1,5 @@
+"use client";
+
 import { DragDropProvider } from "@dnd-kit/react";
 import { useAppStore, useAppStoreApi } from "../../store";
 import {

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { PointerSensor } from "@dnd-kit/react";
 import { isElement } from "@dnd-kit/dom/utilities";
 import { type Distance } from "@dnd-kit/geometry";
-
 export interface DelayConstraint {
   value: number;
   tolerance: Distance;

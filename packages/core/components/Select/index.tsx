@@ -1,3 +1,4 @@
+"use client";
 import styles from "./styles.module.css";
 import { ReactNode, useState } from "react";
 import {
@@ -8,7 +9,6 @@ import {
 } from "@radix-ui/react-popover";
 import { ChevronDown } from "lucide-react";
 import { getClassNameFactory } from "../../lib";
-
 const getClassName = getClassNameFactory("Select", styles);
 const getItemClassName = getClassNameFactory("SelectItem", styles);
 

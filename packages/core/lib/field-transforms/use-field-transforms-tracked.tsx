@@ -1,5 +1,4 @@
 "use client";
-
 import { ComponentData, Config } from "../../types";
 import { useMemo, useRef } from "react";
 import { mapFields, Mappers } from "../data/map-fields";

@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import config, { componentKey } from "../config";
 import { initialData } from "../config/initial-data";

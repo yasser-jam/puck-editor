@@ -1,6 +1,6 @@
+"use client";
 import React, { useState } from "react";
 import { generateId } from "./generate-id";
-
 export const useSafeId = () => {
   if (typeof React.useId !== "undefined") {
     // eslint-disable-next-line react-hooks/rules-of-hooks

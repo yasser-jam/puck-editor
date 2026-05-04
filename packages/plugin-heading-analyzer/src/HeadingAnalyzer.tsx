@@ -1,3 +1,4 @@
+"use client";
 import { ReactElement, useEffect, useMemo, useState } from "react";
 
 import styles from "./HeadingAnalyzer.module.css";

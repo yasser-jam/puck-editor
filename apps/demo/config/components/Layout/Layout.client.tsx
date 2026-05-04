@@ -1,5 +1,3 @@
-"use client";
-
 import { CSSProperties, forwardRef } from "react";
 import { useAppStore } from "@/core/store";
 import { getClassNameFactory } from "@/core/lib";

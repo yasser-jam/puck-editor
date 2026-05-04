@@ -1,5 +1,4 @@
 "use client";
-
 import React, { CSSProperties, useCallback, useMemo, useState } from "react";
 import {
   cloneMockCartItems,

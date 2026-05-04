@@ -2,7 +2,6 @@ import { ReactNode, useEffect, useState } from "react";
 import getClassNameFactory from "../../lib/get-class-name-factory";
 import styles from "./styles.module.css";
 import { createPortal } from "react-dom";
-
 const getClassName = getClassNameFactory("Modal", styles);
 
 export const Modal = ({

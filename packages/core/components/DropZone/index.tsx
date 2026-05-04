@@ -1,3 +1,4 @@
+"use client";
 import {
   CSSProperties,
   forwardRef,
@@ -31,7 +32,6 @@ import {
   PuckContext,
   WithPuckProps,
 } from "../../types";
-
 import { useDroppable, UseDroppableInput } from "@dnd-kit/react";
 import { DrawerItemInner } from "../Drawer";
 import { pointerIntersection } from "@dnd-kit/collision";

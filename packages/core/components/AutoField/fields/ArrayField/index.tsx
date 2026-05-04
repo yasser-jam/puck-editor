@@ -1,3 +1,4 @@
+"use client";
 import getClassNameFactory from "../../../../lib/get-class-name-factory";
 import styles from "./styles.module.css";
 import { Copy, List, Plus, Trash } from "lucide-react";

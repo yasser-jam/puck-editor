@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from "react";
 import { AutoField, Button, createUsePuck, FieldLabel, walkTree } from "@/core";

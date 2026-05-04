@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useContext } from "react";
 import { EditorState } from "../../RichTextEditor/types";
 import type { Editor } from "@tiptap/react";

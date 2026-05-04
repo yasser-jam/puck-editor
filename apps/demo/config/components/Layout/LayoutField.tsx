@@ -1,5 +1,3 @@
-"use client";
-
 import { ChangeEvent, useId } from "react";
 import { getClassNameFactory } from "@/core/lib";
 import styles from "./styles.module.css";

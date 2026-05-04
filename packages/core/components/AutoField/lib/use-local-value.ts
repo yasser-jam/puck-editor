@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useDeepField } from "./use-deep-field";
 import { useIsFocused } from "./use-is-focused";
-
 export const useLocalValue = (path: string, onChange: (val: any) => void) => {
   const value = useDeepField(path);
   const isFocused = useIsFocused(path);

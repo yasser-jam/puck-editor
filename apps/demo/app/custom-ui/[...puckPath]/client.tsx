@@ -1,7 +1,6 @@
+"use client";
 // Disable rules of hooks as they are regularly used inside render functions
 /* eslint-disable react-hooks/rules-of-hooks */
-
-"use client";
 
 import {
   ActionBar,

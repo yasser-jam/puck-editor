@@ -1,5 +1,3 @@
-"use client";
-
 import { Render } from "@/core/bundle/rsc";
 import type { Config } from "@/core";
 import type { Metadata } from "@/core/types";

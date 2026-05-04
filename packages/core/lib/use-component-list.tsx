@@ -1,7 +1,7 @@
+"use client";
 import { ReactNode, useEffect, useState } from "react";
 import { ComponentList } from "../components/ComponentList";
 import { useAppStore } from "../store";
-
 export const useComponentList = () => {
   const [componentList, setComponentList] = useState<ReactNode[]>();
   const config = useAppStore((s) => s.config);

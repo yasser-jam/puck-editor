@@ -1,8 +1,8 @@
+"use client";
 import { ReactNode, SyntheticEvent, useState } from "react";
 import styles from "./IconButton.module.css";
 import getClassNameFactory from "../../lib/get-class-name-factory";
 import { Loader } from "../Loader";
-
 const getClassName = getClassNameFactory("IconButton", styles);
 
 export const IconButton = ({

@@ -17,7 +17,6 @@ import {
 import type { Editor as TipTapEditor, JSONContent } from "@tiptap/react";
 import { getSelectorForId } from "../../get-selector-for-id";
 import { RichtextField, UiState } from "../../../types";
-
 const Editor = lazy(() =>
   import("../../../components/RichTextEditor/components/Editor").then((m) => ({
     default: m.Editor,
