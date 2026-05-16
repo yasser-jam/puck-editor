@@ -231,7 +231,7 @@ export const createAppStore = (initialAppStore?: Partial<AppStore>) =>
         set({
           pendingLoadTimeouts: {
             ...pendingLoadTimeouts,
-            [id]: timeout,
+            [loadId]: timeout,
           },
         });
 
