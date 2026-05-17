@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   FileText,
   Home,
@@ -158,10 +158,10 @@ export function PagesPanel() {
     };
   }, [refreshPages]);
 
-  const currentPage =
-    typeof window === "undefined"
-      ? undefined
-      : matchCurrentPage(window.location.pathname, pages);
+  const currentPage = useMemo(() => {
+    if (typeof window === "undefined") return undefined;
+    return matchCurrentPage(window.location.pathname, pages);
+  }, [pages]);
 
   const handleCreatePage: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
