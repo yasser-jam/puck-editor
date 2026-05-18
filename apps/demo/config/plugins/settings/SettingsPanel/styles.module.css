@@ -28,29 +28,34 @@
   display: flex;
   border-bottom: 1px solid var(--puck-color-grey-10, #e5e7eb);
   flex-shrink: 0;
-  padding: 0 8px;
+  padding: 0 10px;
+  gap: 4px;
+  overflow-x: auto;
 }
 
 .SettingsPanel-tab {
   position: relative;
-  padding: 10px 12px;
+  padding: 10px 14px;
   font-size: 12px;
   font-weight: 500;
   color: var(--puck-color-grey-05, #6b7280);
-  background: none;
-  border: none;
+  background: transparent;
+  border: 0;
   cursor: pointer;
-  transition: color 0.15s;
+  transition: color 0.15s, background-color 0.15s;
   white-space: nowrap;
+  border-radius: 999px 999px 0 0;
 }
 
 .SettingsPanel-tab:hover {
   color: var(--puck-color-grey-02, #111827);
+  background: rgba(59, 130, 246, 0.05);
 }
 
 .SettingsPanel-tab--active {
   color: var(--puck-color-azure-04, #3b82f6);
   font-weight: 600;
+  background: rgba(59, 130, 246, 0.08);
 }
 
 .SettingsPanel-tab--active::after {
@@ -95,6 +100,25 @@
   line-height: 1.45;
   color: var(--puck-color-grey-05, #6b7280);
   margin: -4px 0 14px;
+}
+
+.SettingsPanel-appGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 640px) {
+  .SettingsPanel-appGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.SettingsPanel-fieldError {
+  margin-top: 6px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #b45309;
 }
 
 /* ── Individual field wrapper ───────────────────────────────────────────────── */

@@ -240,7 +240,7 @@ const SectionInner: ComponentConfig<SectionProps> = {
           paddingTop,
           paddingBottom,
           backgroundColor,
-          color: theme === "light" ? "#ffffff" : "inherit",
+          color: theme === "dark" ? "#ffffff" : "inherit",
           opacity: isHidden ? 0.35 : undefined,
           position: "relative",
         }}

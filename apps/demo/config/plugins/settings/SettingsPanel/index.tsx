@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { AutoField } from "@/core";
 import { useAppStore } from "@/core/store";
 import { getClassNameFactory } from "@/core/lib";
+import type { AppConfigProps } from "../../../root";
 import {
   FONT_OPTIONS,
   getFontCssValue,
@@ -139,13 +140,14 @@ function ColorCard({
 /** Root props stored in page data (theme + editor toggles not on FullThemeProps). */
 type SettingsRootProps = Partial<FullThemeProps> & {
   enableHtmlRichTextBlock?: boolean;
+  app?: AppConfigProps;
   // SOOQ locale (DSN-001 / CUR module). Defaults: rtl / ar / SYP.
   direction?: "rtl" | "ltr";
   language?: "ar" | "en";
   currency?: "SYP" | "USD" | "EUR";
 };
 
-type Tab = "locale" | "fonts" | "colors" | "look" | "scales" | "editor";
+type Tab = "app" | "locale" | "fonts" | "colors" | "look" | "scales" | "editor";
 
 const DIRECTION_OPTIONS = [
   { label: "RTL (Arabic)", value: "rtl" },
@@ -162,6 +164,30 @@ const CURRENCY_OPTIONS = [
   { label: "US Dollar (USD)", value: "USD" },
   { label: "Euro (EUR)", value: "EUR" },
 ];
+
+const DEFAULT_APP: Required<AppConfigProps> = {
+  name: "App",
+  bundleId: "",
+  apiBaseUrl: "https://sooq.up.railway.app",
+  tenantId: "",
+  tenantSlug: "",
+};
+
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+const BUNDLE_ID_PATTERN = /^[a-z][a-z0-9]*(?:\.[a-z][a-z0-9-]*)+$/i;
+
+function validateHttpsUrl(value: string) {
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
 
 const BADGE_SHAPE_OPTIONS = [
   { label: "Rounded", value: "rounded" },
@@ -186,12 +212,16 @@ export function SettingsPanel() {
   );
   const dispatch = useAppStore((s) => s.dispatch);
 
-  const [activeTab, setActiveTab] = useState<Tab>("locale");
+  const [activeTab, setActiveTab] = useState<Tab>("app");
 
   // ── Locale values (DSN-001 / CUR module) ──
   const direction = (rootProps?.direction ?? "rtl") as "rtl" | "ltr";
   const language = (rootProps?.language ?? "ar") as "ar" | "en";
   const currency = (rootProps?.currency ?? "SYP") as "SYP" | "USD" | "EUR";
+  const app = {
+    ...DEFAULT_APP,
+    ...(rootProps?.app ?? {}),
+  };
 
   // ── Font values ──
   const bodyFont = (rootProps?.bodyFont ?? DEFAULT_THEME.bodyFont) as string;
@@ -235,6 +265,13 @@ export function SettingsPanel() {
   const updateColor = (key: ColorKey, value: string) =>
     updateProps({ [key]: value });
 
+  const appValidation = {
+    apiBaseUrl: app.apiBaseUrl.trim().length > 0 && validateHttpsUrl(app.apiBaseUrl),
+    bundleId: app.bundleId.trim().length === 0 || BUNDLE_ID_PATTERN.test(app.bundleId.trim()),
+    tenantId: app.tenantId.trim().length === 0 || UUID_PATTERN.test(app.tenantId.trim()),
+    tenantSlug: app.tenantSlug.trim().length === 0 || SLUG_PATTERN.test(app.tenantSlug.trim()),
+  };
+
   return (
     <div className={getClassName()}>
       <div className={getClassName("intro")}>
@@ -247,6 +284,13 @@ export function SettingsPanel() {
 
       {/* ── Tab bar ── */}
       <div className={getClassName("tabs")}>
+        <button
+          type="button"
+          className={`${getClassName("tab")} ${activeTab === "app" ? getClassName("tab--active") : ""}`}
+          onClick={() => setActiveTab("app")}
+        >
+          App
+        </button>
         <button
           type="button"
           className={`${getClassName("tab")} ${activeTab === "locale" ? getClassName("tab--active") : ""}`}
@@ -333,6 +377,67 @@ export function SettingsPanel() {
                   updateProps({ currency: v as "SYP" | "USD" | "EUR" })
                 }
               />
+            </div>
+          </div>
+        )}
+
+        {activeTab === "app" && (
+          <div className={getClassName("section")}>
+            <div className={getClassName("sectionTitle")}>Mobile app metadata</div>
+            <p className={getClassName("sectionHint")}>This root object is exported beside theme and navigation for the mobile client. Keep the base URL HTTPS and the tenant fields aligned with production.</p>
+
+            <div className={getClassName("appGrid")}>
+              <div className={getClassName("field")}>
+                <AutoField
+                  field={{ type: "text", label: "App name" }}
+                  value={app.name}
+                  onChange={(value) => updateProps({ app: { ...app, name: String(value) } })}
+                />
+              </div>
+
+              <div className={getClassName("field")}>
+                <AutoField
+                  field={{ type: "text", label: "Bundle ID" }}
+                  value={app.bundleId}
+                  onChange={(value) => updateProps({ app: { ...app, bundleId: String(value) } })}
+                />
+                {!appValidation.bundleId ? (
+                  <div className={getClassName("fieldError")}>Use a reverse-DNS bundle ID like com.sooq.merchant.mobile.</div>
+                ) : null}
+              </div>
+
+              <div className={getClassName("field")}>
+                <AutoField
+                  field={{ type: "text", label: "API base URL" }}
+                  value={app.apiBaseUrl}
+                  onChange={(value) => updateProps({ app: { ...app, apiBaseUrl: String(value) } })}
+                />
+                {!appValidation.apiBaseUrl ? (
+                  <div className={getClassName("fieldError")}>Use an HTTPS URL with no trailing path unless your backend expects one.</div>
+                ) : null}
+              </div>
+
+              <div className={getClassName("field")}>
+                <AutoField
+                  field={{ type: "text", label: "Tenant ID" }}
+                  value={app.tenantId}
+                  onChange={(value) => updateProps({ app: { ...app, tenantId: String(value) } })}
+                />
+                {!appValidation.tenantId ? (
+                  <div className={getClassName("fieldError")}>Tenant ID should be a UUID when set.</div>
+                ) : null}
+              </div>
+
+              <div className={getClassName("field")}>
+                <AutoField
+                  field={{ type: "text", label: "Tenant slug" }}
+                  value={app.tenantSlug}
+                  onChange={(value) => updateProps({ app: { ...app, tenantSlug: String(value) } })}
+                />
+                {!appValidation.tenantSlug ? (
+                  <div className={getClassName("fieldError")}>Use lowercase slug characters only, with hyphens between words.</div>
+                ) : null}
+              </div>
             </div>
           </div>
         )}

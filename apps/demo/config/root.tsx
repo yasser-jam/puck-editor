@@ -61,9 +61,18 @@ export type LocaleProps = {
   currency?: "SYP" | "USD" | "EUR";
 };
 
+export type AppConfigProps = {
+  name?: string;
+  bundleId?: string;
+  apiBaseUrl?: string;
+  tenantId?: string;
+  tenantSlug?: string;
+};
+
 export type RootProps = DefaultRootRenderProps<
   Partial<FullThemeProps> &
     LocaleProps & {
+      app?: AppConfigProps;
       title?: string;
       /** When true, the HTML block appears in the Content palette (Settings → Editor). */
       enableHtmlRichTextBlock?: boolean;
@@ -150,10 +159,39 @@ export const Root: RootConfig<{
     title: {
       type: "text",
       label: "Page title",
+    // Shell rails (slot-based replacement for deprecated DropZones)
+    shellLeft: {
+      type: "slot",
+      label: "Left rail",
+      disallow: ["Section"],
+    },
+    shellRight: {
+      type: "slot",
+      label: "Right rail",
+      disallow: ["Section"],
+    },
+    },
+    app: {
+      type: "object",
+      label: "App settings",
+      objectFields: {
+        name: { type: "text", label: "App name" },
+        bundleId: { type: "text", label: "Bundle ID" },
+        apiBaseUrl: { type: "text", label: "API base URL" },
+        tenantId: { type: "text", label: "Tenant ID" },
+        tenantSlug: { type: "text", label: "Tenant slug" },
+      },
     },
   } as any,
   defaultProps: {
     title: "متجري على SOOQ",
+    app: {
+      name: "SOOQ Merchant Mobile",
+      bundleId: "com.sooq.merchant.mobile",
+      apiBaseUrl: "https://sooq.up.railway.app",
+      tenantId: "3fc183e8-ac80-4b2a-8bf1-4cd6ac6ffcb1",
+      tenantSlug: "anasgoldenmer",
+    },
     enableHtmlRichTextBlock: false,
     direction: "rtl",
     language: "ar",
@@ -217,6 +255,9 @@ export const Root: RootConfig<{
       language = "ar",
       puck: { isEditing, renderDropZone: DropZone },
     } = p;
+
+    const ShellLeft = (p as any).shellLeft as React.ComponentType<any> | undefined;
+    const ShellRight = (p as any).shellRight as React.ComponentType<any> | undefined;
 
     const colors: ColorTheme = {} as ColorTheme;
     COLOR_KEYS.forEach(({ key }) => {
@@ -321,12 +362,16 @@ export const Root: RootConfig<{
         >
           <div style={{ display: "flex", flexGrow: 1, minHeight: 0 }}>
             <div style={shellRailStyle}>
-              <DropZone
-                zone={SHELL_LEFT_ZONE}
-                allow={["SiteDrawerShell"]}
-                minEmptyHeight={isEditing ? "100vh" : 0}
-                style={shellDropStyle}
-              />
+              {ShellLeft ? (
+                <ShellLeft as="div" style={shellDropStyle} disallow={["Section"]} />
+              ) : (
+                <DropZone
+                  zone={SHELL_LEFT_ZONE}
+                  allow={["SiteDrawerShell"]}
+                  minEmptyHeight={isEditing ? "100vh" : 0}
+                  style={shellDropStyle}
+                />
+              )}
             </div>
 
             <DropZone
@@ -336,12 +381,16 @@ export const Root: RootConfig<{
             />
 
             <div style={shellRailStyle}>
-              <DropZone
-                zone={SHELL_RIGHT_ZONE}
-                allow={["SiteDrawerShell"]}
-                minEmptyHeight={isEditing ? "100vh" : 0}
-                style={shellDropStyle}
-              />
+              {ShellRight ? (
+                <ShellRight as="div" style={shellDropStyle} disallow={["Section"]} />
+              ) : (
+                <DropZone
+                  zone={SHELL_RIGHT_ZONE}
+                  allow={["SiteDrawerShell"]}
+                  minEmptyHeight={isEditing ? "100vh" : 0}
+                  style={shellDropStyle}
+                />
+              )}
             </div>
           </div>
         </div>

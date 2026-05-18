@@ -27,7 +27,7 @@ const VideoEmbedInner: ComponentConfig<VideoEmbedProps> = {
     radiusFixed: { type: "text", label: "Radius (fixed)" },
   },
   defaultProps: {
-    src: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    src: "",
     width: "100%",
     height: "315px",
     radiusMode: "theme",

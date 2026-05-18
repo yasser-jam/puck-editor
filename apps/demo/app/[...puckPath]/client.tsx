@@ -15,8 +15,6 @@ import { shopifyOutlinePlugin } from "../../config/plugins/shopify-editor";
 import { canvasInteractionsPlugin } from "../../config/plugins/canvas-interactions";
 import { normalizeEditorData } from "../../lib/normalize-editor-data";
 
-const EDITOR_HINT_DISMISSED_KEY = "puck-demo-editor-hint-dismissed-v1";
-
 const isTypingTarget = (target: EventTarget | null) => {
   if (!(target instanceof HTMLElement)) return false;
   if (target.isContentEditable) return true;
@@ -37,7 +35,6 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
 
   const [isClient, setIsClient] = useState(false);
   const [isShortcutDialogOpen, setShortcutDialogOpen] = useState(false);
-  const [showHintPill, setShowHintPill] = useState(false);
 
   const modKeyLabel = useMemo(() => {
     if (typeof navigator === "undefined") return "Ctrl";
@@ -50,11 +47,6 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
 
   useEffect(() => {
     if (!isClient || !isEdit) return;
-
-    const isDismissed =
-      window.localStorage.getItem(EDITOR_HINT_DISMISSED_KEY) === "1";
-
-    setShowHintPill(!isDismissed);
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -76,14 +68,6 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isClient, isEdit]);
-
-  const dismissHintPill = () => {
-    setShowHintPill(false);
-
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(EDITOR_HINT_DISMISSED_KEY, "1");
-    }
-  };
 
   if (!isClient) return null;
 
@@ -135,19 +119,6 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
               <>
                 <HtmlBlockPaletteSync />
                 {children}
-
-                {showHintPill && !isShortcutDialogOpen ? (
-                  <button
-                    type="button"
-                    className="EditorHintPill"
-                    onClick={() => setShortcutDialogOpen(true)}
-                    aria-label="Open Puck editor shortcuts and tips"
-                  >
-                    <CircleHelp size={16} />
-                    Need quick help?
-                    <span className="EditorHintPill-key">?</span>
-                  </button>
-                ) : null}
 
                 {isShortcutDialogOpen ? (
                   <div
@@ -268,11 +239,10 @@ export function Client({ path, isEdit }: { path: string; isEdit: boolean }) {
                           type="button"
                           className="EditorShortcutGhostButton"
                           onClick={() => {
-                            dismissHintPill();
                             setShortcutDialogOpen(false);
                           }}
                         >
-                          Hide floating tip
+                          Close guide
                         </button>
 
                         <button

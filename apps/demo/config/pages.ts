@@ -137,6 +137,24 @@ export const PAGES: PageDefinition[] = [
     description: "Shopping cart & checkout",
     iconName: "ShoppingCart",
   },
+  {
+    path: "/checkout",
+    label: "Checkout",
+    description: "Checkout flow",
+    iconName: "ShoppingCart",
+  },
+  {
+    path: "/wishlist",
+    label: "Wishlist",
+    description: "Saved products",
+    iconName: "Package",
+  },
+  {
+    path: "/orders",
+    label: "Orders",
+    description: "Customer order history",
+    iconName: "FileText",
+  },
 ];
 
 /** Returns the path used for the editor URL (substitutes dynamic segments) */

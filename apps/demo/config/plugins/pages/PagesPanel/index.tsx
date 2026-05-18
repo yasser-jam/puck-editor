@@ -23,7 +23,7 @@ import { normalizeEditorData } from "../../../../lib/normalize-editor-data";
 import type { UserData } from "../../../types";
 import {
   DEFAULT_SECTION_NAME,
-  createSectionStarterContent,
+  createCommerceStarterContent,
 } from "../../../blocks/Section/starter-data";
 import styles from "./styles.module.css";
 
@@ -53,7 +53,7 @@ const createStorageKey = (path: string) => `puck-demo:${componentKey}:${path}`;
 
 const createStarterPageData = (title: string): UserData => {
   const nonce = Date.now().toString(36);
-  const starterContent = createSectionStarterContent().map((item, index) => ({
+  const starterContent = createCommerceStarterContent().map((item, index) => ({
     ...item,
     props: {
       ...(item.props ?? {}),
